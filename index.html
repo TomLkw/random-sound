@@ -692,12 +692,6 @@
             $('#progress-text').text('就绪');
             
             currentChapter = chapter;
-            corpus = JSON.parse(JSON.stringify(allData[chapter])); 
-            
-            if ($('#shuffle-toggle').is(':checked')) {
-                shuffleArray(corpus);
-            }
-
             currentIndex = 0;
             correctCount = 0;
             attemptCount = 0;
@@ -705,8 +699,8 @@
             isPaused = false;
             wrongWords = [];
             
-            $('#current-chapter-title').text(`雅思听力特训 / 章节: ${chapter}${ $('#shuffle-toggle').is(':checked') ? ' (随机)' : '' }`);
-            $('#stat-total').text(corpus.length);
+            $('#current-chapter-title').text(`雅思听力特训 / 章节: ${chapter}`);
+            $('#stat-total').text(allData[chapter].length);
             $('#stat-correct').text('0');
             $('#stat-accuracy').text('0%');
             $('#log-container').empty();
@@ -934,6 +928,16 @@
 
         $('#start-btn').on('click', () => {
             if (!currentChapter) return;
+            
+            corpus = JSON.parse(JSON.stringify(allData[currentChapter]));
+            if ($('#shuffle-toggle').is(':checked')) {
+                shuffleArray(corpus);
+                $('#current-chapter-title').text(`雅思听力特训 / 章节: ${currentChapter} (随机)`);
+            } else {
+                $('#current-chapter-title').text(`雅思听力特训 / 章节: ${currentChapter}`);
+            }
+            $('#stat-total').text(corpus.length);
+            
             isStarted = true;
             $('#start-btn-container').addClass('hidden');
             $('#exercise-controls').removeClass('hidden');
