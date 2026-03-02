@@ -6,6 +6,7 @@
     <title>IELTS King - Multi-List Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -66,9 +67,13 @@
         }
         input:checked + .slider { background-color: #3b82f6; }
         input:checked + .slider:before { transform: translateX(16px); }
+        
+
     </style>
 </head>
 <body class="bg-[#f8fafc] text-slate-900 min-h-screen flex font-sans overflow-hidden">
+
+
 
     <!-- 左侧侧边栏：章节选择与设置 -->
     <aside class="w-64 bg-white border-r border-slate-200 flex flex-col hidden md:flex">
@@ -671,7 +676,8 @@
         let isStarted = false;
         let isPaused = false;
         let wrongWords = [];
-        const NEXT_INTERVAL = 5000;
+        const BASE_TIME = 3000; // 基本时长（毫秒）
+        const TIME_PER_CHAR = 300; // 每个字符的额外时间（毫秒）
 
         function shuffleArray(array) {
             let currentIndex = array.length, randomIndex;
@@ -770,11 +776,15 @@
 
             speak(current.en);
 
+            // 根据单词长度计算等待时间
+            const wordLength = current.en.length;
+            const waitTime = BASE_TIME + (wordLength * TIME_PER_CHAR);
+
             $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
             setTimeout(() => {
                 if (!isPaused) {
                     $('#timer-bar').css({
-                        'transition': `width ${NEXT_INTERVAL}ms linear`,
+                        'transition': `width ${waitTime}ms linear`,
                         'width': '0%'
                     });
                     
@@ -783,7 +793,7 @@
                             const val = $('#user-input').val().trim();
                             goToNext(false, val);
                         }
-                    }, NEXT_INTERVAL);
+                    }, waitTime);
                 }
             }, 50);
         }
@@ -880,10 +890,15 @@
             $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-orange-500');
             $('#progress-text').text('正在听写');
             
+            // 恢复时重新计算当前单词的等待时间
+            const currentWord = corpus[currentIndex];
+            const wordLength = currentWord.en.length;
+            const waitTime = BASE_TIME + (wordLength * TIME_PER_CHAR);
+            
             $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
             setTimeout(() => {
                 $('#timer-bar').css({
-                    'transition': `width ${NEXT_INTERVAL}ms linear`,
+                    'transition': `width ${waitTime}ms linear`,
                     'width': '0%'
                 });
                 
@@ -892,7 +907,7 @@
                         const val = $('#user-input').val().trim();
                         goToNext(false, val);
                     }
-                }, NEXT_INTERVAL);
+                }, waitTime);
             }, 50);
         });
 
