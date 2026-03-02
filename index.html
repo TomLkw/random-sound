@@ -168,6 +168,12 @@
                                 </button>
                             </div>
                             
+                            <div id="retry-wrong-container" class="mb-6 hidden">
+                                <button id="retry-wrong-btn" class="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold text-lg rounded-2xl transition-all active:scale-95 shadow-lg hover:shadow-xl">
+                                    只练错题 (<span id="wrong-count">0</span>)
+                                </button>
+                            </div>
+                            
                             <div id="exercise-controls" class="hidden">
                                 <div class="max-w-[200px] mx-auto mb-6">
                                     <div class="timer-progress">
@@ -285,6 +291,7 @@
         let autoNextTimer = null;
         let isProcessingResult = false;
         let isStarted = false;
+        let wrongWords = [];
         const NEXT_INTERVAL = 5000;
 
         function shuffleArray(array) {
@@ -316,6 +323,7 @@
             correctCount = 0;
             attemptCount = 0;
             isStarted = false;
+            wrongWords = [];
             
             $('#current-chapter-title').text(`雅思听力特训 / 章节: ${chapter}${ $('#shuffle-toggle').is(':checked') ? ' (随机)' : '' }`);
             $('#stat-total').text(corpus.length);
@@ -326,6 +334,7 @@
             $('#global-progress').text('0%');
             $('#translation-display').text('准备就绪');
             $('#start-btn-container').removeClass('hidden');
+            $('#retry-wrong-container').addClass('hidden');
             $('#exercise-controls').addClass('hidden');
             $('#user-input').val('').prop('disabled', true);
         }
@@ -369,6 +378,11 @@
                 $('#timer-bar').parent().hide();
                 $('#progress-text').text('完成');
                 $('#global-progress').text('100%');
+                
+                if (wrongWords.length > 0) {
+                    $('#wrong-count').text(wrongWords.length);
+                    $('#retry-wrong-container').removeClass('hidden');
+                }
                 return;
             }
 
@@ -426,6 +440,7 @@
                 currentIndex++;
                 renderWord();
             } else {
+                wrongWords.push(currentData);
                 updateAccuracy();
                 $('#correct-answer-text').text(currentData.en);
                 $('#answer-feedback').removeClass('opacity-0');
@@ -473,6 +488,30 @@
             $('#exercise-controls').removeClass('hidden');
             $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
             $('#progress-text').text('正在听写');
+            renderWord();
+        });
+
+        $('#retry-wrong-btn').on('click', () => {
+            corpus = JSON.parse(JSON.stringify(wrongWords));
+            wrongWords = [];
+            currentIndex = 0;
+            correctCount = 0;
+            attemptCount = 0;
+            
+            $('#stat-total').text(corpus.length);
+            $('#stat-correct').text('0');
+            $('#stat-accuracy').text('0%');
+            $('#log-container').empty();
+            $('#log-count').text('0');
+            $('#global-progress').text('0%');
+            $('#current-chapter-title').text(`雅思听力特训 / 错题练习`);
+            
+            $('#retry-wrong-container').addClass('hidden');
+            $('#exercise-controls').removeClass('hidden');
+            $('#timer-bar').parent().show();
+            $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
+            $('#progress-text').text('正在听写');
+            isStarted = true;
             renderWord();
         });
     </script>
