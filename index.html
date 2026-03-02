@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS King - Multi-List Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .error-shake { animation: shake 0.2s ease-in-out 0s 2; }
+        
+        .timer-progress {
+            height: 4px;
+            background: #e2e8f0;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+        .timer-bar {
+            height: 100%;
+            background: #3b82f6;
+            width: 100%;
+            transition: width 5s linear;
+        }
+
+        #log-container::-webkit-scrollbar, .sidebar-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        #log-container::-webkit-scrollbar-thumb, .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        /* Toggle Switch Styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #e2e8f0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #3b82f6; }
+        input:checked + .slider:before { transform: translateX(16px); }
+    </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-900 min-h-screen flex font-sans overflow-hidden">
+
+    <!-- 左侧侧边栏：章节选择与设置 -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col hidden md:flex">
+        <div class="p-6 border-b border-slate-100">
+            <h1 class="text-xl font-black tracking-tighter italic">KING 3.1</h1>
+            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">语料库导航</p>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto p-4 space-y-2 sidebar-scroll">
+            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">Section 3</div>
+            <button onclick="startExercise('3.1')" id="nav-3.1" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                List 3.1
+            </button>
+            <button onclick="startExercise('3.2')" id="nav-3.2" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                List 3.2
+            </button>
+            <button onclick="startExercise('3.3')" id="nav-3.3" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                List 3.3
+            </button>
+            
+            <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">Section 4</div>
+            <button class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-300 font-bold text-sm cursor-not-allowed">
+                <span class="w-2 h-2 rounded-full bg-slate-100"></span>
+                List 4.1 (锁定)
+            </button>
+        </nav>
+
+        <div class="p-4 border-t border-slate-100 space-y-3">
+            <!-- 随机设置 -->
+            <div class="bg-slate-50 rounded-2xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">随机模式</p>
+                    <p class="text-[9px] text-slate-400 italic">Shuffle Mode</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="shuffle-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <!-- 学习进度 -->
+            <div class="bg-slate-50 rounded-2xl p-4">
+                <p class="text-[10px] text-slate-400 font-bold uppercase mb-2">当前章节进度</p>
+                <div class="flex items-end gap-2">
+                    <span id="global-progress" class="text-xl font-black italic text-blue-600">0%</span>
+                    <span class="text-[10px] text-slate-400 mb-1">已完成</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 右侧主内容区 -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+        
+        <!-- 顶部信息 -->
+        <header class="w-full px-8 py-4 flex justify-between items-center bg-white/50 backdrop-blur-md border-b border-slate-100">
+            <div class="flex items-center gap-4">
+                <div class="md:hidden">
+                    <h1 class="text-xl font-black italic">KING</h1>
+                </div>
+                <div class="hidden md:block">
+                    <p id="current-chapter-title" class="text-xs font-bold text-slate-500 uppercase tracking-widest">请在左侧选择 List 开启训练</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 bg-white px-4 py-1.5 rounded-full border border-slate-200 shadow-sm">
+                    <div id="status-dot" class="w-2 h-2 rounded-full bg-slate-300"></div>
+                    <span id="progress-text" class="text-[11px] font-bold text-slate-500">就绪</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 核心练习与日志区 -->
+        <main class="flex-1 overflow-y-auto p-8">
+            <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
+                
+                <!-- 练习卡片 -->
+                <div class="flex-[3]">
+                    <div id="exercise-card" class="bg-white border border-slate-200 rounded-[3rem] shadow-[0_30px_60px_rgba(0,0,0,0.03)] p-8 md:p-12 relative overflow-hidden text-center transition-opacity opacity-50 pointer-events-none">
+                        
+                        <div class="absolute top-0 left-0 h-1.5 bg-slate-100 w-full">
+                            <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-500" style="width: 0%"></div>
+                        </div>
+
+                        <div class="mb-8 mt-4">
+                            <div id="translation-display" class="text-4xl md:text-5xl font-black text-slate-900 mb-6">
+                                SELECT LIST
+                            </div>
+                            
+                            <div class="max-w-[200px] mx-auto mb-6">
+                                <div class="timer-progress">
+                                    <div id="timer-bar" class="timer-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <button id="speak-btn" class="inline-flex items-center justify-center w-14 h-14 bg-slate-50 rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all active:scale-90">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" /></svg>
+                            </button>
+                        </div>
+
+                        <div class="max-w-md mx-auto space-y-4">
+                            <div id="answer-feedback" class="h-6 text-sm font-bold text-red-500 opacity-0 transition-opacity">
+                                正确拼写: <span id="correct-answer-text"></span>
+                            </div>
+
+                            <input type="text" id="user-input" autocomplete="off"
+                                class="w-full text-center text-3xl font-bold p-5 bg-slate-50 border-4 border-transparent rounded-2xl focus:border-blue-500 focus:bg-white focus:outline-none transition-all placeholder:text-slate-200"
+                                placeholder="...">
+                        </div>
+
+                        <div class="mt-12 pt-8 border-t border-slate-100 grid grid-cols-3 gap-4">
+                            <div>
+                                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">正确数</p>
+                                <p id="stat-correct" class="text-xl font-black text-green-500">0</p>
+                            </div>
+                            <div>
+                                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">准确率</p>
+                                <p id="stat-accuracy" class="text-xl font-black text-slate-800">0%</p>
+                            </div>
+                            <div>
+                                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">剩余</p>
+                                <p id="stat-total" class="text-xl font-black text-slate-800">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 日志面板 -->
+                <div class="flex-[2] flex flex-col h-[600px]">
+                    <div class="bg-white border border-slate-200 rounded-[2rem] flex-1 flex flex-col overflow-hidden shadow-sm">
+                        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                            <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest">实时记录</h2>
+                            <span class="text-[10px] bg-slate-200 text-slate-500 px-2 py-0.5 rounded-md font-bold" id="log-count">0</span>
+                        </div>
+                        <div id="log-container" class="flex-1 overflow-y-auto p-4 space-y-2 text-sm">
+                            <div class="text-slate-300 text-center py-20 text-xs italic">
+                                请在左侧选择一个 List 开始
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 核心数据：从 CSV 提取
+        const allData = {
+            '3.1': [
+                { en: "ability", zh: "能力，才干" },
+                { en: "abstract", zh: "抽象的，摘要" },
+                { en: "academy", zh: "学院，研究院" },
+                { en: "access", zh: "入口，通道" },
+                { en: "accommodation", zh: "住处，调节" },
+                { en: "accompany", zh: "陪伴，伴随" },
+                { en: "according", zh: "依照" },
+                { en: "account", zh: "账目，解释" },
+                { en: "accountant", zh: "会计师" },
+                { en: "achieve", zh: "完成，达到" }
+            ],
+            '3.2': [
+                { en: "cabinet", zh: "内阁，储藏柜" },
+                { en: "cable", zh: "电缆，电报" },
+                { en: "cafeteria", zh: "自助餐厅" },
+                { en: "calcium", zh: "钙" },
+                { en: "calculate", zh: "计算，估计" },
+                { en: "calculator", zh: "计算器" },
+                { en: "calendar", zh: "日历，日程表" },
+                { en: "calorie", zh: "卡路里" },
+                { en: "campus", zh: "校园" },
+                { en: "canal", zh: "运河，沟渠" }
+            ],
+            '3.3': [
+                { en: "debt", zh: "债务" },
+                { en: "decade", zh: "十年" },
+                { en: "decision", zh: "决定" },
+                { en: "declare", zh: "宣布，声明" },
+                { en: "decline", zh: "下降，衰落" },
+                { en: "decorate", zh: "装饰" },
+                { en: "decrease", zh: "减少" },
+                { en: "dedicate", zh: "献身，致力于" },
+                { en: "degree", zh: "学位，程度" },
+                { en: "delay", zh: "延期，耽搁" },
+                { en: "delivery", zh: "交付，递送" },
+                { en: "demand", zh: "要求，需求" },
+                { en: "demonstrate", zh: "证明，论证" },
+                { en: "dense", zh: "稠密的，浓厚的" },
+                { en: "department", zh: "部门" },
+                { en: "departure", zh: "离开，启程" },
+                { en: "depend", zh: "依靠，依赖" },
+                { en: "deposit", zh: "存款，定金" },
+                { en: "depress", zh: "压抑，使沮丧" },
+                { en: "depth", zh: "深度" }
+            ]
+        };
+
+        let currentChapter = null;
+        let corpus = [];
+        let currentIndex = 0;
+        let correctCount = 0;
+        let attemptCount = 0;
+        let autoNextTimer = null;
+        let isProcessingResult = false;
+        const NEXT_INTERVAL = 5000;
+
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function startExercise(chapter) {
+            $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50');
+            $(`#nav-${chapter}`).addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50');
+            
+            $('#exercise-card').removeClass('opacity-50 pointer-events-none');
+            $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
+            $('#progress-text').text('正在听写');
+            
+            currentChapter = chapter;
+            corpus = JSON.parse(JSON.stringify(allData[chapter])); 
+            
+            if ($('#shuffle-toggle').is(':checked')) {
+                shuffleArray(corpus);
+            }
+
+            currentIndex = 0;
+            correctCount = 0;
+            attemptCount = 0;
+            
+            $('#current-chapter-title').text(`雅思听力特训 / 章节: ${chapter}${ $('#shuffle-toggle').is(':checked') ? ' (随机)' : '' }`);
+            $('#stat-total').text(corpus.length);
+            $('#stat-correct').text('0');
+            $('#stat-accuracy').text('0%');
+            $('#log-container').empty();
+            $('#log-count').text('0');
+            $('#global-progress').text('0%');
+            
+            renderWord();
+        }
+
+        function addLog(isCorrect, userInput, correctWord, translation) {
+            const container = $('#log-container');
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            let logHtml = `
+                <div class="flex items-start gap-3 p-3 ${isCorrect ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'} rounded-xl border animate-in fade-in slide-in-from-left-2">
+                    <div class="mt-1.5 w-1.5 h-1.5 rounded-full ${isCorrect ? 'bg-green-500' : 'bg-red-500'}"></div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-0.5">
+                            <span class="font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'} text-xs">${correctWord}</span>
+                            <span class="text-[8px] ${isCorrect ? 'text-green-400' : 'text-red-300'} font-medium uppercase">${time}</span>
+                        </div>
+                        ${!isCorrect ? `<div class="text-[10px] text-red-500/80 font-medium mb-1">拼写: <span class="line-through opacity-50">${userInput || '未填写'}</span></div>` : ''}
+                        <div class="text-[10px] ${isCorrect ? 'text-green-600/70' : 'text-red-400/70'}">${translation}</div>
+                    </div>
+                </div>
+            `;
+
+            container.append(logHtml);
+            container.scrollTop(container[0].scrollHeight);
+            $('#log-count').text(attemptCount);
+            
+            const prog = Math.round((currentIndex / corpus.length) * 100);
+            $('#global-progress').text(prog + '%');
+        }
+
+        function renderWord() {
+            clearTimeout(autoNextTimer);
+            isProcessingResult = false;
+            $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
+            $('#answer-feedback').addClass('opacity-0');
+            $('#user-input').removeClass('text-red-500 border-red-500 bg-red-50').prop('disabled', false);
+
+            if (currentIndex >= corpus.length) {
+                $('#translation-display').text('LIST 完成 🏁');
+                $('#user-input').val('Well Done!').prop('disabled', true);
+                $('#timer-bar').parent().hide();
+                $('#progress-text').text('完成');
+                $('#global-progress').text('100%');
+                return;
+            }
+
+            const current = corpus[currentIndex];
+            $('#translation-display').text(current.zh);
+            $('#user-input').val('').focus();
+            
+            const progress = (currentIndex / corpus.length) * 100;
+            $('#progress-bar').css('width', progress + '%');
+            $('#stat-total').text(corpus.length - currentIndex);
+
+            speak(current.en);
+
+            setTimeout(() => {
+                $('#timer-bar').css({
+                    'transition': `width ${NEXT_INTERVAL}ms linear`,
+                    'width': '0%'
+                });
+                
+                autoNextTimer = setTimeout(() => {
+                    if (!isProcessingResult) {
+                        const val = $('#user-input').val().trim();
+                        goToNext(false, val);
+                    }
+                }, NEXT_INTERVAL);
+            }, 50);
+        }
+
+        function speak(text) {
+            window.speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'en-US';
+            msg.rate = 0.8;
+            window.speechSynthesis.speak(msg);
+        }
+
+        function updateAccuracy() {
+            const acc = attemptCount > 0 ? Math.round((correctCount / attemptCount) * 100) : 0;
+            $('#stat-accuracy').text(acc + '%');
+        }
+
+        function goToNext(isCorrect, userInput) {
+            if (isProcessingResult) return;
+            isProcessingResult = true;
+            
+            const currentData = corpus[currentIndex];
+            attemptCount++;
+
+            addLog(isCorrect, userInput, currentData.en, currentData.zh);
+
+            if (isCorrect) {
+                correctCount++;
+                $('#stat-correct').text(correctCount);
+                updateAccuracy();
+                currentIndex++;
+                renderWord();
+            } else {
+                updateAccuracy();
+                $('#correct-answer-text').text(currentData.en);
+                $('#answer-feedback').removeClass('opacity-0');
+                $('#user-input').addClass('text-red-500 border-red-500 bg-red-50').prop('disabled', true);
+                
+                clearTimeout(autoNextTimer);
+                $('#timer-bar').css({ 'transition': 'none', 'width': '0%' });
+
+                setTimeout(() => {
+                    currentIndex++;
+                    renderWord();
+                }, 1500);
+            }
+        }
+
+        function checkSubmission() {
+            if (isProcessingResult || !currentChapter) return;
+
+            const input = $('#user-input').val().trim().toLowerCase();
+            const target = corpus[currentIndex].en.toLowerCase();
+
+            if (input === target) {
+                goToNext(true, input);
+            } else {
+                $('#user-input').addClass('error-shake');
+                setTimeout(() => $('#user-input').removeClass('error-shake'), 400);
+                goToNext(false, input);
+            }
+        }
+
+        $('#user-input').on('keydown', function(e) {
+            if (e.key === 'Enter') {
+                checkSubmission();
+            }
+        });
+
+        $('#speak-btn').on('click', () => {
+            if(currentChapter) speak(corpus[currentIndex].en);
+        });
+    </script>
+</body>
+</html>
