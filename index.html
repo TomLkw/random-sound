@@ -179,9 +179,26 @@
                                     </div>
                                 </div>
 
-                                <button id="speak-btn" class="inline-flex items-center justify-center w-14 h-14 bg-slate-50 rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all active:scale-90">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" /></svg>
-                                </button>
+                                <div class="flex items-center justify-center gap-3">
+                                    <button id="speak-btn" class="inline-flex items-center justify-center w-14 h-14 bg-slate-50 rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all active:scale-90">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" /></svg>
+                                    </button>
+                                    <button id="pause-btn" class="inline-flex items-center justify-center w-14 h-14 bg-slate-50 rounded-full text-slate-400 hover:text-orange-600 hover:bg-orange-50 transition-all active:scale-90">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" /></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div id="pause-menu" class="hidden">
+                                <div class="text-2xl font-bold text-slate-600 mb-6">已暂停</div>
+                                <div class="flex flex-col gap-3 max-w-xs mx-auto">
+                                    <button id="resume-btn" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all active:scale-95">
+                                        继续练习
+                                    </button>
+                                    <button id="pause-retry-wrong-btn" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-all active:scale-95">
+                                        只练错题 (<span id="pause-wrong-count">0</span>)
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -234,16 +251,118 @@
         // 核心数据：从 CSV 提取
         const allData = {
             '3.1': [
-                { en: "ability", zh: "能力，才干" },
-                { en: "abstract", zh: "抽象的，摘要" },
-                { en: "academy", zh: "学院，研究院" },
-                { en: "access", zh: "入口，通道" },
-                { en: "accommodation", zh: "住处，调节" },
-                { en: "accompany", zh: "陪伴，伴随" },
-                { en: "according", zh: "依照" },
-                { en: "account", zh: "账目，解释" },
-                { en: "accountant", zh: "会计师" },
-                { en: "achieve", zh: "完成，达到" }
+                { en: "ability", zh: "能力" },
+                { en: "abstract", zh: "摘要" },
+                { en: "accountant", zh: "会计" },
+                { en: "accuracy", zh: "准确性" },
+                { en: "acid", zh: "酸" },
+                { en: "action", zh: "行动" },
+                { en: "activity", zh: "活动" },
+                { en: "actor", zh: "演员" },
+                { en: "adult", zh: "成人" },
+                { en: "adventure", zh: "冒险" },
+                { en: "advertisements", zh: "广告" },
+                { en: "advertising", zh: "广告业" },
+                { en: "advice", zh: "建议" },
+                { en: "age", zh: "年龄" },
+                { en: "agency", zh: "机构" },
+                { en: "agreement", zh: "协议" },
+                { en: "agriculture", zh: "农业" },
+                { en: "aid", zh: "援助" },
+                { en: "aim", zh: "目标" },
+                { en: "air", zh: "空气" },
+                { en: "allergy", zh: "过敏" },
+                { en: "alley", zh: "小巷" },
+                { en: "allowance", zh: "津贴" },
+                { en: "alteration", zh: "改变" },
+                { en: "altitude", zh: "海拔" },
+                { en: "ambition", zh: "雄心" },
+                { en: "ambulance", zh: "救护车" },
+                { en: "amount", zh: "数量" },
+                { en: "analysis", zh: "分析" },
+                { en: "analyst", zh: "分析师" },
+                { en: "anger", zh: "愤怒" },
+                { en: "animal", zh: "动物" },
+                { en: "ankle", zh: "脚踝" },
+                { en: "answer", zh: "答案" },
+                { en: "Antarctica", zh: "南极洲" },
+                { en: "ape", zh: "猿" },
+                { en: "appearance", zh: "外观" },
+                { en: "architect", zh: "建筑师" },
+                { en: "architectures", zh: "建筑" },
+                { en: "area", zh: "区域" },
+                { en: "argument", zh: "争论" },
+                { en: "aristocrat", zh: "贵族" },
+                { en: "army", zh: "军队" },
+                { en: "art", zh: "艺术" },
+                { en: "article", zh: "文章" },
+                { en: "aspirin", zh: "阿司匹林" },
+                { en: "assignment", zh: "作业" },
+                { en: "atlas", zh: "地图集" },
+                { en: "audience", zh: "观众" },
+                { en: "auditorium", zh: "礼堂" },
+                { en: "author", zh: "作者" },
+                { en: "authority", zh: "权威" },
+                { en: "average", zh: "平均" },
+                { en: "award", zh: "奖励" },
+                { en: "bachelor", zh: "学士" },
+                { en: "background", zh: "背景" },
+                { en: "bacteria", zh: "细菌" },
+                { en: "badge", zh: "徽章" },
+                { en: "badminton", zh: "羽毛球" },
+                { en: "backpack", zh: "背包" },
+                { en: "baldness", zh: "秃头" },
+                { en: "band", zh: "乐队" },
+                { en: "bandage", zh: "绷带" },
+                { en: "bands", zh: "带子" },
+                { en: "bank", zh: "银行" },
+                { en: "banquet", zh: "宴会" },
+                { en: "base", zh: "基础" },
+                { en: "basement", zh: "地下室" },
+                { en: "bases", zh: "基地" },
+                { en: "basis", zh: "基础" },
+                { en: "bath", zh: "浴室" },
+                { en: "batteries", zh: "电池" },
+                { en: "battery", zh: "电池" },
+                { en: "beach", zh: "海滩" },
+                { en: "beard", zh: "胡须" },
+                { en: "beats", zh: "节拍" },
+                { en: "beauty", zh: "美丽" },
+                { en: "bed", zh: "床" },
+                { en: "bedroom", zh: "卧室" },
+                { en: "bed sheet", zh: "床单" },
+                { en: "bedsit", zh: "卧室兼起居室" },
+                { en: "behaviors", zh: "行为" },
+                { en: "belt", zh: "腰带" },
+                { en: "benefit", zh: "利益" },
+                { en: "beverage", zh: "饮料" },
+                { en: "bibliography", zh: "参考书目" },
+                { en: "bicycle", zh: "自行车" },
+                { en: "bill", zh: "账单" },
+                { en: "biologist", zh: "生物学家" },
+                { en: "bird", zh: "鸟" },
+                { en: "birth", zh: "出生" },
+                { en: "blanket", zh: "毯子" },
+                { en: "blast", zh: "爆炸" },
+                { en: "block", zh: "街区" },
+                { en: "blouse", zh: "女衬衫" },
+                { en: "board", zh: "董事会" },
+                { en: "boarder", zh: "寄宿生" },
+                { en: "boat", zh: "船" },
+                { en: "bone", zh: "骨头" },
+                { en: "bowl", zh: "碗" },
+                { en: "bowling", zh: "保龄球" },
+                { en: "branch", zh: "分支" },
+                { en: "breakfast", zh: "早餐" },
+                { en: "brick", zh: "砖" },
+                { en: "bridge", zh: "桥" },
+                { en: "brochures", zh: "小册子" },
+                { en: "building", zh: "建筑" },
+                { en: "bungalow", zh: "平房" },
+                { en: "burger", zh: "汉堡" },
+                { en: "burglar", zh: "窃贼" },
+                { en: "bus", zh: "公交车" },
+                { en: "cab", zh: "出租车" }
             ],
             '3.2': [
                 { en: "cabinet", zh: "内阁，储藏柜" },
@@ -342,6 +461,7 @@
         let autoNextTimer = null;
         let isProcessingResult = false;
         let isStarted = false;
+        let isPaused = false;
         let wrongWords = [];
         const NEXT_INTERVAL = 5000;
 
@@ -374,6 +494,7 @@
             correctCount = 0;
             attemptCount = 0;
             isStarted = false;
+            isPaused = false;
             wrongWords = [];
             
             $('#current-chapter-title').text(`雅思听力特训 / 章节: ${chapter}${ $('#shuffle-toggle').is(':checked') ? ' (随机)' : '' }`);
@@ -417,9 +538,9 @@
         }
 
         function renderWord() {
+            if (isPaused) return;
             clearTimeout(autoNextTimer);
             isProcessingResult = false;
-            $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
             $('#answer-feedback').addClass('opacity-0');
             $('#user-input').removeClass('text-red-500 border-red-500 bg-red-50').prop('disabled', false);
 
@@ -447,18 +568,21 @@
 
             speak(current.en);
 
+            $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
             setTimeout(() => {
-                $('#timer-bar').css({
-                    'transition': `width ${NEXT_INTERVAL}ms linear`,
-                    'width': '0%'
-                });
-                
-                autoNextTimer = setTimeout(() => {
-                    if (!isProcessingResult) {
-                        const val = $('#user-input').val().trim();
-                        goToNext(false, val);
-                    }
-                }, NEXT_INTERVAL);
+                if (!isPaused) {
+                    $('#timer-bar').css({
+                        'transition': `width ${NEXT_INTERVAL}ms linear`,
+                        'width': '0%'
+                    });
+                    
+                    autoNextTimer = setTimeout(() => {
+                        if (!isProcessingResult && !isPaused) {
+                            const val = $('#user-input').val().trim();
+                            goToNext(false, val);
+                        }
+                    }, NEXT_INTERVAL);
+                }
             }, 50);
         }
 
@@ -508,7 +632,7 @@
         }
 
         function checkSubmission() {
-            if (isProcessingResult || !currentChapter) return;
+            if (isProcessingResult || !currentChapter || isPaused) return;
 
             const input = $('#user-input').val().trim().toLowerCase();
             const target = corpus[currentIndex].en.toLowerCase();
@@ -529,7 +653,75 @@
         });
 
         $('#speak-btn').on('click', () => {
-            if(currentChapter && isStarted) speak(corpus[currentIndex].en);
+            if(currentChapter && isStarted && !isPaused) speak(corpus[currentIndex].en);
+        });
+
+        $('#pause-btn').on('click', () => {
+            if (!isStarted || isPaused) return;
+            isPaused = true;
+            clearTimeout(autoNextTimer);
+            $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
+            $('#user-input').prop('disabled', true);
+            $('#exercise-controls').addClass('hidden');
+            $('#pause-menu').removeClass('hidden');
+            $('#pause-wrong-count').text(wrongWords.length);
+            $('#status-dot').removeClass('bg-blue-500 animate-pulse').addClass('bg-orange-500');
+            $('#progress-text').text('已暂停');
+        });
+
+        $('#resume-btn').on('click', () => {
+            if (!isPaused) return;
+            isPaused = false;
+            $('#pause-menu').addClass('hidden');
+            $('#exercise-controls').removeClass('hidden');
+            $('#user-input').prop('disabled', false).focus();
+            $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-orange-500');
+            $('#progress-text').text('正在听写');
+            
+            $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
+            setTimeout(() => {
+                $('#timer-bar').css({
+                    'transition': `width ${NEXT_INTERVAL}ms linear`,
+                    'width': '0%'
+                });
+                
+                autoNextTimer = setTimeout(() => {
+                    if (!isProcessingResult && !isPaused) {
+                        const val = $('#user-input').val().trim();
+                        goToNext(false, val);
+                    }
+                }, NEXT_INTERVAL);
+            }, 50);
+        });
+
+        $('#pause-retry-wrong-btn').on('click', () => {
+            if (wrongWords.length === 0) {
+                alert('暂无错题');
+                return;
+            }
+            
+            corpus = JSON.parse(JSON.stringify(wrongWords));
+            wrongWords = [];
+            currentIndex = 0;
+            correctCount = 0;
+            attemptCount = 0;
+            isPaused = false;
+            
+            $('#stat-total').text(corpus.length);
+            $('#stat-correct').text('0');
+            $('#stat-accuracy').text('0%');
+            $('#log-container').empty();
+            $('#log-count').text('0');
+            $('#global-progress').text('0%');
+            $('#current-chapter-title').text(`雅思听力特训 / 错题练习`);
+            
+            $('#pause-menu').addClass('hidden');
+            $('#exercise-controls').removeClass('hidden');
+            $('#timer-bar').parent().show();
+            $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-orange-500');
+            $('#progress-text').text('正在听写');
+            isStarted = true;
+            renderWord();
         });
 
         $('#start-btn').on('click', () => {
