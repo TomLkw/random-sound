@@ -135,6 +135,12 @@
             </div>
             
             <div class="flex items-center gap-4">
+                <button id="login-btn" class="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm hover:shadow-md transition-all hover:border-blue-300 text-slate-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>
+                    <span class="text-sm font-bold hidden md:inline">登录</span>
+                </button>
                 <div class="flex items-center gap-2 bg-white px-4 py-1.5 rounded-full border border-slate-200 shadow-sm">
                     <div id="status-dot" class="w-2 h-2 rounded-full bg-slate-300"></div>
                     <span id="progress-text" class="text-[11px] font-bold text-slate-500">就绪</span>
@@ -252,7 +258,234 @@
         </main>
     </div>
 
+    <!-- 登录弹窗 -->
+    <div id="login-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-in fade-in zoom-in-95">
+            <button id="close-login" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-black mb-2">登录账户</h2>
+                <p class="text-sm text-slate-500">输入邮箱，我们将发送验证码</p>
+            </div>
+            
+            <div id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">邮箱地址</label>
+                    <input type="email" id="email-input" placeholder="your@email.com" 
+                        class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white focus:outline-none transition-all">
+                </div>
+                <button id="send-code-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all active:scale-95 shadow-lg">
+                    发送验证码
+                </button>
+            </div>
+            
+            <div id="verify-form" class="hidden space-y-4">
+                <div class="text-center mb-4">
+                    <p class="text-sm text-green-600 font-medium">✓ 验证码已发送</p>
+                    <p class="text-xs text-slate-500 mt-1">请输入邮箱中收到的6位验证码</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">验证码</label>
+                    <input type="text" id="code-input" placeholder="000000" maxlength="6"
+                        class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white focus:outline-none transition-all text-center text-2xl font-bold tracking-widest">
+                </div>
+                <button id="verify-code-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all active:scale-95 shadow-lg">
+                    验证登录
+                </button>
+                <button id="resend-code-btn" class="w-full py-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-all">
+                    重新发送验证码
+                </button>
+            </div>
+            
+            <div id="login-error" class="hidden mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600"></div>
+        </div>
+    </div>
+
     <script>
+        // Supabase 初始化
+        const SUPABASE_URL = 'https://elckemvmphbjjlpzgoqy.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsY2tlbXZtcGhiampscHpnb3F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg5Mzk4NDYsImV4cCI6MjA3NDUxNTg0Nn0.RElcl4dh0bhzYtV0SFTmkwKSy06qxZErZqcM8t137QM';
+        const supabaseClinet = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let currentUser = null;
+
+        // 检查登录状态
+        async function checkAuth() {
+            const { data: { session } } = await supabaseClinet.auth.getSession();
+            if (session) {
+                currentUser = session.user;
+                updateUIForLoggedIn();
+            } else {
+                updateUIForLoggedOut();
+            }
+        }
+
+        // 更新UI为已登录状态
+        function updateUIForLoggedIn() {
+            $('#login-btn').html(`
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                        ${currentUser.email.charAt(0).toUpperCase()}
+                    </div>
+                    <span class="text-sm font-bold text-slate-700 hidden md:inline">${currentUser.email.split('@')[0]}</span>
+                </div>
+            `);
+            $('#login-btn').off('click').on('click', logout);
+        }
+
+        // 更新UI为未登录状态
+        function updateUIForLoggedOut() {
+            $('#login-btn').html(`
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+                <span class="text-sm font-bold hidden md:inline">登录</span>
+            `);
+            $('#login-btn').off('click').on('click', () => $('#login-modal').removeClass('hidden'));
+        }
+
+        // 发送验证码
+        async function sendMagicLink() {
+            const email = $('#email-input').val().trim();
+            if (!email) {
+                showError('请输入邮箱地址');
+                return;
+            }
+
+            $('#send-code-btn').prop('disabled', true).text('发送中...');
+            $('#login-error').addClass('hidden');
+
+            const { error } = await supabaseClinet.auth.signInWithOtp({
+                email: email,
+                options: {
+                    shouldCreateUser: true
+                }
+            });
+
+            if (error) {
+                showError(error.message);
+                $('#send-code-btn').prop('disabled', false).text('发送验证码');
+            } else {
+                $('#login-form').addClass('hidden');
+                $('#verify-form').removeClass('hidden');
+                $('#code-input').focus();
+            }
+        }
+
+        // 验证验证码
+        async function verifyCode() {
+            const email = $('#email-input').val().trim();
+            const code = $('#code-input').val().trim();
+            
+            if (!code || code.length !== 6) {
+                showError('请输入6位验证码');
+                return;
+            }
+
+            $('#verify-code-btn').prop('disabled', true).text('验证中...');
+            $('#login-error').addClass('hidden');
+
+            const { error } = await supabaseClinet.auth.verifyOtp({
+                email: email,
+                token: code,
+                type: 'email'
+            });
+
+            if (error) {
+                showError('验证码错误或已过期');
+                $('#verify-code-btn').prop('disabled', false).text('验证登录');
+                $('#code-input').val('').focus();
+            }
+        }
+
+        // 重新发送验证码
+        async function resendMagicLink() {
+            const email = $('#email-input').val().trim();
+            $('#resend-code-btn').prop('disabled', true).text('发送中...');
+            $('#login-error').addClass('hidden');
+            
+            const { error } = await supabaseClinet.auth.signInWithOtp({
+                email: email,
+                options: {
+                    shouldCreateUser: true
+                }
+            });
+
+            if (error) {
+                showError(error.message);
+                $('#resend-code-btn').prop('disabled', false).text('重新发送验证码');
+            } else {
+                $('#resend-code-btn').text('✓ 已重新发送');
+                $('#code-input').val('').focus();
+                setTimeout(() => {
+                    $('#resend-code-btn').prop('disabled', false).text('重新发送验证码');
+                }, 3000);
+            }
+        }
+
+        // 登出
+        async function logout() {
+            await supabaseClinet.auth.signOut();
+            currentUser = null;
+            updateUIForLoggedOut();
+        }
+
+        // 显示错误
+        function showError(message) {
+            $('#login-error').text(message).removeClass('hidden');
+        }
+
+        // 关闭登录弹窗
+        function closeLoginModal() {
+            $('#login-modal').addClass('hidden');
+            $('#login-form').removeClass('hidden');
+            $('#verify-form').addClass('hidden');
+            $('#email-input').val('');
+            $('#code-input').val('');
+            $('#login-error').addClass('hidden');
+            $('#send-code-btn').prop('disabled', false).text('发送验证码');
+            $('#verify-code-btn').prop('disabled', false).text('验证登录');
+        }
+
+        // 监听认证状态变化
+        supabaseClinet.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN') {
+                currentUser = session.user;
+                updateUIForLoggedIn();
+                closeLoginModal();
+            } else if (event === 'SIGNED_OUT') {
+                currentUser = null;
+                updateUIForLoggedOut();
+            }
+        });
+
+        // 登录相关事件
+        $('#send-code-btn').on('click', sendMagicLink);
+        $('#verify-code-btn').on('click', verifyCode);
+        $('#resend-code-btn').on('click', resendMagicLink);
+        $('#close-login').on('click', closeLoginModal);
+        $('#login-modal').on('click', function(e) {
+            if (e.target === this) closeLoginModal();
+        });
+        $('#email-input').on('keydown', function(e) {
+            if (e.key === 'Enter') sendMagicLink();
+        });
+        $('#code-input').on('keydown', function(e) {
+            if (e.key === 'Enter') verifyCode();
+        });
+        $('#code-input').on('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        // 页面加载时检查登录状态
+        $(document).ready(() => {
+            checkAuth();
+        });
+
         // 核心数据：从 CSV 提取
         const allData = {
             '3.1': [
