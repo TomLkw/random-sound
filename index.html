@@ -360,19 +360,22 @@
             <div class="bg-slate-50 rounded-2xl p-6 mb-6">
                 <div class="text-center mb-4">
                     <p class="text-xs text-slate-500 mb-2">支付宝转账</p>
-                    <p class="text-3xl font-black text-blue-600 mb-1">¥29.9</p>
-                    <p class="text-xs text-slate-400">永久访问</p>
+                    <p class="text-3xl font-black text-blue-600 mb-1">¥19.9</p>
+                    <p class="text-xs text-slate-400">一个月访问</p>
                 </div>
                 <div class="border-t border-slate-200 pt-4">
-                    <p class="text-xs text-slate-600 font-medium mb-2">转账信息：</p>
+                    <p class="text-xs text-slate-600 font-medium mb-2">解锁章节：</p>
+                    <div class="text-xs text-slate-700 mb-3">
+                        <span class="font-bold">List 3.4 - 3.9</span> 和 <span class="font-bold">List 5.3 - 5.12</span>
+                    </div>
                     <div class="space-y-2 text-xs">
                         <div class="flex justify-between">
                             <span class="text-slate-500">支付宝账号：</span>
-                            <span class="font-bold text-slate-700">your-alipay@example.com</span>
+                            <span class="font-bold text-slate-700">1160292859@qq.com</span>
                         </div>
-                        <div class="flex justify-between">
+                        <div class="flex justify-between items-start">
                             <span class="text-slate-500">备注信息：</span>
-                            <span class="font-bold text-slate-700" id="payment-note">IELTS-用户邮箱</span>
+                            <span class="font-bold text-slate-700 text-right" id="payment-note">注册邮箱</span>
                         </div>
                     </div>
                 </div>
@@ -381,12 +384,15 @@
             <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
                 <p class="text-xs text-amber-800 leading-relaxed">
                     <span class="font-bold">💡 付费说明：</span><br>
-                    转账后请联系客服开通权限，开通后即可永久访问付费章节。
+                    1. 转账到支付宝，账号：<span class="font-bold">1160292859@qq.com</span><br>
+                    2. 转账备注填写您的注册邮箱<br>
+                    3. 转账成功后，将支付宝订单截图发送至 <span class="font-bold">1160292859@qq.com</span><br>
+                    4. 我们将在收到后为您开通权限（一个月有效期）
                 </p>
             </div>
             
             <button id="contact-service" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all active:scale-95 shadow-lg">
-                联系客服开通
+                发送转账截图
             </button>
         </div>
     </div>
@@ -622,7 +628,10 @@
             if (e.target === this) $('#payment-modal').addClass('hidden');
         });
         $('#contact-service').on('click', () => {
-            alert('请添加客服微信：your-wechat-id 或发送邮件至：support@example.com');
+            const email = currentUser ? currentUser.email : '您的注册邮箱';
+            const subject = encodeURIComponent('IELTS听力训练 - 付费开通申请');
+            const body = encodeURIComponent(`我已完成支付，请为我开通权限。\n\n注册邮箱：${email}\n\n[请在此处粘贴转账截图]`);
+            window.open(`mailto:1160292859@qq.com?subject=${subject}&body=${body}`, '_blank');
         });
 
         // 页面加载时检查登录状态
@@ -777,173 +786,6 @@
                 { en: "calorie", zh: "卡路里" },
                 { en: "campus", zh: "校园" },
                 { en: "canal", zh: "运河，沟渠" }
-            ],
-            '3.3': [
-                { en: "debt", zh: "债务" },
-                { en: "decade", zh: "十年" },
-                { en: "decision", zh: "决定" },
-                { en: "decline", zh: "下降" },
-                { en: "decorations", zh: "装饰" },
-                { en: "delay", zh: "延迟" },
-                { en: "delegate", zh: "代表" },
-                { en: "delight", zh: "高兴" },
-                { en: "delivery", zh: "交付" },
-                { en: "demonstration", zh: "示范" },
-                { en: "dentist", zh: "牙医" },
-                { en: "department", zh: "部门" },
-                { en: "deposit", zh: "存款" },
-                { en: "depth", zh: "深度" },
-                { en: "description", zh: "描述" },
-                { en: "desert", zh: "沙漠" },
-                { en: "design", zh: "设计" },
-                { en: "designer", zh: "设计师" },
-                { en: "desire", zh: "渴望" },
-                { en: "desk", zh: "书桌" },
-                { en: "destination", zh: "目的地" },
-                { en: "detail", zh: "细节" },
-                { en: "diary", zh: "日记" },
-                { en: "dictation", zh: "听写" },
-                { en: "diet", zh: "饮食" },
-                { en: "dining", zh: "用餐" },
-                { en: "dinners", zh: "晚餐" },
-                { en: "dioxide", zh: "二氧化物" },
-                { en: "direction", zh: "方向" },
-                { en: "director", zh: "主任" },
-                { en: "disagreement", zh: "分歧" },
-                { en: "disaster", zh: "灾难" },
-                { en: "discomfort", zh: "不适" },
-                { en: "disco", zh: "迪斯科" },
-                { en: "discos", zh: "迪斯科舞厅" },
-                { en: "discount", zh: "折扣" },
-                { en: "discovery", zh: "发现" },
-                { en: "disease", zh: "疾病" },
-                { en: "dish", zh: "菜肴" },
-                { en: "disposal", zh: "处理" },
-                { en: "dispute", zh: "争论" },
-                { en: "distance", zh: "距离" },
-                { en: "divorce", zh: "离婚" },
-                { en: "document", zh: "文件" },
-                { en: "documentary", zh: "纪录片" },
-                { en: "donation", zh: "捐赠" },
-                { en: "donkey", zh: "驴" },
-                { en: "draft", zh: "草稿" },
-                { en: "drama", zh: "戏剧" },
-                { en: "draw", zh: "画" },
-                { en: "drawer", zh: "抽屉" },
-                { en: "drink", zh: "饮料" },
-                { en: "drinking", zh: "饮用" },
-                { en: "driver", zh: "司机" },
-                { en: "driving", zh: "驾驶" },
-                { en: "drug", zh: "药物" },
-                { en: "drum", zh: "鼓" },
-                { en: "due", zh: "到期的" },
-                { en: "duration", zh: "持续时间" },
-                { en: "dust", zh: "灰尘" },
-                { en: "duty", zh: "职责" },
-                { en: "eagle", zh: "鹰" },
-                { en: "ear", zh: "耳朵" },
-                { en: "east", zh: "东方" },
-                { en: "eating", zh: "吃" },
-                { en: "economy", zh: "经济" },
-                { en: "editor", zh: "编辑" },
-                { en: "education", zh: "教育" },
-                { en: "elbow", zh: "肘" },
-                { en: "elder", zh: "年长者" },
-                { en: "electricity", zh: "电" },
-                { en: "elements", zh: "元素" },
-                { en: "elevator", zh: "电梯" },
-                { en: "emotion", zh: "情感" },
-                { en: "emperor", zh: "皇帝" },
-                { en: "employee", zh: "雇员" },
-                { en: "employer", zh: "雇主" },
-                { en: "encyclopedia", zh: "百科全书" },
-                { en: "ending", zh: "结局" },
-                { en: "energies", zh: "能量" },
-                { en: "engine", zh: "引擎" },
-                { en: "engineer", zh: "工程师" },
-                { en: "entrance", zh: "入口" },
-                { en: "epidemic", zh: "流行病" },
-                { en: "equipment", zh: "设备" },
-                { en: "ethic", zh: "道德" },
-                { en: "evening", zh: "晚上" },
-                { en: "event", zh: "事件" },
-                { en: "evidence", zh: "证据" },
-                { en: "examination", zh: "考试" },
-                { en: "example", zh: "例子" },
-                { en: "exception", zh: "例外" },
-                { en: "exchange", zh: "交换" },
-                { en: "excitement", zh: "兴奋" },
-                { en: "excursion", zh: "远足" },
-                { en: "excuse", zh: "借口" },
-                { en: "exercises", zh: "练习" },
-                { en: "exhibition", zh: "展览" },
-                { en: "existence", zh: "存在" },
-                { en: "existing", zh: "现有的" },
-                { en: "expansion", zh: "扩张" },
-                { en: "expense", zh: "费用" },
-                { en: "experiment", zh: "实验" },
-                { en: "expert", zh: "专家" },
-                { en: "explanation", zh: "解释" },
-                { en: "explosion", zh: "爆炸" },
-                { en: "exposition", zh: "博览会" },
-                { en: "exposure", zh: "暴露" },
-                { en: "extension", zh: "延期" },
-                { en: "facility", zh: "设施" },
-                { en: "factor", zh: "因素" },
-                { en: "factory", zh: "工厂" }
-            ],
-            '3.4': [
-                { en: "faculty", zh: "全体教员，才能" },
-                { en: "failure", zh: "失败" },
-                { en: "falcon", zh: "猎鹰" },
-                { en: "fan", zh: "扇子，风扇" },
-                { en: "fare", zh: "车费，票价" },
-                { en: "farm", zh: "农场" },
-                { en: "farmer", zh: "农民" },
-                { en: "farming", zh: "农业，耕作" },
-                { en: "fashion", zh: "时尚，方式" },
-                { en: "fat", zh: "脂肪，肥胖的" },
-                { en: "feast", zh: "盛宴，节日" },
-                { en: "feather", zh: "羽毛" },
-                { en: "feature", zh: "特征，特色" },
-                { en: "feedback", zh: "反馈" },
-                { en: "fellowship", zh: "奖学金，友谊" },
-                { en: "female", zh: "女性的" },
-                { en: "ferries", zh: "渡船" },
-                { en: "festival", zh: "节日" },
-                { en: "field", zh: "田地，领域" },
-                { en: "figure", zh: "数字，人物" },
-                { en: "film", zh: "电影，胶片" },
-                { en: "finding", zh: "发现，调查结果" },
-                { en: "finger", zh: "手指" },
-                { en: "firms", zh: "公司" },
-                { en: "fish", zh: "鱼" },
-                { en: "fishing", zh: "钓鱼" },
-                { en: "flag", zh: "旗帜" },
-                { en: "flash", zh: "闪光" },
-                { en: "flat", zh: "公寓，平坦的" },
-                { en: "flight", zh: "航班，飞行" },
-                { en: "flood", zh: "洪水" },
-                { en: "flooding", zh: "洪水泛滥" },
-                { en: "flour", zh: "面粉" },
-                { en: "flourish", zh: "繁荣，茂盛" },
-                { en: "flow", zh: "流动" },
-                { en: "flu", zh: "流感" },
-                { en: "fly", zh: "飞行，苍蝇" },
-                { en: "forest", zh: "森林" },
-                { en: "forestry", zh: "林业" },
-                { en: "form", zh: "形式，表格" },
-                { en: "formula", zh: "公式" },
-                { en: "fortnight", zh: "两周" },
-                { en: "fortune", zh: "财富，运气" },
-                { en: "foyer", zh: "门厅，休息室" },
-                { en: "freedom", zh: "自由" },
-                { en: "freezer", zh: "冰箱" },
-                { en: "freshman", zh: "大一新生" },
-                { en: "fruit", zh: "水果" },
-                { en: "fur", zh: "毛皮" },
-                { en: "furniture", zh: "家具" },
-                { en: "future", zh: "未来" }
             ],
             '5.1': [
                 { en: "a great variety of", zh: "各种各样的" },
@@ -1112,7 +954,7 @@
         // 显示付费弹窗
         function showPaymentModal() {
             if (currentUser) {
-                $('#payment-note').text(`IELTS-${currentUser.email}`);
+                $('#payment-note').text(`${currentUser.email}`);
             }
             $('#payment-modal').removeClass('hidden');
         }
@@ -1158,7 +1000,7 @@
             
             // 获取章节数据
             let chapterData;
-            const cloudChapters = ['3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12'];
+            const cloudChapters = ['3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12'];
             if (cloudChapters.includes(chapter)) {
                 chapterData = await fetchChapterData(chapter);
                 if (chapterData.length === 0) {
