@@ -965,7 +965,7 @@
             
             // 获取章节数据
             let chapterData;
-            if (chapter === '5.2') {
+            if (chapter === '3.4' || chapter === '5.2') {
                 chapterData = await fetchChapterData(chapter);
                 if (chapterData.length === 0) {
                     $('#translation-display').text('暂无数据');
