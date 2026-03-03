@@ -99,6 +99,7 @@
             <button onclick="startExercise('3.4')" id="nav-3.4" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 List 3.4
+                <span class="ml-auto text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold">付费</span>
             </button>
             
             <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">Section 5</div>
@@ -109,6 +110,7 @@
             <button onclick="startExercise('5.2')" id="nav-5.2" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 List 5.2
+                <span class="ml-auto text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold">付费</span>
             </button>
         </nav>
 
@@ -260,6 +262,59 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- 付费提示弹窗 -->
+    <div id="payment-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-in fade-in zoom-in-95">
+            <button id="close-payment" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 text-blue-600">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-black mb-2">付费章节</h2>
+                <p class="text-sm text-slate-500">该章节需要付费后使用</p>
+            </div>
+            
+            <div class="bg-slate-50 rounded-2xl p-6 mb-6">
+                <div class="text-center mb-4">
+                    <p class="text-xs text-slate-500 mb-2">支付宝转账</p>
+                    <p class="text-3xl font-black text-blue-600 mb-1">¥29.9</p>
+                    <p class="text-xs text-slate-400">永久访问</p>
+                </div>
+                <div class="border-t border-slate-200 pt-4">
+                    <p class="text-xs text-slate-600 font-medium mb-2">转账信息：</p>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">支付宝账号：</span>
+                            <span class="font-bold text-slate-700">your-alipay@example.com</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">备注信息：</span>
+                            <span class="font-bold text-slate-700" id="payment-note">IELTS-用户邮箱</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+                <p class="text-xs text-amber-800 leading-relaxed">
+                    <span class="font-bold">💡 付费说明：</span><br>
+                    转账后请联系客服开通权限，开通后即可永久访问付费章节。
+                </p>
+            </div>
+            
+            <button id="contact-service" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all active:scale-95 shadow-lg">
+                联系客服开通
+            </button>
+        </div>
     </div>
 
     <!-- 登录弹窗 -->
@@ -483,6 +538,17 @@
         });
         $('#code-input').on('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        // 付费弹窗相关事件
+        $('#close-payment').on('click', () => {
+            $('#payment-modal').addClass('hidden');
+        });
+        $('#payment-modal').on('click', function(e) {
+            if (e.target === this) $('#payment-modal').addClass('hidden');
+        });
+        $('#contact-service').on('click', () => {
+            alert('请添加客服微信：your-wechat-id 或发送邮件至：support@example.com');
         });
 
         // 页面加载时检查登录状态
@@ -946,7 +1012,59 @@
             return array;
         }
 
+        // 检查订阅状态
+        async function checkSubscription() {
+            if (!currentUser) return false;
+            
+            try {
+                const { data, error } = await supabaseClinet
+                    .from('user_subscriptions')
+                    .select('status')
+                    .eq('id', currentUser.id)
+                    .single();
+                
+                if (error) {
+                    console.log('未找到订阅记录');
+                    return false;
+                }
+                
+                return data && data.status === 'active';
+            } catch (error) {
+                console.error('查询订阅状态失败:', error);
+                return false;
+            }
+        }
+
+        // 显示付费弹窗
+        function showPaymentModal() {
+            if (currentUser) {
+                $('#payment-note').text(`IELTS-${currentUser.email}`);
+            }
+            $('#payment-modal').removeClass('hidden');
+        }
+
+        // 显示登录提示弹窗
+        function showLoginRequiredModal() {
+            if (confirm('该章节需要登录后付费使用，是否立即登录？')) {
+                $('#login-modal').removeClass('hidden');
+            }
+        }
+
         async function startExercise(chapter) {
+            // 检查是否为付费章节
+            if (chapter === '3.4' || chapter === '5.2') {
+                if (!currentUser) {
+                    showLoginRequiredModal();
+                    return;
+                }
+                
+                const hasSubscription = await checkSubscription();
+                if (!hasSubscription) {
+                    showPaymentModal();
+                    return;
+                }
+            }
+            
             $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50');
             $(`#nav-${chapter}`).addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50');
             
