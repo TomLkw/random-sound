@@ -76,7 +76,7 @@
 
 
     <!-- 左侧侧边栏：章节选择与设置 -->
-    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col hidden md:flex">
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col hidden md:flex h-screen">
         <div class="p-6 border-b border-slate-100">
             <h1 class="text-xl font-black tracking-tighter italic">KING 3.1</h1>
             <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">语料库导航</p>
@@ -135,7 +135,6 @@
             <button onclick="startExercise('5.2')" id="nav-5.2" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 List 5.2
-                <span class="ml-auto text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold">付费</span>
             </button>
             <button onclick="startExercise('5.3')" id="nav-5.3" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
@@ -1127,7 +1126,7 @@
 
         async function startExercise(chapter) {
             // 检查是否为付费章节
-            const paidChapters = ['3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12'];
+            const paidChapters = ['3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12'];
             if (paidChapters.includes(chapter)) {
                 if (!currentUser) {
                     showLoginRequiredModal();
