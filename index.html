@@ -106,6 +106,10 @@
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 List 5.1
             </button>
+            <button onclick="startExercise('5.2')" id="nav-5.2" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                List 5.2
+            </button>
         </nav>
 
         <div class="p-4 border-t border-slate-100 space-y-3">
@@ -485,6 +489,26 @@
         $(document).ready(() => {
             checkAuth();
         });
+
+        // 从 Supabase 获取章节数据
+        async function fetchChapterData(chapter) {
+            try {
+                const { data, error } = await supabaseClinet
+                    .from('ielts_vocab')
+                    .select('word, translation')
+                    .eq('chapter', chapter);
+                
+                if (error) throw error;
+                
+                return data.map(item => ({
+                    en: item.word,
+                    zh: item.translation
+                }));
+            } catch (error) {
+                console.error('获取章节数据失败:', error);
+                return [];
+            }
+        }
 
         // 核心数据：从 CSV 提取
         const allData = {
@@ -922,13 +946,14 @@
             return array;
         }
 
-        function startExercise(chapter) {
+        async function startExercise(chapter) {
             $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50');
             $(`#nav-${chapter}`).addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50');
             
             $('#exercise-card').removeClass('opacity-50 pointer-events-none');
             $('#status-dot').removeClass('bg-blue-500 animate-pulse').addClass('bg-slate-300');
-            $('#progress-text').text('就绪');
+            $('#progress-text').text('加载中...');
+            $('#translation-display').text('正在加载章节数据...');
             
             currentChapter = chapter;
             currentIndex = 0;
@@ -938,8 +963,21 @@
             isPaused = false;
             wrongWords = [];
             
+            // 获取章节数据
+            let chapterData;
+            if (chapter === '5.2') {
+                chapterData = await fetchChapterData(chapter);
+                if (chapterData.length === 0) {
+                    $('#translation-display').text('暂无数据');
+                    $('#progress-text').text('数据为空');
+                    return;
+                }
+            } else {
+                chapterData = allData[chapter] || [];
+            }
+            
             $('#current-chapter-title').text(`雅思听力特训 / 章节: ${chapter}`);
-            $('#stat-total').text(allData[chapter].length);
+            $('#stat-total').text(chapterData.length);
             $('#stat-correct').text('0');
             $('#stat-accuracy').text('0%');
             $('#log-container').empty();
@@ -950,6 +988,10 @@
             $('#retry-wrong-container').addClass('hidden');
             $('#exercise-controls').addClass('hidden');
             $('#user-input').val('').prop('disabled', true);
+            $('#progress-text').text('就绪');
+            
+            // 将数据存储到全局变量中
+            allData[chapter] = chapterData;
         }
 
         function addLog(isCorrect, userInput, correctWord, translation) {
@@ -1174,8 +1216,14 @@
             renderWord();
         });
 
-        $('#start-btn').on('click', () => {
+        $('#start-btn').on('click', async () => {
             if (!currentChapter) return;
+            
+            // 确保有数据
+            if (!allData[currentChapter] || allData[currentChapter].length === 0) {
+                alert('章节数据为空，请重新选择章节');
+                return;
+            }
             
             corpus = JSON.parse(JSON.stringify(allData[currentChapter]));
             if ($('#shuffle-toggle').is(':checked')) {
