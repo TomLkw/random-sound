@@ -310,8 +310,19 @@
                             </div>
                             
                             <div id="word-list-container" class="mb-6 hidden max-h-96 overflow-y-auto">
-                                <div class="text-sm text-slate-500 mb-3 font-medium">本章节单词列表：</div>
-                                <div id="word-list" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-left"></div>
+                                <div class="flex justify-between items-center mb-3">
+                                    <div class="text-sm text-slate-500 font-medium">本章节单词列表：</div>
+                                    <div id="page-info" class="text-xs text-slate-400 font-bold"></div>
+                                </div>
+                                <div id="word-list" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-left mb-3"></div>
+                                <div id="pagination-controls" class="flex justify-center gap-2 pt-3 border-t border-slate-200">
+                                    <button id="prev-page" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-sm rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                                        ← 上一页
+                                    </button>
+                                    <button id="next-page" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-sm rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                                        下一页 →
+                                    </button>
+                                </div>
                             </div>
                             
                             <div id="start-btn-container" class="mb-6 hidden">
@@ -986,6 +997,10 @@
         let wrongWords = [];
         const BASE_TIME = 3000; // 基本时长（毫秒）
         const TIME_PER_CHAR = 300; // 每个字符的额外时间（毫秒）
+        const WORDS_PER_PAGE = 20; // 每页单词数
+        let currentPage = 1;
+        let totalPages = 1;
+        let fullChapterData = [];
 
         function shuffleArray(array) {
             let currentIndex = array.length, randomIndex;
@@ -1066,6 +1081,7 @@
             isStarted = false;
             isPaused = false;
             wrongWords = [];
+            currentPage = 1;
             
             // 获取章节数据
             let chapterData;
@@ -1097,9 +1113,11 @@
             
             // 将数据存储到全局变量中
             allData[chapter] = chapterData;
+            fullChapterData = chapterData;
+            totalPages = Math.ceil(chapterData.length / WORDS_PER_PAGE);
             
-            // 显示单词列表
-            displayWordList(chapterData);
+            // 显示单词列表（第一页）
+            displayWordList(chapterData, 1);
         }
 
         function addLog(isCorrect, userInput, correctWord, translation) {
@@ -1324,8 +1342,13 @@
             renderWord();
         });
 
-        function displayWordList(words) {
-            const listHtml = words.map(item => `
+        function displayWordList(words, page) {
+            currentPage = page;
+            const startIdx = (page - 1) * WORDS_PER_PAGE;
+            const endIdx = startIdx + WORDS_PER_PAGE;
+            const pageWords = words.slice(startIdx, endIdx);
+            
+            const listHtml = pageWords.map(item => `
                 <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg text-xs">
                     <span class="font-bold text-slate-700">${item.en}</span>
                     <span class="text-slate-400">-</span>
@@ -1333,8 +1356,24 @@
                 </div>
             `).join('');
             $('#word-list').html(listHtml);
+            $('#page-info').text(`第 ${page}/${totalPages} 页 (${pageWords.length} 词)`);
+            
+            $('#prev-page').prop('disabled', page === 1);
+            $('#next-page').prop('disabled', page === totalPages);
             $('#word-list-container').removeClass('hidden');
         }
+        
+        $('#prev-page').on('click', () => {
+            if (currentPage > 1) {
+                displayWordList(fullChapterData, currentPage - 1);
+            }
+        });
+        
+        $('#next-page').on('click', () => {
+            if (currentPage < totalPages) {
+                displayWordList(fullChapterData, currentPage + 1);
+            }
+        });
 
         $('#start-btn').on('click', async () => {
             if (!currentChapter) return;
@@ -1345,12 +1384,16 @@
                 return;
             }
             
-            corpus = JSON.parse(JSON.stringify(allData[currentChapter]));
+            // 只使用当前页的单词
+            const startIdx = (currentPage - 1) * WORDS_PER_PAGE;
+            const endIdx = startIdx + WORDS_PER_PAGE;
+            corpus = JSON.parse(JSON.stringify(allData[currentChapter].slice(startIdx, endIdx)));
+            
             if ($('#shuffle-toggle').is(':checked')) {
                 shuffleArray(corpus);
-                $('#current-chapter-title').text(`雅思听力特训 / 章节: ${currentChapter} (随机)`);
+                $('#current-chapter-title').text(`雅思听力特训 / 章节: ${currentChapter} 第${currentPage}页 (随机)`);
             } else {
-                $('#current-chapter-title').text(`雅思听力特训 / 章节: ${currentChapter}`);
+                $('#current-chapter-title').text(`雅思听力特训 / 章节: ${currentChapter} 第${currentPage}页`);
             }
             $('#stat-total').text(corpus.length);
             
