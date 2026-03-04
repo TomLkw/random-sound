@@ -1,12 +1,12 @@
 1 主页面加一个开始按钮
 2 只练错题按钮 按钮上显示错题数目
 3 把随机开关改到主页面上
-4 如果一个章节单词太多，用户会疲惫，所以要分页
-5 让用户看到要出现的单词列表 开始后停止
+4. 如果一个章节单词太多，用户会疲惫，所以要分页
+5 让用户看到要出现的单词列表 开始记单词后就不用看到了
 6 加一个暂停功能 暂停时可以选择开始练习错题
 7 等待时间 由基本时长 和 单词时长构成 不然有的时候写不完
-8 bug 倒计时进度条有时会消失
-9 todo 只练错题时包含单词 和词组
+8. bug 倒计时进度条有时会消失
+9. todo 只练错题时包含单词 和词组
 
 10 todo supabase 前端添加登录按钮 增加邮箱验证码 登录功能
 REACT_APP_SUPABASE_URL=https://elckemvmphbjjlpzgoqy.supabase.co
@@ -25,10 +25,10 @@ create table ielts_vocab (
 ✅ 加上 5.2 从 supabase 获取
 
 
-12 弹窗告知用户收费功能
-13 todo 错误后不用摇摆
-14 to do : handle card catalog=card catalogue
-15 todo : 错题本
+12. 弹窗告知用户收费功能
+13. todo 错误后不用摇摆
+14. to do : handle card catalog=card catalogue
+15. todo : 错题本
 
 16. 3.4 和 5.2 改成付费模式
 
@@ -46,8 +46,9 @@ create table public.user_subscriptions (
 如果不是，弹窗提醒 转账到 支付宝 付费后使用 
 
 
-
 17. todo 退出登录文案
 
 18. 收费模式 19.9 一个月 解锁 3.4 到 3.9 和 5.3 到 5.12
 转账到 1160292859@qq.com 后 注册邮箱 发送转账成功截图发送到 1160292859@qq.com 解锁章节
+
+19. 到期自动停止续费
