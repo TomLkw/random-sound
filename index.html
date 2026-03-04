@@ -345,6 +345,15 @@
                                 </button>
                             </div>
                             
+                            <div id="share-result-container" class="mb-6 hidden">
+                                <button id="share-result-btn" class="px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-bold text-lg rounded-2xl transition-all active:scale-95 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 mx-auto">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                                    </svg>
+                                    分享成绩
+                                </button>
+                            </div>
+                            
                             <div id="exercise-controls" class="hidden">
                                 <div class="max-w-[200px] mx-auto mb-6">
                                     <div class="timer-progress">
@@ -523,6 +532,45 @@
             </div>
             
             <div id="login-error" class="hidden mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600"></div>
+        </div>
+    </div>
+
+    <!-- 成绩分享弹窗 -->
+    <div id="share-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in-95 max-h-[85vh] overflow-y-auto">
+            <button id="close-share" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <div class="text-center mb-4">
+                <h2 class="text-xl font-black mb-1">练习完成 🎉</h2>
+                <p class="text-xs text-slate-500">List <span id="share-chapter">-</span> 第<span id="share-page">-</span>页</p>
+            </div>
+            
+            <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-4 mb-4">
+                <div class="text-center">
+                    <p class="text-3xl font-black text-green-600 mb-1" id="share-accuracy">0%</p>
+                    <p class="text-xs text-slate-600">
+                        <span id="share-correct">0</span> / <span id="share-total">0</span> 正确
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <h3 class="text-xs font-bold text-slate-600 mb-2">📝 全部单词</h3>
+                <div id="share-all-words" class="grid grid-cols-2 gap-1.5 max-h-40 overflow-y-auto p-2 bg-slate-50 rounded-lg"></div>
+            </div>
+            
+            <div id="share-wrong-section" class="mb-4 hidden">
+                <h3 class="text-xs font-bold text-red-600 mb-2">❌ 错误单词</h3>
+                <div id="share-wrong-words" class="grid grid-cols-2 gap-1.5 p-2 bg-red-50 rounded-lg"></div>
+            </div>
+            
+            <button id="close-share-btn" class="w-full py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-sm rounded-lg transition-all active:scale-95">
+                关闭
+            </button>
         </div>
     </div>
 
@@ -1004,6 +1052,7 @@
         let totalPages = 1;
         let fullChapterData = [];
         let currentPageWords = [];
+        let isRetryingWrong = false;
 
         function shuffleArray(array) {
             let currentIndex = array.length, randomIndex;
@@ -1086,6 +1135,7 @@
             wrongWords = [];
             currentPage = 1;
             currentPageWords = [];
+            isRetryingWrong = false;
             
             // 获取章节数据
             let chapterData;
@@ -1111,6 +1161,7 @@
             $('#translation-display').text('准备就绪');
             $('#start-btn-container').removeClass('hidden');
             $('#retry-wrong-container').addClass('hidden');
+            $('#share-result-container').addClass('hidden');
             $('#exercise-controls').addClass('hidden');
             $('#user-input').val('').prop('disabled', true);
             $('#progress-text').text('就绪');
@@ -1167,6 +1218,10 @@
                 if (wrongWords.length > 0) {
                     $('#wrong-count').text(wrongWords.length);
                     $('#retry-wrong-container').removeClass('hidden');
+                }
+                
+                if (!isRetryingWrong) {
+                    $('#share-result-container').removeClass('hidden');
                 }
                 return;
             }
@@ -1328,6 +1383,7 @@
             correctCount = 0;
             attemptCount = 0;
             isPaused = false;
+            isRetryingWrong = true;
             
             $('#stat-total').text(corpus.length);
             $('#stat-correct').text('0');
@@ -1415,6 +1471,7 @@
             isStarted = true;
             $('#word-list-container').addClass('hidden');
             $('#start-btn-container').addClass('hidden');
+            $('#share-result-container').addClass('hidden');
             $('#exercise-controls').removeClass('hidden');
             $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
             $('#progress-text').text('正在听写');
@@ -1427,6 +1484,7 @@
             currentIndex = 0;
             correctCount = 0;
             attemptCount = 0;
+            isRetryingWrong = true;
             
             $('#stat-total').text(corpus.length);
             $('#stat-correct').text('0');
@@ -1437,12 +1495,54 @@
             $('#current-chapter-title').text(`雅思听力特训 / 章节: ${currentChapter} 第${currentPage}页 / 错题练习`);
             
             $('#retry-wrong-container').addClass('hidden');
+            $('#share-result-container').addClass('hidden');
             $('#exercise-controls').removeClass('hidden');
             $('#timer-bar').parent().show();
             $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
             $('#progress-text').text('正在听写');
             isStarted = true;
             renderWord();
+        });
+        
+        $('#share-result-btn').on('click', () => {
+            const accuracy = attemptCount > 0 ? Math.round((correctCount / attemptCount) * 100) : 0;
+            
+            $('#share-chapter').text(currentChapter);
+            $('#share-page').text(currentPage);
+            $('#share-accuracy').text(`${accuracy}%`);
+            $('#share-correct').text(correctCount);
+            $('#share-total').text(attemptCount);
+            
+            const allWordsHtml = corpus.map(item => `
+                <div class="text-[10px] p-1.5 bg-white rounded">
+                    <div class="font-bold text-slate-700">${item.en}</div>
+                    <div class="text-slate-500">${item.zh}</div>
+                </div>
+            `).join('');
+            $('#share-all-words').html(allWordsHtml);
+            
+            if (wrongWords.length > 0) {
+                const wrongWordsHtml = wrongWords.map(item => `
+                    <div class="text-[10px] p-1.5 bg-white rounded border border-red-200">
+                        <div class="font-bold text-red-700">${item.en}</div>
+                        <div class="text-red-500">${item.zh}</div>
+                    </div>
+                `).join('');
+                $('#share-wrong-words').html(wrongWordsHtml);
+                $('#share-wrong-section').removeClass('hidden');
+            } else {
+                $('#share-wrong-section').addClass('hidden');
+            }
+            
+            $('#share-modal').removeClass('hidden');
+        });
+        
+        $('#close-share, #close-share-btn').on('click', () => {
+            $('#share-modal').addClass('hidden');
+        });
+        
+        $('#share-modal').on('click', function(e) {
+            if (e.target === this) $('#share-modal').addClass('hidden');
         });
     </script>
 </body>
