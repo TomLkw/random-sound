@@ -151,6 +151,16 @@
                 </span>
             </button>
             
+            <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">数字练习</div>
+            <button onclick="startNumberExercise('easy')" id="nav-numbers-easy" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                数字听力(简单)
+            </button>
+            <button onclick="startNumberExercise('hard')" id="nav-numbers-hard" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                数字听力(困难)
+            </button>
+            
             <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">Section 5</div>
             <button onclick="startExercise('5.1')" id="nav-5.1" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
@@ -1053,6 +1063,8 @@
         let fullChapterData = [];
         let currentPageWords = [];
         let isRetryingWrong = false;
+        let isNumberMode = false;
+        let numberGroups = [];
 
         function shuffleArray(array) {
             let currentIndex = array.length, randomIndex;
@@ -1062,6 +1074,142 @@
                 [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
             }
             return array;
+        }
+
+        // 生成随机数字串（6-10位）
+        function generateRandomNumber() {
+            const length = Math.floor(Math.random() * 5) + 6; // 6-10位
+            let numStr = '';
+            for (let i = 0; i < length; i++) {
+                numStr += Math.floor(Math.random() * 10);
+            }
+            return numStr;
+        }
+
+        // 将数字转换为英式读法
+        function numberToSpeech(numStr) {
+            const digits = ['or', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+            let result = [];
+            let i = 0;
+            
+            while (i < numStr.length) {
+                // 检查是否有连续相同数字
+                if (i < numStr.length - 1 && numStr[i] === numStr[i + 1]) {
+                    result.push('double ' + digits[parseInt(numStr[i])]);
+                    i += 2;
+                } else {
+                    result.push(digits[parseInt(numStr[i])]);
+                    i++;
+                }
+            }
+            
+            return result.join(', ');
+        }
+
+        // 开始数字听力练习
+        function startNumberExercise(level = 'hard') {
+            $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50');
+            if (level === 'easy') {
+                $('#nav-numbers-easy').addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50');
+            } else {
+                $('#nav-numbers-hard').addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50');
+            }
+            
+            $('#exercise-card').removeClass('opacity-50 pointer-events-none');
+            $('#status-dot').removeClass('bg-blue-500 animate-pulse').addClass('bg-slate-300');
+            $('#progress-text').text('准备中...');
+            
+            isNumberMode = true;
+            currentChapter = level === 'easy' ? 'numbers-easy' : 'numbers-hard';
+            currentIndex = 0;
+            correctCount = 0;
+            attemptCount = 0;
+            isStarted = false;
+            isPaused = false;
+            wrongWords = [];
+            isRetryingWrong = false;
+            
+            if (level === 'easy') {
+                // 简单版：3-6位数字
+                numberGroups = [
+                    { en: '284', zh: '数字 1', speech: 'two, eight, four' },
+                    { en: '591', zh: '数字 2', speech: 'five, nine, one' },
+                    { en: '730', zh: '数字 3', speech: 'seven, three, or' },
+                    { en: '1163', zh: '数字 4', speech: 'double one, six, three' },
+                    { en: '4829', zh: '数字 5', speech: 'four, eight, two, nine' },
+                    { en: '9051', zh: '数字 6', speech: 'nine, or, five, one' },
+                    { en: '22748', zh: '数字 7', speech: 'double two, seven, four, eight' },
+                    { en: '69130', zh: '数字 8', speech: 'six, nine, one, three, or' },
+                    { en: '11582', zh: '数字 9', speech: 'double one, five, eight, two' },
+                    { en: '558394', zh: '数字 10', speech: 'double five, eight, three, nine, four' },
+                    { en: '172849', zh: '数字 11', speech: 'one, seven, two, eight, four, nine' },
+                    { en: '770516', zh: '数字 12', speech: 'double seven, or, five, one, six' },
+                    { en: '395', zh: '数字 13', speech: 'three, nine, five' },
+                    { en: '6182', zh: '数字 14', speech: 'six, one, eight, two' },
+                    { en: '04739', zh: '数字 15', speech: 'or, four, seven, three, nine' },
+                    { en: '556201', zh: '数字 16', speech: 'double five, six, two, or, one' },
+                    { en: '817', zh: '数字 17', speech: 'eight, one, seven' },
+                    { en: '0493', zh: '数字 18', speech: 'or, four, nine, three' },
+                    { en: '44829', zh: '数字 19', speech: 'double four, eight, two, nine' },
+                    { en: '891037', zh: '数字 20', speech: 'eight, nine, one, or, three, seven' }
+                ];
+                $('#current-chapter-title').text('数字听力练习 (简单版 3-6位)');
+            } else {
+                // 困难版：7-11位数字
+                numberGroups = [
+                    { en: '2324681', zh: '数字 1', speech: 'two, three, two, four, six, eight, one' },
+                    { en: '6373579', zh: '数字 2', speech: 'six, three, seven, three, five, seven, nine' },
+                    { en: '8118047', zh: '数字 3', speech: 'eight, double one, eight, or, four, seven' },
+                    { en: '5566789', zh: '数字 4', speech: 'double five, double six, seven, eight, nine' },
+                    { en: '90012345', zh: '数字 5', speech: 'nine, double or, one, two, three, four, five' },
+                    { en: '44778912', zh: '数字 6', speech: 'double four, seven, eight, nine, one, two' },
+                    { en: '12304567', zh: '数字 7', speech: 'one, two, three, or, four, five, six, seven' },
+                    { en: '77889034', zh: '数字 8', speech: 'double seven, eight, nine, or, three, four' },
+                    { en: '334455679', zh: '数字 9', speech: 'double three, double four, five, six, seven, nine' },
+                    { en: '998877612', zh: '数字 10', speech: 'double nine, double eight, seven, six, one, two' },
+                    { en: '221100934', zh: '数字 11', speech: 'double two, double one, or, nine, three, four' },
+                    { en: '6655443821', zh: '数字 12', speech: 'double six, double five, four, three, eight, two, one' },
+                    { en: '1122334567', zh: '数字 13', speech: 'double one, double two, three, four, five, six, seven' },
+                    { en: '8899001234', zh: '数字 14', speech: 'double eight, double nine, or, one, two, three, four' },
+                    { en: '5544332190', zh: '数字 15', speech: 'double five, double four, three, two, one, nine, or' },
+                    { en: '77665544321', zh: '数字 16', speech: 'double seven, double six, five, four, three, two, one' },
+                    { en: '33221100987', zh: '数字 17', speech: 'double three, double two, double one, or, nine, eight, seven' },
+                    { en: '99008877654', zh: '数字 18', speech: 'double nine, double or, double eight, seven, six, five, four' },
+                    { en: '44332211098', zh: '数字 19', speech: 'double four, double three, double two, one, or, nine, eight' },
+                    { en: '66778899012', zh: '数字 20', speech: 'double six, double seven, double eight, nine, or, one, two' }
+                ];
+                $('#current-chapter-title').text('数字听力练习 (困难版 7-11位)');
+            }
+            $('#stat-total').text(numberGroups.length);
+            $('#stat-correct').text('0');
+            $('#stat-accuracy').text('0%');
+            $('#log-container').empty();
+            $('#log-count').text('0');
+            $('#global-progress').text('0%');
+            $('#translation-display').text('准备就绪');
+            $('#start-btn-container').removeClass('hidden');
+            $('#retry-wrong-container').addClass('hidden');
+            $('#share-result-container').addClass('hidden');
+            $('#exercise-controls').addClass('hidden');
+            $('#user-input').val('').prop('disabled', true);
+            $('#progress-text').text('就绪');
+            
+            // 显示数字列表
+            const listHtml = numberGroups.map((item, idx) => `
+                <div class="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-blue-600">第 ${idx + 1} 组</span>
+                        <span class="text-slate-400">-</span>
+                        <span class="text-slate-700 font-mono font-bold">${item.en}</span>
+                    </div>
+                    <div class="text-[10px] text-slate-400 italic">读法: ${item.speech}</div>
+                </div>
+            `).join('');
+            $('#word-list').html(listHtml);
+            $('#page-info').text(`共 20 组数字`);
+            $('#shuffle-btn').removeClass('hidden');
+            $('#prev-page, #next-page').addClass('hidden');
+            $('#word-list-container').removeClass('hidden');
         }
 
         // 检查订阅状态
@@ -1103,6 +1251,9 @@
         }
 
         async function startExercise(chapter) {
+            // 重置数字模式
+            isNumberMode = false;
+            
             // 检查是否为付费章节
             const paidChapters = ['3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12'];
             if (paidChapters.includes(chapter)) {
@@ -1238,7 +1389,12 @@
 
             // 根据单词长度计算等待时间
             const wordLength = current.en.length;
-            const waitTime = BASE_TIME + (wordLength * TIME_PER_CHAR);
+            let waitTime;
+            if (isNumberMode) {
+                waitTime = BASE_TIME + (wordLength * TIME_PER_CHAR) + 5000; // 数字模式额外增加5秒
+            } else {
+                waitTime = BASE_TIME + (wordLength * TIME_PER_CHAR);
+            }
 
             $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
             setTimeout(() => {
@@ -1262,7 +1418,15 @@
             window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
             msg.lang = 'en-US';
-            msg.rate = 0.8;
+            
+            // 数字模式下使用特殊读法
+            if (isNumberMode && corpus[currentIndex] && corpus[currentIndex].speech) {
+                msg.text = corpus[currentIndex].speech;
+                msg.rate = 0.75;
+            } else {
+                msg.rate = 0.8;
+            }
+            
             window.speechSynthesis.speak(msg);
         }
 
@@ -1353,7 +1517,12 @@
             // 恢复时重新计算当前单词的等待时间
             const currentWord = corpus[currentIndex];
             const wordLength = currentWord.en.length;
-            const waitTime = BASE_TIME + (wordLength * TIME_PER_CHAR);
+            let waitTime;
+            if (isNumberMode) {
+                waitTime = BASE_TIME + (wordLength * TIME_PER_CHAR) + 5000;
+            } else {
+                waitTime = BASE_TIME + (wordLength * TIME_PER_CHAR);
+            }
             
             $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
             setTimeout(() => {
@@ -1420,10 +1589,29 @@
             
             $('#prev-page').prop('disabled', page === 1);
             $('#next-page').prop('disabled', page === totalPages);
+            $('#shuffle-btn').removeClass('hidden');
+            $('#prev-page, #next-page').removeClass('hidden');
             $('#word-list-container').removeClass('hidden');
         }
         
         $('#shuffle-btn').on('click', () => {
+            if (isNumberMode) {
+                // 数字模式下随机打乱数字列表
+                const shuffled = shuffleArray([...numberGroups]);
+                const listHtml = shuffled.map((item, idx) => `
+                    <div class="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-blue-600">第 ${idx + 1} 组</span>
+                            <span class="text-slate-400">-</span>
+                            <span class="text-slate-700 font-mono font-bold">${item.en}</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 italic">读法: ${item.speech}</div>
+                    </div>
+                `).join('');
+                $('#word-list').html(listHtml);
+                return;
+            }
+            
             const shuffled = shuffleArray([...currentPageWords]);
             const listHtml = shuffled.map(item => `
                 <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg text-xs">
@@ -1449,6 +1637,32 @@
 
         $('#start-btn').on('click', async () => {
             if (!currentChapter) return;
+            
+            // 数字模式
+            if (isNumberMode) {
+                // 从当前显示的列表获取数字（可能已随机）
+                const displayedNumbers = [];
+                $('#word-list .bg-slate-50').each(function() {
+                    const en = $(this).find('.font-mono').text();
+                    const zh = $(this).find('.text-blue-600').text();
+                    const speech = $(this).find('.italic').text().replace('读法: ', '');
+                    displayedNumbers.push({ en, zh, speech });
+                });
+                
+                corpus = displayedNumbers.length > 0 ? displayedNumbers : JSON.parse(JSON.stringify(numberGroups));
+                $('#current-chapter-title').text(currentChapter === 'numbers-easy' ? '数字听力练习 (简单版)' : '数字听力练习 (困难版)');
+                $('#stat-total').text(corpus.length);
+                
+                isStarted = true;
+                $('#word-list-container').addClass('hidden');
+                $('#start-btn-container').addClass('hidden');
+                $('#share-result-container').addClass('hidden');
+                $('#exercise-controls').removeClass('hidden');
+                $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
+                $('#progress-text').text('正在听写');
+                renderWord();
+                return;
+            }
             
             // 确保有数据
             if (!allData[currentChapter] || allData[currentChapter].length === 0) {
