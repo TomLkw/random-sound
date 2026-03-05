@@ -59,3 +59,25 @@ create table public.user_subscriptions (
 网页二维码（https://random-sound.zgbtlkw.workers.dev/）
 
 21. bug 暂停后切其他章节后 已暂停状态没有重制
+
+22. 
+侧边 加一个数字听力练习
+出现 20 组 随机数
+读法为
+two three two four, double six eight
+six three seven, double three, five seventhree
+eight double one ight, or four seven or
+
+先写死一组到代码里
+先从7 位开始练习
+最后加到 11 位
+
+每数字最多只能有 两个double 一个triple
+
+加一档简单版，只有 3 - 6 位，顺序可随机
+todo:简单版 zh中的 (x位)不要了
+todo:简单版中 234 567 123456 这样的连续数字太多了 减少一些
+每组数字最多只能有 两个double 一个triple
+
+23. 数字模式也加上随机按钮
+
