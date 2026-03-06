@@ -1121,9 +1121,10 @@
             }
             
             $('#exercise-card').removeClass('opacity-50 pointer-events-none');
-            $('#status-dot').removeClass('bg-blue-500 animate-pulse').addClass('bg-slate-300');
+            $('#status-dot').removeClass('bg-blue-500 animate-pulse bg-orange-500').addClass('bg-slate-300');
             $('#progress-text').text('准备中...');
             
+            // 重置所有状态变量
             isNumberMode = true;
             currentChapter = level === 'easy' ? 'numbers-easy' : 'numbers-hard';
             currentIndex = 0;
@@ -1133,6 +1134,14 @@
             isPaused = false;
             wrongWords = [];
             isRetryingWrong = false;
+            
+            // 清除定时器
+            clearTimeout(autoNextTimer);
+            
+            // 重置UI状态
+            $('#pause-menu').addClass('hidden');
+            $('#exercise-controls').addClass('hidden');
+            $('#user-input').prop('disabled', true);
             
             if (level === 'easy') {
                 // 简单版：3-6位数字
@@ -1278,10 +1287,11 @@
             $(`#nav-${chapter}`).addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50');
             
             $('#exercise-card').removeClass('opacity-50 pointer-events-none');
-            $('#status-dot').removeClass('bg-blue-500 animate-pulse').addClass('bg-slate-300');
+            $('#status-dot').removeClass('bg-blue-500 animate-pulse bg-orange-500').addClass('bg-slate-300');
             $('#progress-text').text('加载中...');
             $('#translation-display').text('正在加载章节数据...');
             
+            // 重置所有状态变量
             currentChapter = chapter;
             currentIndex = 0;
             correctCount = 0;
@@ -1292,6 +1302,14 @@
             currentPage = 1;
             currentPageWords = [];
             isRetryingWrong = false;
+            
+            // 清除定时器
+            clearTimeout(autoNextTimer);
+            
+            // 重置UI状态
+            $('#pause-menu').addClass('hidden');
+            $('#exercise-controls').addClass('hidden');
+            $('#user-input').prop('disabled', true);
             
             // 获取章节数据
             let chapterData;
