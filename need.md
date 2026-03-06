@@ -9,8 +9,10 @@
 6. done 加一个暂停功能 暂停时可以选择开始练习错题
 7. done 等待时间 由基本时长 和 单词时长构成 不然有的时候写不完
 8. bug 倒计时进度条有时会消失
-9. todo 只练错题时包含单词 和词组
-
+9. todo 对于词组
+反馈时要精确到单词
+ 只练错题时包含单词 和词组
+加上复选框 练习 词组 单词
 10 todo supabase 前端添加登录按钮 增加邮箱验证码 登录功能
 REACT_APP_SUPABASE_URL=https://elckemvmphbjjlpzgoqy.supabase.co
 REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsY2tlbXZtcGhiampscHpnb3F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg5Mzk4NDYsImV4cCI6MjA3NDUxNTg0Nn0.RElcl4dh0bhzYtV0SFTmkwKSy06qxZErZqcM8t137QM
@@ -31,7 +33,7 @@ create table ielts_vocab (
 12. 弹窗告知用户收费功能
 13. todo 错误后不用摇摆
 14. to do : handle card catalog=card catalogue
-15. todo : 错题本
+15. todo : 错题本 local storage
 
 16. 3.4 和 5.2 改成付费模式
 
@@ -58,7 +60,8 @@ create table public.user_subscriptions (
 20. 成绩分享按钮 跳出弹窗显示 章节 页数 正确率 全部单词 + 错误单词 
 网页二维码（https://random-sound.zgbtlkw.workers.dev/）
 
-21. bug 暂停后切其他章节后 已暂停状态没有重制
+21. done bug 暂停后切其他章节后 已暂停状态没有重制
+词语列表下面依然有 已暂停 继续练习等内容
 
 22. 
 侧边 加一个数字听力练习
@@ -83,3 +86,15 @@ todo: 困难版中记得加 triple
 
 23. 数字模式也加上随机按钮
 
+24. todo 
+同音词
+3.6,naught=nought,零
+5.2,car tires=car tyres,汽车轮胎
+5.7,booklist=book list,书单
+5.9,senior advisor=adviser,高级顾问
+
+25. done 非错题模式下，记录每个词的正确率
+统计时和点击章节时显示
+
+26. done 每章加一个高频错词功能按钮 把错语错误率由高向低排列
+错误率排序是本章所有词语错误率由高到低。没有背过的词语不出现
