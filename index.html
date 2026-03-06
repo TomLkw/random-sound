@@ -358,9 +358,9 @@
                             <div id="share-result-container" class="mb-6 hidden">
                                 <button id="share-result-btn" class="px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-bold text-lg rounded-2xl transition-all active:scale-95 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 mx-auto">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
                                     </svg>
-                                    分享成绩
+                                    成绩统计
                                 </button>
                             </div>
                             
@@ -547,7 +547,7 @@
 
     <!-- 成绩分享弹窗 -->
     <div id="share-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in-95 max-h-[85vh] overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full p-6 relative animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
             <button id="close-share" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -555,7 +555,7 @@
             </button>
             
             <div class="text-center mb-4">
-                <h2 class="text-xl font-black mb-1">练习完成 🎉</h2>
+                <h2 class="text-xl font-black mb-1">成绩统计 📊</h2>
                 <p class="text-xs text-slate-500">List <span id="share-chapter">-</span> 第<span id="share-page">-</span>页</p>
             </div>
             
@@ -570,17 +570,14 @@
             
             <div class="mb-3">
                 <h3 class="text-xs font-bold text-slate-600 mb-2">📝 全部单词</h3>
-                <div id="share-all-words" class="grid grid-cols-2 gap-1.5 max-h-40 overflow-y-auto p-2 bg-slate-50 rounded-lg"></div>
+                <div id="share-all-words" class="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto p-2 bg-slate-50 rounded-lg"></div>
             </div>
             
             <div id="share-wrong-section" class="mb-4 hidden">
                 <h3 class="text-xs font-bold text-red-600 mb-2">❌ 错误单词</h3>
-                <div id="share-wrong-words" class="grid grid-cols-2 gap-1.5 p-2 bg-red-50 rounded-lg"></div>
+                <div id="share-wrong-words" class="grid grid-cols-3 gap-2 p-2 bg-red-50 rounded-lg"></div>
             </div>
             
-            <button id="close-share-btn" class="w-full py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-sm rounded-lg transition-all active:scale-95">
-                关闭
-            </button>
         </div>
     </div>
 
@@ -777,6 +774,7 @@
         // 页面加载时检查登录状态
         $(document).ready(() => {
             checkAuth();
+            loadWordStats();
         });
 
         // 从 Supabase 获取章节数据
@@ -1065,6 +1063,7 @@
         let isRetryingWrong = false;
         let isNumberMode = false;
         let numberGroups = [];
+        let wordStats = {}; // 存储每个词的统计数据
 
         function shuffleArray(array) {
             let currentIndex = array.length, randomIndex;
@@ -1326,9 +1325,46 @@
             displayWordList(chapterData, 1);
         }
 
+        // 加载词汇统计数据
+        function loadWordStats() {
+            const saved = localStorage.getItem('wordStats');
+            wordStats = saved ? JSON.parse(saved) : {};
+        }
+
+        // 保存词汇统计数据
+        function saveWordStats() {
+            localStorage.setItem('wordStats', JSON.stringify(wordStats));
+        }
+
+        // 更新词汇统计
+        function updateWordStats(word, isCorrect) {
+            if (!wordStats[word]) {
+                wordStats[word] = { correct: 0, total: 0 };
+            }
+            wordStats[word].total++;
+            if (isCorrect) {
+                wordStats[word].correct++;
+            }
+            saveWordStats();
+        }
+
+        // 获取词汇正确率
+        function getWordAccuracy(word) {
+            if (!wordStats[word] || wordStats[word].total === 0) {
+                return null;
+            }
+            return Math.round((wordStats[word].correct / wordStats[word].total) * 100);
+        }
+
         function addLog(isCorrect, userInput, correctWord, translation) {
+            // 更新词汇统计（仅在非错题模式下）
+            if (!isRetryingWrong && !isNumberMode) {
+                updateWordStats(correctWord, isCorrect);
+            }
+            
             const container = $('#log-container');
             const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const accuracy = getWordAccuracy(correctWord);
             
             let logHtml = `
                 <div class="flex items-start gap-3 p-3 ${isCorrect ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'} rounded-xl border animate-in fade-in slide-in-from-left-2">
@@ -1336,7 +1372,10 @@
                     <div class="flex-1">
                         <div class="flex justify-between items-center mb-0.5">
                             <span class="font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'} text-xs">${correctWord}</span>
-                            <span class="text-[8px] ${isCorrect ? 'text-green-400' : 'text-red-300'} font-medium uppercase">${time}</span>
+                            <div class="flex items-center gap-2">
+                                ${accuracy !== null && !isNumberMode ? `<span class="text-[8px] ${accuracy >= 80 ? 'text-green-500' : accuracy >= 60 ? 'text-yellow-500' : 'text-red-500'} font-bold px-1.5 py-0.5 rounded bg-white/50">${accuracy}%</span>` : ''}
+                                <span class="text-[8px] ${isCorrect ? 'text-green-400' : 'text-red-300'} font-medium uppercase">${time}</span>
+                            </div>
                         </div>
                         ${!isCorrect ? `<div class="text-[10px] text-red-500/80 font-medium mb-1">拼写: <span class="line-through opacity-50">${userInput || '未填写'}</span></div>` : ''}
                         <div class="text-[10px] ${isCorrect ? 'text-green-600/70' : 'text-red-400/70'}">${translation}</div>
@@ -1577,13 +1616,17 @@
             const endIdx = startIdx + WORDS_PER_PAGE;
             currentPageWords = words.slice(startIdx, endIdx);
             
-            const listHtml = currentPageWords.map(item => `
-                <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg text-xs">
-                    <span class="font-bold text-slate-700">${item.en}</span>
-                    <span class="text-slate-400">-</span>
-                    <span class="text-slate-500">${item.zh}</span>
-                </div>
-            `).join('');
+            const listHtml = currentPageWords.map(item => {
+                const accuracy = getWordAccuracy(item.en);
+                return `
+                    <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg text-xs">
+                        <span class="font-bold text-slate-700">${item.en}</span>
+                        <span class="text-slate-400">-</span>
+                        <span class="text-slate-500">${item.zh}</span>
+                        ${accuracy !== null ? `<span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded ${accuracy >= 80 ? 'bg-green-100 text-green-600' : accuracy >= 60 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'}">${accuracy}%</span>` : ''}
+                    </div>
+                `;
+            }).join('');
             $('#word-list').html(listHtml);
             $('#page-info').text(`第 ${page}/${totalPages} 页 (${currentPageWords.length} 词)`);
             
@@ -1613,13 +1656,17 @@
             }
             
             const shuffled = shuffleArray([...currentPageWords]);
-            const listHtml = shuffled.map(item => `
-                <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg text-xs">
-                    <span class="font-bold text-slate-700">${item.en}</span>
-                    <span class="text-slate-400">-</span>
-                    <span class="text-slate-500">${item.zh}</span>
-                </div>
-            `).join('');
+            const listHtml = shuffled.map(item => {
+                const accuracy = getWordAccuracy(item.en);
+                return `
+                    <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg text-xs">
+                        <span class="font-bold text-slate-700">${item.en}</span>
+                        <span class="text-slate-400">-</span>
+                        <span class="text-slate-500">${item.zh}</span>
+                        ${accuracy !== null ? `<span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded ${accuracy >= 80 ? 'bg-green-100 text-green-600' : accuracy >= 60 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'}">${accuracy}%</span>` : ''}
+                    </div>
+                `;
+            }).join('');
             $('#word-list').html(listHtml);
         });
         
@@ -1673,9 +1720,11 @@
             // 从当前显示的列表获取单词（可能已随机）
             const displayedWords = [];
             $('#word-list .bg-slate-50').each(function() {
-                const en = $(this).find('.text-slate-700').text();
+                const en = $(this).find('.font-bold.text-slate-700').text();
                 const zh = $(this).find('.text-slate-500').text();
-                displayedWords.push({ en, zh });
+                if (en && zh) {
+                    displayedWords.push({ en, zh });
+                }
             });
             
             corpus = displayedWords.length > 0 ? displayedWords : JSON.parse(JSON.stringify(currentPageWords));
@@ -1727,21 +1776,29 @@
             $('#share-correct').text(correctCount);
             $('#share-total').text(attemptCount);
             
-            const allWordsHtml = corpus.map(item => `
-                <div class="text-[10px] p-1.5 bg-white rounded">
-                    <div class="font-bold text-slate-700">${item.en}</div>
-                    <div class="text-slate-500">${item.zh}</div>
-                </div>
-            `).join('');
+            const allWordsHtml = corpus.map(item => {
+                const wordAccuracy = getWordAccuracy(item.en);
+                return `
+                    <div class="text-[10px] p-1.5 bg-white rounded flex flex-col gap-0.5">
+                        <div class="font-bold text-slate-700">${item.en}</div>
+                        <div class="text-slate-500">${item.zh}</div>
+                        ${wordAccuracy !== null && !isNumberMode ? `<div class="text-[8px] font-bold px-1 py-0.5 rounded ${wordAccuracy >= 80 ? 'bg-green-100 text-green-600' : wordAccuracy >= 60 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'}">${wordAccuracy}%</div>` : ''}
+                    </div>
+                `;
+            }).join('');
             $('#share-all-words').html(allWordsHtml);
             
             if (wrongWords.length > 0) {
-                const wrongWordsHtml = wrongWords.map(item => `
-                    <div class="text-[10px] p-1.5 bg-white rounded border border-red-200">
-                        <div class="font-bold text-red-700">${item.en}</div>
-                        <div class="text-red-500">${item.zh}</div>
-                    </div>
-                `).join('');
+                const wrongWordsHtml = wrongWords.map(item => {
+                    const wordAccuracy = getWordAccuracy(item.en);
+                    return `
+                        <div class="text-[10px] p-1.5 bg-white rounded border border-red-200 flex flex-col gap-0.5">
+                            <div class="font-bold text-red-700">${item.en}</div>
+                            <div class="text-red-500">${item.zh}</div>
+                            ${wordAccuracy !== null && !isNumberMode ? `<div class="text-[8px] font-bold px-1 py-0.5 rounded bg-red-100 text-red-600">${wordAccuracy}%</div>` : ''}
+                        </div>
+                    `;
+                }).join('');
                 $('#share-wrong-words').html(wrongWordsHtml);
                 $('#share-wrong-section').removeClass('hidden');
             } else {
