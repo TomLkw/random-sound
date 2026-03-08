@@ -551,7 +551,7 @@
         </div>
     </div>
 
-    <!-- 成绩分享弹窗 -->
+    <!-- 成绩统计弹窗 -->
     <div id="share-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full p-6 relative animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
             <button id="close-share" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 transition-colors">
@@ -574,14 +574,14 @@
                 </div>
             </div>
             
-            <div class="mb-3">
-                <h3 class="text-xs font-bold text-slate-600 mb-2">📝 全部单词</h3>
-                <div id="share-all-words" class="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto p-2 bg-slate-50 rounded-lg"></div>
-            </div>
-            
             <div id="share-wrong-section" class="mb-4 hidden">
                 <h3 class="text-xs font-bold text-red-600 mb-2">❌ 错误单词</h3>
                 <div id="share-wrong-words" class="grid grid-cols-3 gap-2 p-2 bg-red-50 rounded-lg"></div>
+            </div>
+            
+            <div class="mb-3">
+                <h3 class="text-xs font-bold text-slate-600 mb-2">📝 全部单词</h3>
+                <div id="share-all-words" class="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto p-2 bg-slate-50 rounded-lg"></div>
             </div>
             
         </div>
@@ -1134,6 +1134,7 @@
             isPaused = false;
             wrongWords = [];
             isRetryingWrong = false;
+            answerRecords = [];
             
             // 清除定时器
             clearTimeout(autoNextTimer);
@@ -1302,6 +1303,7 @@
             currentPage = 1;
             currentPageWords = [];
             isRetryingWrong = false;
+            answerRecords = [];
             
             // 清除定时器
             clearTimeout(autoNextTimer);
@@ -1381,6 +1383,14 @@
         }
 
         function addLog(isCorrect, userInput, correctWord, translation) {
+            // 记录答题详情
+            answerRecords.push({
+                isCorrect,
+                userInput,
+                correctWord,
+                translation
+            });
+            
             // 更新词汇统计（仅在非错题模式下）
             if (!isRetryingWrong && !isNumberMode) {
                 updateWordStats(correctWord, isCorrect);
@@ -1641,6 +1651,7 @@
             attemptCount = 0;
             isPaused = false;
             isRetryingWrong = true;
+            answerRecords = [];
             
             $('#stat-total').text(corpus.length);
             $('#stat-correct').text('0');
@@ -1868,6 +1879,7 @@
             correctCount = 0;
             attemptCount = 0;
             isRetryingWrong = true;
+            answerRecords = [];
             
             $('#stat-total').text(corpus.length);
             $('#stat-correct').text('0');
@@ -1887,6 +1899,9 @@
             renderWord();
         });
         
+        // 存储每次答题的详细记录
+        let answerRecords = [];
+        
         $('#share-result-btn').on('click', () => {
             const accuracy = attemptCount > 0 ? Math.round((correctCount / attemptCount) * 100) : 0;
             
@@ -1896,25 +1911,69 @@
             $('#share-correct').text(correctCount);
             $('#share-total').text(attemptCount);
             
-            const allWordsHtml = corpus.map(item => {
-                const wordAccuracy = getWordAccuracy(item.en);
+            // 全部单词：使用答题记录
+            const allWordsHtml = answerRecords.map(record => {
+                const wordAccuracy = getWordAccuracy(record.correctWord);
+                let errorDetail = '';
+                
+                if (!record.isCorrect) {
+                    const correctWords = record.correctWord.toLowerCase().split(/\s+/);
+                    const userWords = (record.userInput || '').toLowerCase().split(/\s+/);
+                    
+                    if (correctWords.length > 1) {
+                        const userParts = correctWords.map((word, index) => {
+                            const userWord = userWords[index] || '';
+                            if (word === userWord) {
+                                return `<span class="text-green-600">${userWord}</span>`;
+                            } else {
+                                return `<span class="line-through text-red-400">${userWord || '___'}</span>`;
+                            }
+                        });
+                        errorDetail = `<div class="text-[9px] text-slate-500 mt-0.5">拼写: ${userParts.join(' ')}</div>`;
+                    } else {
+                        errorDetail = `<div class="text-[9px] text-red-400 mt-0.5">拼写: <span class="line-through">${record.userInput || '未填写'}</span></div>`;
+                    }
+                }
+                
                 return `
-                    <div class="text-[10px] p-1.5 bg-white rounded flex flex-col gap-0.5">
-                        <div class="font-bold text-slate-700">${item.en}</div>
-                        <div class="text-slate-500">${item.zh}</div>
+                    <div class="text-[10px] p-1.5 ${record.isCorrect ? 'bg-white' : 'bg-red-50 border border-red-200'} rounded flex flex-col gap-0.5">
+                        <div class="font-bold ${record.isCorrect ? 'text-slate-700' : 'text-red-700'}">${record.correctWord}</div>
+                        <div class="${record.isCorrect ? 'text-slate-500' : 'text-red-500'}">${record.translation}</div>
+                        ${errorDetail}
                         ${wordAccuracy !== null && !isNumberMode ? `<div class="text-[8px] font-bold px-1 py-0.5 rounded ${wordAccuracy >= 80 ? 'bg-green-100 text-green-600' : wordAccuracy >= 60 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'}">${wordAccuracy}%</div>` : ''}
                     </div>
                 `;
             }).join('');
             $('#share-all-words').html(allWordsHtml);
             
-            if (wrongWords.length > 0) {
-                const wrongWordsHtml = wrongWords.map(item => {
-                    const wordAccuracy = getWordAccuracy(item.en);
+            // 错误单词：只显示错误的
+            const wrongRecords = answerRecords.filter(r => !r.isCorrect);
+            if (wrongRecords.length > 0) {
+                const wrongWordsHtml = wrongRecords.map(record => {
+                    const wordAccuracy = getWordAccuracy(record.correctWord);
+                    const correctWords = record.correctWord.toLowerCase().split(/\s+/);
+                    const userWords = (record.userInput || '').toLowerCase().split(/\s+/);
+                    
+                    let errorDetail = '';
+                    if (correctWords.length > 1) {
+                        const userParts = correctWords.map((word, index) => {
+                            const userWord = userWords[index] || '';
+                            if (word === userWord) {
+                                return `<span class="text-green-600">${userWord}</span>`;
+                            } else {
+                                return `<span class="line-through text-red-400">${userWord || '___'}</span>`;
+                            }
+                        });
+                        errorDetail = `<div class="text-[9px] text-slate-600 mt-0.5">拼写: ${userParts.join(' ')}</div>`;
+                    } else {
+                        errorDetail = `<div class="text-[9px] text-red-400 mt-0.5">拼写: <span class="line-through">${record.userInput || '未填写'}</span></div>`;
+                    }
+                    
                     return `
                         <div class="text-[10px] p-1.5 bg-white rounded border border-red-200 flex flex-col gap-0.5">
-                            <div class="font-bold text-red-700">${item.en}</div>
-                            <div class="text-red-500">${item.zh}</div>
+                            <div class="font-bold text-red-700">${record.correctWord}</div>
+                            <div class="text-red-500">${record.translation}</div>
+                            ${errorDetail}
                             ${wordAccuracy !== null && !isNumberMode ? `<div class="text-[8px] font-bold px-1 py-0.5 rounded bg-red-100 text-red-600">${wordAccuracy}%</div>` : ''}
                         </div>
                     `;
