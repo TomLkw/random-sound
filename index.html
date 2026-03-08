@@ -1390,6 +1390,31 @@
             const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             const accuracy = getWordAccuracy(correctWord);
             
+            // 生成精确的错误反馈
+            let errorFeedback = '';
+            if (!isCorrect) {
+                const correctWords = correctWord.toLowerCase().split(/\s+/);
+                const userWords = (userInput || '').toLowerCase().split(/\s+/);
+                
+                if (correctWords.length > 1) {
+                    // 词组：显示用户输入（正确的绿色，错误的划线）
+                    const userParts = correctWords.map((word, index) => {
+                        const userWord = userWords[index] || '';
+                        if (word === userWord) {
+                            return `<span class="text-green-600">${userWord}</span>`;
+                        } else {
+                            return `<span class="line-through text-red-400">${userWord || '___'}</span>`;
+                        }
+                    });
+                    errorFeedback = `<div class="text-[10px] font-medium mb-1">
+                        <span class="text-slate-500">拼写: </span>${userParts.join(' ')}
+                    </div>`;
+                } else {
+                    // 单个单词
+                    errorFeedback = `<div class="text-[10px] text-red-500/80 font-medium mb-1">拼写: <span class="line-through opacity-50">${userInput || '未填写'}</span></div>`;
+                }
+            }
+            
             let logHtml = `
                 <div class="flex items-start gap-3 p-3 ${isCorrect ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'} rounded-xl border animate-in fade-in slide-in-from-left-2">
                     <div class="mt-1.5 w-1.5 h-1.5 rounded-full ${isCorrect ? 'bg-green-500' : 'bg-red-500'}"></div>
@@ -1401,7 +1426,7 @@
                                 <span class="text-[8px] ${isCorrect ? 'text-green-400' : 'text-red-300'} font-medium uppercase">${time}</span>
                             </div>
                         </div>
-                        ${!isCorrect ? `<div class="text-[10px] text-red-500/80 font-medium mb-1">拼写: <span class="line-through opacity-50">${userInput || '未填写'}</span></div>` : ''}
+                        ${errorFeedback}
                         <div class="text-[10px] ${isCorrect ? 'text-green-600/70' : 'text-red-400/70'}">${translation}</div>
                     </div>
                 </div>
