@@ -888,6 +888,12 @@
 
         // 页面加载时检查登录状态
         $(document).ready(() => {
+            // 埋点：进入网页
+            trackEvent('page_view', {
+                page_url: window.location.href,
+                page_title: document.title
+            });
+            
             checkAuth();
             loadWordStats();
         });
