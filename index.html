@@ -595,6 +595,109 @@
         
         let currentUser = null;
 
+        // 生成或获取匿名ID
+        function getAnonymousId() {
+            let anonymousId = localStorage.getItem('anonymousId');
+            if (!anonymousId) {
+                anonymousId = 'anon_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('anonymousId', anonymousId);
+            }
+            return anonymousId;
+        }
+
+        // 解析 User Agent 获取浏览器和系统信息
+        function parseUserAgent() {
+            const ua = navigator.userAgent;
+            const info = {
+                user_agent: ua,
+                browser: 'Unknown',
+                browser_version: '',
+                os: 'Unknown',
+                os_version: '',
+                device_type: 'desktop',
+                screen_resolution: `${screen.width}x${screen.height}`,
+                language: navigator.language || navigator.userLanguage,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                referrer: document.referrer || 'direct'
+            };
+
+            // 检测浏览器
+            if (ua.indexOf('Firefox') > -1) {
+                info.browser = 'Firefox';
+                const match = ua.match(/Firefox\/([\d.]+)/);
+                info.browser_version = match ? match[1] : '';
+            } else if (ua.indexOf('Chrome') > -1 && ua.indexOf('Edg') === -1) {
+                info.browser = 'Chrome';
+                const match = ua.match(/Chrome\/([\d.]+)/);
+                info.browser_version = match ? match[1] : '';
+            } else if (ua.indexOf('Safari') > -1 && ua.indexOf('Chrome') === -1) {
+                info.browser = 'Safari';
+                const match = ua.match(/Version\/([\d.]+)/);
+                info.browser_version = match ? match[1] : '';
+            } else if (ua.indexOf('Edg') > -1) {
+                info.browser = 'Edge';
+                const match = ua.match(/Edg\/([\d.]+)/);
+                info.browser_version = match ? match[1] : '';
+            } else if (ua.indexOf('Opera') > -1 || ua.indexOf('OPR') > -1) {
+                info.browser = 'Opera';
+                const match = ua.match(/(?:Opera|OPR)\/([\d.]+)/);
+                info.browser_version = match ? match[1] : '';
+            }
+
+            // 检测操作系统
+            if (ua.indexOf('Win') > -1) {
+                info.os = 'Windows';
+                if (ua.indexOf('Windows NT 10.0') > -1) info.os_version = '10';
+                else if (ua.indexOf('Windows NT 6.3') > -1) info.os_version = '8.1';
+                else if (ua.indexOf('Windows NT 6.2') > -1) info.os_version = '8';
+                else if (ua.indexOf('Windows NT 6.1') > -1) info.os_version = '7';
+            } else if (ua.indexOf('Mac') > -1) {
+                info.os = 'macOS';
+                const match = ua.match(/Mac OS X ([\d_]+)/);
+                if (match) info.os_version = match[1].replace(/_/g, '.');
+            } else if (ua.indexOf('Linux') > -1) {
+                info.os = 'Linux';
+            } else if (ua.indexOf('Android') > -1) {
+                info.os = 'Android';
+                const match = ua.match(/Android ([\d.]+)/);
+                info.os_version = match ? match[1] : '';
+                info.device_type = 'mobile';
+            } else if (ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1) {
+                info.os = ua.indexOf('iPad') > -1 ? 'iPadOS' : 'iOS';
+                const match = ua.match(/OS ([\d_]+)/);
+                if (match) info.os_version = match[1].replace(/_/g, '.');
+                info.device_type = ua.indexOf('iPad') > -1 ? 'tablet' : 'mobile';
+            }
+
+            // 检测设备类型（补充）
+            if (info.device_type === 'desktop' && 'ontouchstart' in window && screen.width < 1024) {
+                info.device_type = screen.width < 768 ? 'mobile' : 'tablet';
+            }
+
+            return info;
+        }
+
+        // 埋点上报函数
+        async function trackEvent(eventType, eventData = {}) {
+            try {
+                const anonymousId = getAnonymousId();
+                const deviceInfo = parseUserAgent();
+                
+                const payload = {
+                    user_id: currentUser ? currentUser.id : null,
+                    anonymous_id: anonymousId,
+                    email: currentUser ? currentUser.email : null,
+                    event_type: eventType,
+                    event_data: eventData,
+                    ...deviceInfo
+                };
+                
+                await supabaseClinet.from('user_action').insert([payload]);
+            } catch (error) {
+                console.error('埋点上报失败:', error);
+            }
+        }
+
         // 检查登录状态
         async function checkAuth() {
             const { data: { session } } = await supabaseClinet.auth.getSession();
@@ -627,7 +730,10 @@
                 </svg>
                 <span class="text-sm font-bold hidden md:inline">登录</span>
             `);
-            $('#login-btn').off('click').on('click', () => $('#login-modal').removeClass('hidden'));
+            $('#login-btn').off('click').on('click', () => {
+                trackEvent('login_click');
+                $('#login-modal').removeClass('hidden');
+            });
         }
 
         // 发送验证码
@@ -637,6 +743,9 @@
                 showError('请输入邮箱地址');
                 return;
             }
+
+            // 埋点：点击发送验证码
+            trackEvent('send_code_click', { email });
 
             $('#send-code-btn').prop('disabled', true).text('发送中...');
             $('#login-error').addClass('hidden');
@@ -1252,6 +1361,9 @@
         }
 
         async function startExercise(chapter) {
+            // 埋点：点击章节
+            trackEvent('chapter_click', { chapter });
+
             // 检查是否为付费章节
             const paidChapters = ['3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12'];
             if (paidChapters.includes(chapter)) {
@@ -1426,6 +1538,20 @@
             $('#user-input').removeClass('text-red-500 border-red-500 bg-red-50').prop('disabled', false);
 
             if (currentIndex >= corpus.length) {
+                // 埋点：练习完成
+                const accuracy = attemptCount > 0 ? Math.round((correctCount / attemptCount) * 100) : 0;
+                trackEvent('practice_complete', {
+                    chapter: currentChapter,
+                    page: currentPage,
+                    total_words: corpus.length,
+                    correct_count: correctCount,
+                    attempt_count: attemptCount,
+                    accuracy: accuracy,
+                    wrong_count: wrongWords.length,
+                    is_number_mode: isNumberMode,
+                    is_retry_wrong: isRetryingWrong
+                });
+                
                 $('#translation-display').text('LIST 完成 🏁');
                 $('#user-input').val('Well Done!').prop('disabled', true);
                 $('#timer-bar').parent().hide();
@@ -1824,6 +1950,14 @@
                 $('#current-chapter-title').text(currentChapter === 'numbers-easy' ? '数字听力练习 (简单版)' : '数字听力练习 (困难版)');
                 $('#stat-total').text(corpus.length);
                 
+                // 埋点：开始练习
+                trackEvent('start_practice', {
+                    chapter: currentChapter,
+                    word_count: corpus.length,
+                    is_number_mode: true,
+                    is_retry_wrong: false
+                });
+                
                 isStarted = true;
                 $('#word-list-container').addClass('hidden');
                 $('#start-btn-container').addClass('hidden');
@@ -1854,6 +1988,15 @@
             corpus = displayedWords.length > 0 ? displayedWords : JSON.parse(JSON.stringify(currentPageWords));
             $('#current-chapter-title').text(`雅思听力特训 / 章节: ${currentChapter} 第${currentPage}页`);
             $('#stat-total').text(corpus.length);
+            
+            // 埋点：开始练习
+            trackEvent('start_practice', {
+                chapter: currentChapter,
+                page: currentPage,
+                word_count: corpus.length,
+                is_number_mode: false,
+                is_retry_wrong: isRetryingWrong
+            });
             
             isStarted = true;
             $('#word-list-container').addClass('hidden');
