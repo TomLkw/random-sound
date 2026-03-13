@@ -707,6 +707,8 @@
             if (session) {
                 currentUser = session.user;
                 updateUIForLoggedIn();
+                // 登录态存在时，进行一次 wordStats 云同步
+                syncWordStatsOnLogin();
             } else {
                 updateUIForLoggedOut();
             }
@@ -851,9 +853,12 @@
                 currentUser = session.user;
                 updateUIForLoggedIn();
                 closeLoginModal();
+                // 首次登录后立即尝试云同步 wordStats
+                syncWordStatsOnLogin();
             } else if (event === 'SIGNED_OUT') {
                 currentUser = null;
                 updateUIForLoggedOut();
+                hasSyncedWordStatsOnce = false; // 下次登录可再次拉取
             }
         });
 
@@ -1440,15 +1445,72 @@
             displayWordList(chapterData, 1);
         }
 
-        // 加载词汇统计数据
+        // 加载词汇统计数据（本地）
         function loadWordStats() {
             const saved = localStorage.getItem('wordStats');
             wordStats = saved ? JSON.parse(saved) : {};
         }
 
-        // 保存词汇统计数据
+        // 云端词汇统计同步 - 状态与工具
+        let wordStatsSyncTimer = null;
+        let hasSyncedWordStatsOnce = false; // 仅首次登录后拉取一次
+
+        // 保存词汇统计数据（本地）
         function saveWordStats() {
             localStorage.setItem('wordStats', JSON.stringify(wordStats));
+        }
+
+        // 3s 防抖触发云端同步
+        function scheduleWordStatsSync() {
+            if (!currentUser) return; // 未登录不云同步
+            if (wordStatsSyncTimer) clearTimeout(wordStatsSyncTimer);
+            wordStatsSyncTimer = setTimeout(() => {
+                pushWordStatsToCloud().catch(err => console.error('云端同步失败:', err));
+            }, 3000);
+        }
+
+        // 推送本地 wordStats 到云端（UPSERT）
+        async function pushWordStatsToCloud() {
+            if (!currentUser) return;
+            const payload = {
+                user_id: currentUser.id,
+                email: currentUser.email,
+                stats_data: wordStats,
+                updated_at: new Date().toISOString()
+            };
+            const { error } = await supabaseClinet
+                .from('word_stats')
+                .upsert(payload, { onConflict: 'user_id' });
+            if (error) throw error;
+        }
+
+        // 登录后首次进入页面：从云端拉取一次，若存在则覆盖本地；否则插入一条
+        async function syncWordStatsOnLogin() {
+            if (!currentUser || hasSyncedWordStatsOnce) return;
+            try {
+                const { data, error } = await supabaseClinet
+                    .from('word_stats')
+                    .select('stats_data')
+                    .eq('user_id', currentUser.id)
+                    .limit(1)
+                    .maybeSingle();
+                if (error && error.code !== 'PGRST116') throw error; // ignore no rows error style differences
+
+                if (data && data.stats_data) {
+                    // 云端有数据：覆盖本地
+                    wordStats = data.stats_data || {};
+                    localStorage.setItem('wordStats', JSON.stringify(wordStats));
+                    console.log('已从云端加载 wordStats');
+                } else {
+                    // 云端无数据：以本地为准插入
+                    await pushWordStatsToCloud();
+                    console.log('云端无数据，已初始化插入');
+                }
+            } catch (e) {
+                console.error('登录后同步 wordStats 失败:', e);
+            } finally {
+                hasSyncedWordStatsOnce = true;
+            }
         }
 
         // 更新词汇统计
@@ -1461,6 +1523,8 @@
                 wordStats[word].correct++;
             }
             saveWordStats();
+            // 用户判题后触发云端同步（防抖 3s）
+            scheduleWordStatsSync();
         }
 
         // 获取词汇正确率
@@ -2141,8 +2205,5 @@
         });
     </script>
     
-    <!-- Cloudflare Web Analytics -->
-    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b9cf26bdadd84833a7eb96e41c5269b4"}'></script>
-    <!-- End Cloudflare Web Analytics -->
 </body>
 </html>
