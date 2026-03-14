@@ -33,7 +33,7 @@ create table ielts_vocab (
 12. 弹窗告知用户收费功能
 13. todo 错误后不用摇摆
 14. to do : handle card catalog=card catalogue
-15. todo : 错题本 local storage
+15. done : 错题本 local storage
 
 16. 3.4 和 5.2 改成付费模式
 
@@ -79,11 +79,11 @@ eight double one ight, or four seven or
 每数字最多只能有 两个double 一个triple
 
 加一档简单版，只有 3 - 6 位，顺序可随机
-todo:简单版 zh中的 (x位)不要了
-todo:简单版中 234 567 123456 这样的连续数字太多了 减少一些
+done:简单版 zh中的 (x位)不要了
+done:简单版中 234 567 123456 这样的连续数字太多了 减少一些
 每组数字最多只能有 两个double 一个triple
 
-todo: 困难版中记得加 triple
+done: 困难版中记得加 triple
 
 23. 数字模式也加上随机按钮
 
@@ -115,8 +115,36 @@ todo: 困难版中记得加 triple
 点击开始练习埋点
 练习完成埋点
 
-31. 进入网页埋点
+31. done 进入网页埋点
 32. 随机打乱 to 随机本页 hover 换成随机 第 x 页 
-33. 导出pdf 专属错题本功能
+33. cancel 导出pdf 专属错题本功能
 
-34. todo bug 数字困难模式显示错误
+34. done bug 数字困难模式显示错误
+35. todo: 用户成为会员后 消除 锁头 显示会员到期时间
+36. todo: 自动更新会员表？
+37. 提醒重做错题 不会计入正确率统计
+38. 登录非会员用户邮箱 埋点统计问题
+
+39.  同步 wordstatus :
+  1. 创建表格
+  字段：user_id (UUID, 主键), email , stats_data (JSONB 类型), updated_at (时间戳)。
+
+  2. 用户登录进入页面时，执行一次 SELECT 。如果云端有数据，直接覆盖 localStorage。 无则插入
+
+  3. 设置 防抖期 3s
+
+  4. 用户输入单词 判断对错时开启同步
+
+40. bug todo: 登录后用户看不到自己数据正确率 需要重点一下
+
+41. 手机端 响应式 
+
+42. 不出声 不弹窗
+
+43. 什么是： 需要我继续微调移动端字号/按钮触达面积，或把“练习控制区”做成底部粘性工具条吗？
+
+44. todo: 手机端 平板端优化 单词列表区
+
+45. 修改发生函数 该用azure 发声
+const AZURE_API_KEY = "7b4038e10d1147a9aef71516fc1af06d"
+const AZURE_REGION = "eastasia";
