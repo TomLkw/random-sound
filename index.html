@@ -1687,20 +1687,36 @@
             }, 50);
         }
 
-        function speak(text) {
+        // 系统 TTS 发声（Supabase 无文件时回退）
+        function systemSpeak(text, rate = 1) {
             window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
             msg.lang = 'en-US';
-            
-            // 数字模式下使用特殊读法
-            if (isNumberMode && corpus[currentIndex] && corpus[currentIndex].speech) {
-                msg.text = corpus[currentIndex].speech;
-                msg.rate = 0.75;
-            } else {
-                msg.rate = 0.8;
-            }
-            
+            msg.rate = rate;
             window.speechSynthesis.speak(msg);
+        }
+
+        // 优先从 Supabase word-audios 获取音频，路径与 gen-sound.py 一致；不存在则系统发声
+        function speak(text) {
+            const ttsText = (isNumberMode && corpus[currentIndex] && corpus[currentIndex].speech)
+                ? corpus[currentIndex].speech : text;
+            const ttsRate = isNumberMode ? 0.75 : 1;
+
+            const safeName = (typeof text === 'string' ? text : '').replace(/\//g, '-');
+            const path = safeName ? (safeName + '.mp3') : '';
+
+            if (!path || !supabaseClinet) {
+                systemSpeak(ttsText, ttsRate);
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            const { data: { publicUrl } } = supabaseClinet.storage.from('word-audios').getPublicUrl(path);
+            const audio = new Audio();
+
+            audio.onerror = () => systemSpeak(ttsText, ttsRate);
+            audio.oncanplaythrough = () => audio.play().catch(() => systemSpeak(ttsText, ttsRate));
+            audio.src = publicUrl;
         }
 
         function updateAccuracy() {
