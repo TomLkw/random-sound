@@ -145,6 +145,10 @@ done: 困难版中记得加 triple
 
 44. todo: 手机端 平板端优化 单词列表区
 
-45. 修改发生函数 该用azure 发声
+45. 修改发声函数 从supabase file storage中获取声音 如果文件不存在 则用 系统发声
+
+
 const AZURE_API_KEY = "7b4038e10d1147a9aef71516fc1af06d"
 const AZURE_REGION = "eastasia";
+
+45. done: 单词声音预加载机制

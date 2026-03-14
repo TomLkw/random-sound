@@ -1181,6 +1181,7 @@
         };
 
         let currentChapter = null;
+        // corpus: 存储当前选中的词库内容（{ en, zh }的对象数组）
         let corpus = [];
         let currentIndex = 0;
         let correctCount = 0;
@@ -1193,6 +1194,9 @@
         const BASE_TIME = 3000; // 基本时长（毫秒）
         const TIME_PER_CHAR = 300; // 每个字符的额外时间（毫秒）
         const WORDS_PER_PAGE = 20; // 每页单词数
+        const PRELOAD_COUNT = WORDS_PER_PAGE; // 预加载数量（开始练习时）
+        const NEXT_PRELOAD_COUNT = 5; // 练习过程中向后预加载的单词数量
+        const audioCache = new Map(); // 音频缓存（仅当前会话内）
         let currentPage = 1;
         let totalPages = 1;
         let fullChapterData = [];
@@ -1611,6 +1615,7 @@
             $('#global-progress').text(prog + '%');
         }
 
+        // 显示下一个单词及其翻译，重置输入框和相关状态
         function renderWord() {
             if (isPaused) return;
             clearTimeout(autoNextTimer);
@@ -1658,7 +1663,18 @@
             $('#progress-bar').css('width', progress + '%');
             $('#stat-total').text(corpus.length - currentIndex);
 
+            console.log('[audio] renderWord 当前索引/总数:', currentIndex, '/', corpus.length, '单词:', current.en);
             speak(current.en);
+
+            // 练习过程中，持续为后面的若干个单词预加载音频（仅单词模式）
+            if (!isNumberMode && corpus.length > 0) {
+                const start = currentIndex + 1;
+                if (start < corpus.length) {
+                    const upcoming = corpus.slice(start, start + NEXT_PRELOAD_COUNT);
+                    console.log('[audio] renderWord 预加载后续单词:', upcoming.map(w => w.en));
+                    preloadAudiosForWords(upcoming);
+                }
+            }
 
             // 根据单词长度计算等待时间
             const wordLength = current.en.length;
@@ -1696,6 +1712,46 @@
             window.speechSynthesis.speak(msg);
         }
 
+        // 预加载一批单词的音频到内存缓存
+        function preloadAudiosForWords(words) {
+            if (!supabaseClinet || !Array.isArray(words) || isNumberMode) return;
+
+            console.log('[audio] 预加载请求 words:', words.map(w => w.en));
+
+            for (const item of words) {
+                if (!item || !item.en) continue;
+
+                const safeName = (typeof item.en === 'string' ? item.en : '').replace(/\//g, '-');
+                const path = safeName ? (safeName + '.mp3') : '';
+                if (!path) continue;
+                if (audioCache.has(path)) {
+                    console.log('[audio] 已在缓存中，跳过预加载:', path);
+                    continue;
+                }
+
+                try {
+                    const { data } = supabaseClinet.storage.from('word-audios').getPublicUrl(path);
+                    const publicUrl = data && data.publicUrl;
+                    if (!publicUrl) continue;
+
+                    const audio = new Audio();
+                    audio.preload = 'auto';
+                    audio.src = publicUrl;
+                    audio.oncanplaythrough = () => {
+                        audioCache.set(path, audio);
+                        console.log('[audio] 预加载完成并写入缓存:', path);
+                        audio.oncanplaythrough = null;
+                    };
+                    audio.onerror = () => {
+                        console.warn('[audio] 预加载失败，忽略缓存:', path);
+                        audio.onerror = null;
+                    };
+                } catch (e) {
+                    console.error('预加载音频失败:', e);
+                }
+            }
+        }
+
         // 优先从 Supabase word-audios 获取音频，路径与 gen-sound.py 一致；不存在则系统发声
         function speak(text) {
             const ttsText = (isNumberMode && corpus[currentIndex] && corpus[currentIndex].speech)
@@ -1706,17 +1762,47 @@
             const path = safeName ? (safeName + '.mp3') : '';
 
             if (!path || !supabaseClinet) {
+                console.log('[audio] 使用系统 TTS（无路径或无 supabase）:', text);
                 systemSpeak(ttsText, ttsRate);
                 return;
             }
 
-            window.speechSynthesis.cancel();
-            const { data: { publicUrl } } = supabaseClinet.storage.from('word-audios').getPublicUrl(path);
-            const audio = new Audio();
+            // 优先使用缓存中的音频
+            if (audioCache.has(path)) {
+                window.speechSynthesis.cancel();
+                const cachedAudio = audioCache.get(path);
+                console.log('[audio] 命中缓存并播放:', path);
+                try {
+                    cachedAudio.currentTime = 0;
+                    cachedAudio.play().catch(() => systemSpeak(ttsText, ttsRate));
+                } catch (e) {
+                    systemSpeak(ttsText, ttsRate);
+                }
+                return;
+            }
 
-            audio.onerror = () => systemSpeak(ttsText, ttsRate);
-            audio.oncanplaythrough = () => audio.play().catch(() => systemSpeak(ttsText, ttsRate));
-            audio.src = publicUrl;
+            window.speechSynthesis.cancel();
+            try {
+                const { data } = supabaseClinet.storage.from('word-audios').getPublicUrl(path);
+                const publicUrl = data && data.publicUrl;
+                if (!publicUrl) {
+                    console.warn('[audio] 未找到远程音频，回退系统 TTS:', path);
+                    systemSpeak(ttsText, ttsRate);
+                    return;
+                }
+
+                const audio = new Audio();
+                audio.onerror = () => systemSpeak(ttsText, ttsRate);
+                audio.oncanplaythrough = () => {
+                    audioCache.set(path, audio);
+                    console.log('[audio] 首次加载成功并写入缓存，开始播放:', path);
+                    audio.play().catch(() => systemSpeak(ttsText, ttsRate));
+                };
+                audio.src = publicUrl;
+            } catch (e) {
+                console.error('播放音频失败:', e);
+                systemSpeak(ttsText, ttsRate);
+            }
         }
 
         function updateAccuracy() {
@@ -1890,6 +1976,12 @@
             $('#shuffle-btn').removeClass('hidden');
             $('#prev-page, #next-page').removeClass('hidden');
             $('#word-list-container').removeClass('hidden');
+
+            // 查看当前页单词时，预加载这一页里的单词音频
+            if (!isNumberMode) {
+                console.log('[audio] displayWordList 第', page, '页，预加载 currentPageWords:', currentPageWords.map(w => w.en));
+                preloadAudiosForWords(currentPageWords);
+            }
         }
         
         let sortedByAccuracy = false;
@@ -1909,6 +2001,7 @@
             currentPageWords = [];
             sortedByAccuracy = false;
             sortedWordsData = [];
+            audioCache.clear();
             
             clearTimeout(autoNextTimer);
             
@@ -1975,6 +2068,8 @@
             
             // 更新当前页面单词数据供随机使用
             currentPageWords = pageWords;
+            // 预加载音频
+            preloadAudiosForWords(pageWords);
         }
         $('#shuffle-btn').on('click', () => {
             if (isNumberMode) {
@@ -2085,6 +2180,10 @@
             corpus = displayedWords.length > 0 ? displayedWords : JSON.parse(JSON.stringify(currentPageWords));
             $('#current-chapter-title').text(`雅思听力特训 / 章节: ${currentChapter} 第${currentPage}页`);
             $('#stat-total').text(corpus.length);
+
+            // 开始练习前，预加载当前页要练习的所有单词音频
+            console.log('[audio] start-btn 预加载 corpus 前', PRELOAD_COUNT, '个单词:', corpus.slice(0, PRELOAD_COUNT).map(w => w.en));
+            preloadAudiosForWords(corpus.slice(0, PRELOAD_COUNT));
             
             // 埋点：开始练习
             trackEvent('start_practice', {
