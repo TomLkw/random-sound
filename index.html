@@ -73,10 +73,13 @@
 </head>
 <body class="bg-[#f8fafc] text-slate-900 min-h-screen flex font-sans overflow-hidden">
 
+    <!-- Mobile overlay backdrop -->
+    <div id="mobile-backdrop" class="fixed inset-0 bg-black/40 hidden z-40"></div>
+
 
 
     <!-- 左侧侧边栏：章节选择与设置 -->
-    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col hidden md:flex h-screen">
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col hidden md:flex h-screen fixed md:static top-0 left-0 z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
         <div class="p-6 border-b border-slate-100">
             <h1 class="text-xl font-black tracking-tighter italic">IELTS Random Sound</h1>
             <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">语料库导航</p>
