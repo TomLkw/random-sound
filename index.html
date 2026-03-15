@@ -361,6 +361,12 @@
                                 <button id="start-btn" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-2xl transition-all active:scale-95 shadow-lg hover:shadow-xl">
                                     开始练习
                                 </button>
+                                <div id="audio-loading-bar" class="hidden mt-3">
+                                    <div class="text-xs text-slate-500 mb-1 text-center">音频加载中 <span id="audio-loading-text">0%</span></div>
+                                    <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                        <div id="audio-loading-progress" class="bg-blue-500 h-1.5 rounded-full transition-all duration-300" style="width:0%"></div>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div id="retry-wrong-container" class="mb-6 hidden">
@@ -2182,26 +2188,51 @@
             $('#stat-total').text(corpus.length);
 
             // 开始练习前，预加载当前页要练习的所有单词音频
-            console.log('[audio] start-btn 预加载 corpus 前', PRELOAD_COUNT, '个单词:', corpus.slice(0, PRELOAD_COUNT).map(w => w.en));
             preloadAudiosForWords(corpus.slice(0, PRELOAD_COUNT));
-            
-            // 埋点：开始练习
-            trackEvent('start_practice', {
-                chapter: currentChapter,
-                page: currentPage,
-                word_count: corpus.length,
-                is_number_mode: false,
-                is_retry_wrong: isRetryingWrong
+
+            const WAIT_COUNT = Math.min(5, corpus.length);
+            const firstWords = corpus.slice(0, WAIT_COUNT);
+            const needWait = !isNumberMode && firstWords.some(w => {
+                const path = (w.en || '').replace(/\//g, '-') + '.mp3';
+                return !audioCache.has(path);
             });
-            
-            isStarted = true;
-            $('#word-list-container').addClass('hidden');
-            $('#start-btn-container').addClass('hidden');
-            $('#share-result-container').addClass('hidden');
-            $('#exercise-controls').removeClass('hidden');
-            $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
-            $('#progress-text').text('正在听写');
-            renderWord();
+
+            const doStart = () => {
+                $('#audio-loading-bar').addClass('hidden');
+                $('#start-btn').prop('disabled', false).text('开始练习');
+                trackEvent('start_practice', {
+                    chapter: currentChapter,
+                    page: currentPage,
+                    word_count: corpus.length,
+                    is_number_mode: false,
+                    is_retry_wrong: isRetryingWrong
+                });
+                isStarted = true;
+                $('#word-list-container').addClass('hidden');
+                $('#start-btn-container').addClass('hidden');
+                $('#share-result-container').addClass('hidden');
+                $('#exercise-controls').removeClass('hidden');
+                $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
+                $('#progress-text').text('正在听写');
+                renderWord();
+            };
+
+            if (!needWait) { doStart(); return; }
+
+            $('#start-btn').prop('disabled', true).text('加载中...');
+            $('#audio-loading-bar').removeClass('hidden');
+
+            let checkCount = 0;
+            const checkInterval = setInterval(() => {
+                const loaded = firstWords.filter(w => audioCache.has((w.en || '').replace(/\//g, '-') + '.mp3')).length;
+                const pct = Math.round(loaded / WAIT_COUNT * 100);
+                $('#audio-loading-text').text(`${pct}%`);
+                $('#audio-loading-progress').css('width', pct + '%');
+                if (loaded >= WAIT_COUNT || ++checkCount >= 10) {
+                    clearInterval(checkInterval);
+                    doStart();
+                }
+            }, 200);
         });
 
         $('#retry-wrong-btn').on('click', () => {
