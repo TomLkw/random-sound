@@ -30,10 +30,10 @@
             transition: width 5s linear;
         }
 
-        #log-container::-webkit-scrollbar, .sidebar-scroll::-webkit-scrollbar, #word-list-container::-webkit-scrollbar {
+        #log-container::-webkit-scrollbar, .sidebar-scroll::-webkit-scrollbar {
             width: 4px;
         }
-        #log-container::-webkit-scrollbar-thumb, .sidebar-scroll::-webkit-scrollbar-thumb, #word-list-container::-webkit-scrollbar-thumb {
+        #log-container::-webkit-scrollbar-thumb, .sidebar-scroll::-webkit-scrollbar-thumb {
             background: #e2e8f0;
             border-radius: 10px;
         }
@@ -327,7 +327,7 @@
                                 SELECT LIST
                             </div>
                             
-                            <div id="word-list-container" class="mb-6 hidden max-h-96 overflow-y-auto">
+                            <div id="word-list-container" class="mb-6 hidden">
                                 <div class="flex justify-between items-center mb-3">
                                     <div class="text-sm text-slate-500 font-medium">本章节单词列表：</div>
                                     <div class="flex items-center gap-2">
