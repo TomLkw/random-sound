@@ -79,7 +79,7 @@
 
 
     <!-- 左侧侧边栏：章节选择与设置 -->
-    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col hidden md:flex h-screen fixed md:static top-0 left-0 z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+    <aside class="w-64 md:w-52 lg:w-64 bg-white border-r border-slate-200 flex flex-col hidden md:flex h-screen fixed md:static top-0 left-0 z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
         <div class="p-6 border-b border-slate-100">
             <h1 class="text-xl font-black tracking-tighter italic">IELTS Random Sound</h1>
             <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">语料库导航</p>
@@ -311,19 +311,19 @@
         </header>
 
         <!-- 核心练习与日志区 -->
-        <main class="flex-1 overflow-y-auto p-8">
-            <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
+        <main class="flex-1 overflow-y-auto p-2 md:p-4 lg:p-6">
+            <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-8">
                 
                 <!-- 练习卡片 -->
                 <div class="flex-[3]">
-                    <div id="exercise-card" class="bg-white border border-slate-200 rounded-[3rem] shadow-[0_30px_60px_rgba(0,0,0,0.03)] p-8 md:p-12 relative overflow-hidden text-center transition-opacity opacity-50 pointer-events-none">
+                    <div id="exercise-card" class="bg-white border border-slate-200 rounded-[2rem] md:rounded-[3rem] shadow-[0_30px_60px_rgba(0,0,0,0.03)] p-3 md:p-4 lg:p-6 relative overflow-hidden text-center transition-opacity opacity-50 pointer-events-none">
                         
                         <div class="absolute top-0 left-0 h-1.5 bg-slate-100 w-full">
                             <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-500" style="width: 0%"></div>
                         </div>
 
                         <div class="mb-8 mt-4">
-                            <div id="translation-display" class="text-4xl md:text-5xl font-black text-slate-900 mb-6">
+                            <div id="translation-display" class="text-4xl md:text-5xl font-black text-slate-900 mb-6 hidden">
                                 SELECT LIST
                             </div>
                             
@@ -444,7 +444,7 @@
                 </div>
 
                 <!-- 日志面板 -->
-                <div class="flex-[2] flex flex-col h-[600px]">
+                <div class="flex-[2] flex flex-col h-64 lg:h-[600px]">
                     <div class="bg-white border border-slate-200 rounded-[2rem] flex-1 flex flex-col overflow-hidden shadow-sm">
                         <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                             <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest">实时记录</h2>
@@ -1328,15 +1328,13 @@
             $('#log-container').empty();
             $('#log-count').text('0');
             $('#global-progress').text('0%');
-            $('#translation-display').text('准备就绪');
+            $('#translation-display').addClass('hidden').text('');
             $('#start-btn-container').removeClass('hidden');
             $('#retry-wrong-container').addClass('hidden');
             $('#share-result-container').addClass('hidden');
             $('#exercise-controls').addClass('hidden');
             $('#user-input').val('').prop('disabled', true);
             $('#progress-text').text('就绪');
-            
-            // 显示数字列表
             const listHtml = numberGroups.map((item, idx) => `
                 <div class="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg text-xs">
                     <div class="flex items-center gap-2">
@@ -1446,7 +1444,7 @@
             $('#log-container').empty();
             $('#log-count').text('0');
             $('#global-progress').text('0%');
-            $('#translation-display').text('准备就绪');
+            $('#translation-display').addClass('hidden').text('');
             $('#start-btn-container').removeClass('hidden');
             $('#retry-wrong-container').addClass('hidden');
             $('#share-result-container').addClass('hidden');
@@ -1662,7 +1660,7 @@
             }
 
             const current = corpus[currentIndex];
-            $('#translation-display').text(current.zh);
+            $('#translation-display').removeClass('hidden').text(current.zh);
             $('#user-input').val('').focus();
             
             const progress = (currentIndex / corpus.length) * 100;
