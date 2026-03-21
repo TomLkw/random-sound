@@ -1960,6 +1960,7 @@
             // 重置排序状态
             sortedByAccuracy = false;
             sortedWordsData = [];
+            $('#sort-by-accuracy-btn').removeClass('!bg-orange-500 !border-orange-500 !text-white');
             
             const listHtml = currentPageWords.map(item => {
                 const accuracy = getWordAccuracy(item.en);
@@ -2005,6 +2006,7 @@
             currentPageWords = [];
             sortedByAccuracy = false;
             sortedWordsData = [];
+            $('#sort-by-accuracy-btn').removeClass('!bg-orange-500 !border-orange-500 !text-white');
             audioCache.clear();
             
             clearTimeout(autoNextTimer);
@@ -2042,7 +2044,7 @@
             sortedWordsData = wordsWithStats;
             totalPages = Math.ceil(wordsWithStats.length / WORDS_PER_PAGE);
             currentPage = 1;
-            
+            $('#sort-by-accuracy-btn').addClass('!bg-orange-500 !border-orange-500 !text-white');
             displaySortedWordList(wordsWithStats, 1);
         });
         
@@ -2065,7 +2067,7 @@
                 `;
             }).join('');
             $('#word-list').html(listHtml);
-            $('#page-info').text(`错误率排序 第 ${page}/${totalPages} 页 (${pageWords.length} 词)`);
+            $('#page-info').text(`第 ${page}/${totalPages} 页 (${pageWords.length} 词)`);
             
             $('#prev-page').prop('disabled', page === 1);
             $('#next-page').prop('disabled', page === totalPages);
