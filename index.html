@@ -1582,7 +1582,7 @@
                         if (word === userWord) {
                             return `<span class="text-green-600">${userWord}</span>`;
                         } else {
-                            return `<span class="line-through text-red-400">${userWord || '___'}</span>`;
+                            return `<span class="text-red-400">${userWord || '___'}</span>`;
                         }
                     });
                     errorFeedback = `<div class="text-[10px] font-medium mb-1">
@@ -1590,7 +1590,7 @@
                     </div>`;
                 } else {
                     // 单个单词
-                    errorFeedback = `<div class="text-[10px] text-red-500/80 font-medium mb-1">拼写: <span class="line-through opacity-50">${userInput || '未填写'}</span></div>`;
+                    errorFeedback = `<div class="text-[10px] text-red-500/80 font-medium mb-1">拼写: <span class="opacity-50">${userInput || '未填写'}</span></div>`;
                 }
             }
             
@@ -2289,12 +2289,12 @@
                             if (word === userWord) {
                                 return `<span class="text-green-600">${userWord}</span>`;
                             } else {
-                                return `<span class="line-through text-red-400">${userWord || '___'}</span>`;
+                                return `<span class="text-red-400">${userWord || '___'}</span>`;
                             }
                         });
                         errorDetail = `<div class="text-[9px] text-slate-500 mt-0.5">拼写: ${userParts.join(' ')}</div>`;
                     } else {
-                        errorDetail = `<div class="text-[9px] text-red-400 mt-0.5">拼写: <span class="line-through">${record.userInput || '未填写'}</span></div>`;
+                        errorDetail = `<div class="text-[9px] text-red-400 mt-0.5">拼写: <span>${record.userInput || '未填写'}</span></div>`;
                     }
                 }
                 
@@ -2324,12 +2324,12 @@
                             if (word === userWord) {
                                 return `<span class="text-green-600">${userWord}</span>`;
                             } else {
-                                return `<span class="line-through text-red-400">${userWord || '___'}</span>`;
+                                return `<span class="text-red-400">${userWord || '___'}</span>`;
                             }
                         });
                         errorDetail = `<div class="text-[9px] text-slate-600 mt-0.5">拼写: ${userParts.join(' ')}</div>`;
                     } else {
-                        errorDetail = `<div class="text-[9px] text-red-400 mt-0.5">拼写: <span class="line-through">${record.userInput || '未填写'}</span></div>`;
+                        errorDetail = `<div class="text-[9px] text-red-400 mt-0.5">拼写: <span>${record.userInput || '未填写'}</span></div>`;
                     }
                     
                     return `
