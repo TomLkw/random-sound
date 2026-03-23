@@ -151,10 +151,6 @@ done: 困难版中记得加 triple
 
 45. 修改发声函数 从supabase file storage中获取声音 如果文件不存在 则用 系统发声
 
-
-const AZURE_API_KEY = "7b4038e10d1147a9aef71516fc1af06d"
-const AZURE_REGION = "eastasia";
-
 45. done: 单词声音预加载机制 todo 点击上一页下一页时也要加载
 
 46. 在开始练习前加一个进度条，确保前五个词都好了再开始，跑五次200s 查询
