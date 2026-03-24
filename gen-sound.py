@@ -1,5 +1,6 @@
 import os
 import csv
+import unicodedata
 from pathlib import Path
 from supabase import create_client, Client
 import azure.cognitiveservices.speech as speechsdk
@@ -7,18 +8,30 @@ import azure.cognitiveservices.speech as speechsdk
 # --- 配置区 ---
 SUPABASE_URL = "https://elckemvmphbjjlpzgoqy.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsY2tlbXZtcGhiampscHpnb3F5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODkzOTg0NiwiZXhwIjoyMDc0NTE1ODQ2fQ.nuUPwTiRqurO5aZvFYzLMH6OGkCnxYG4G1XGANXlCWk" # 注意：预存脚本建议用 service_role key 绕过 RLS
-AZURE_SPEECH_KEY = "7b4038e10d1147a9aef71516fc1af06d"
+AZURE_SPEECH_KEY = "cc9095be4b154dc59067c6b4efe568e5"
 AZURE_REGION = "eastasia" # 或你的区域
 
 # CSV 路径（相对本脚本所在目录）
 CSV_PATH = Path(__file__).resolve().parent / "local-doc" / "chapter5_vocab.csv"
-TARGET_CHAPTER = "5.2"
+TARGET_CHAPTER = "5.11"
+# TARGET_CHAPTER = "3.9"
+# TARGET_CHAPTER = "es-3"
 
 # 初始化
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 speech_config = speechsdk.SpeechConfig(subscription=AZURE_SPEECH_KEY, region=AZURE_REGION)
-speech_config.speech_synthesis_voice_name = "en-US-ChristopherNeural"
 
+# 声音选择："male" = 西班牙语男声，"female" = 西班牙语女声，"en-female" = 英文女声
+VOICE_GENDER = "en-female"
+# 语速：0.5 = 慢，1.0 = 正常，1.5 = 快
+SPEECH_RATE = 1.0
+
+VOICE_MAP = {
+    "male": {"name": "es-ES-AlvaroNeural", "lang": "es-ES"},
+    "female": {"name": "es-ES-ElviraNeural", "lang": "es-ES"},
+    "en-female": {"name": "en-US-JennyNeural", "lang": "en-US"}
+}
+speech_config.speech_synthesis_voice_name = VOICE_MAP[VOICE_GENDER]["name"]
 # 断点文件路径
 CHECKPOINT_PATH = Path(__file__).resolve().parent / "checkpoint.txt"
 
@@ -41,7 +54,9 @@ def process_and_upload(word: str) -> bool:
     按需求将语速调为原来的 1.2 倍。
     """
     # 文件名：单词中空格等保留，与 Storage 路径一致
-    safe_name = word.replace("/", "-")
+    safe_name = unicodedata.normalize("NFD", word)
+    safe_name = "".join(c for c in safe_name if unicodedata.category(c) != "Mn")
+    safe_name = safe_name.replace("/", "-")
     filename = f"{safe_name}.mp3"
     local_path = Path(f"./temp_{safe_name}.mp3")
 
@@ -50,11 +65,12 @@ def process_and_upload(word: str) -> bool:
         speech_config=speech_config, audio_config=audio_config
     )
 
-    # 使用 SSML 设置 1.2 倍语速
+    # 使用 SSML 设置语速和语言
+    voice_info = VOICE_MAP[VOICE_GENDER]
     ssml = f"""
-        <speak version="1.0" xml:lang="en-US">
-        <voice name="{speech_config.speech_synthesis_voice_name}">
-            <prosody rate="1.2">{word}</prosody>
+        <speak version="1.0" xml:lang="{voice_info['lang']}">
+        <voice name="{voice_info['name']}">
+            <prosody rate="{SPEECH_RATE}">{word}</prosody>
         </voice>
         </speak>
         """
@@ -64,6 +80,7 @@ def process_and_upload(word: str) -> bool:
         with open(local_path, "rb") as f:
             # 文件名重复时，开启 upsert，直接覆盖已有文件而不是报错
             supabase.storage.from_("word-audios").upload(
+            # supabase.storage.from_("es-audio").upload(
                 path=filename,
                 file=f,
                 file_options={
@@ -106,7 +123,7 @@ def load_checkpoint() -> tuple[str, str] | None:
 
 if __name__ == "__main__":
     words = load_words_from_csv(TARGET_CHAPTER)
-
+    # words = ['sky dome']
     # 如果存在断点，从断点单词开始继续
     checkpoint = load_checkpoint()
     if checkpoint is not None:
