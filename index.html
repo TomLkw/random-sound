@@ -154,20 +154,6 @@
                 </span>
             </button>
             
-            <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">Section 4</div>
-            <button onclick="startExercise('4.1')" id="nav-4.1" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
-                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
-                List 4.1
-            </button>
-            <button onclick="startExercise('4.2')" id="nav-4.2" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
-                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
-                List 4.2
-            </button>
-            <button onclick="startExercise('4.3')" id="nav-4.3" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
-                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
-                List 4.3
-            </button>
-
             <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">数字练习</div>
             <button onclick="startNumberExercise('easy')" id="nav-numbers-easy" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
@@ -1449,7 +1435,7 @@
             
             // 获取章节数据
             let chapterData;
-            const cloudChapters = ['3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.1', '4.2', '4.3', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12'];
+            const cloudChapters = ['3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12'];
             if (cloudChapters.includes(chapter)) {
                 chapterData = await fetchChapterData(chapter);
                 if (chapterData.length === 0) {
