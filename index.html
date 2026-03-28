@@ -571,7 +571,7 @@
     <!-- 成绩统计弹窗 -->
     <div id="share-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <!-- 小票容器 -->
-        <div class="relative font-mono rounded-2xl overflow-hidden" style="filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3)); max-width: 360px; width: 100%; max-height: calc(100vh - 32px); display: flex; flex-direction: column;">
+        <div class="relative font-mono rounded-2xl overflow-hidden" style="filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3)); width: calc(100% - 32px); max-width: 480px; max-height: calc(100vh - 32px); display: flex; flex-direction: column;">
             <!-- 小票主体 -->
             <div style="background:#fffef5;padding:16px 24px 16px; overflow-y: auto; flex: 1;">
                 <button id="close-share" class="absolute top-16 right-4 text-slate-400 hover:text-slate-600 transition-colors text-lg leading-none">✕</button>
@@ -1609,7 +1609,7 @@
                     <div class="mt-1.5 w-1.5 h-1.5 rounded-full ${isCorrect ? 'bg-green-500' : 'bg-red-500'}"></div>
                     <div class="flex-1">
                         <div class="flex justify-between items-center mb-0.5">
-                            <span class="font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'} text-sm">${correctWord}</span>
+                            <span class="font-bold ${isCorrect ? 'text-green-700' : 'text-green-600'} text-sm">${correctWord}</span>
                             <div class="flex items-center gap-2">
                                 ${accuracy !== null && !isNumberMode ? `<span class="text-[10px] ${accuracy >= 80 ? 'text-green-500' : accuracy >= 60 ? 'text-yellow-500' : 'text-red-500'} font-bold px-1.5 py-0.5 rounded bg-white/50">${accuracy}%</span>` : ''}
                                 <span class="text-[10px] ${isCorrect ? 'text-green-400' : 'text-red-300'} font-medium uppercase">${time}</span>
@@ -2318,7 +2318,7 @@
                     
                     return `
                         <div class="text-[10px] p-1.5 bg-white rounded border border-red-200 flex flex-col gap-0.5">
-                            <div class="font-bold text-red-700">${record.correctWord}</div>
+                            <div class="font-bold text-green-600">${record.correctWord}</div>
                             <div class="text-red-500">${record.translation}</div>
                             ${errorDetail}
                         </div>
