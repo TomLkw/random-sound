@@ -1298,7 +1298,7 @@
                 </div>
             `).join('');
             $('#word-list').html(listHtml);
-            $('#page-info').text(`共 20 组数字`);
+            $('#page-info').text(`共 ${numberGroups.length} 组数字`);
             $('#shuffle-btn').removeClass('hidden');
             $('#prev-page, #next-page').addClass('hidden');
             $('#word-list-container').removeClass('hidden');
@@ -1714,6 +1714,7 @@
             const ttsText = (isNumberMode && corpus[currentIndex] && corpus[currentIndex].speech)
                 ? corpus[currentIndex].speech : text;
             const ttsRate = isNumberMode ? 0.75 : 1;
+            const playbackRate = isNumberMode ? 1.2 : 1;
 
             const safeName = (typeof text === 'string' ? text : '').replace(/\//g, '-');
             const path = safeName ? (safeName + '.mp3') : '';
@@ -1731,6 +1732,7 @@
                 console.log('[audio] 命中缓存并播放:', path);
                 try {
                     cachedAudio.currentTime = 0;
+                    cachedAudio.playbackRate = playbackRate;
                     cachedAudio.play().catch(() => systemSpeak(ttsText, ttsRate));
                 } catch (e) {
                     systemSpeak(ttsText, ttsRate);
@@ -1753,6 +1755,7 @@
                 audio.oncanplaythrough = () => {
                     audioCache.set(path, audio);
                     console.log('[audio] 首次加载成功并写入缓存，开始播放:', path);
+                    audio.playbackRate = playbackRate;
                     audio.play().catch(() => systemSpeak(ttsText, ttsRate));
                 };
                 audio.src = publicUrl;
