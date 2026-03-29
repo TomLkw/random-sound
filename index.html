@@ -1206,11 +1206,11 @@
 
         // 开始数字听力练习
         function startNumberExercise(level = 'hard') {
-            $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50');
+            $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50').css({'background':'', 'color':''});
             if (level === 'easy') {
-                $('#nav-numbers-easy').addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50');
+                $('#nav-numbers-easy').addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50').css({'background':'#0f172a', 'color':'#fff'});
             } else {
-                $('#nav-numbers-hard').addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50');
+                $('#nav-numbers-hard').addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50').css({'background':'#0f172a', 'color':'#fff'});
             }
             
             $('#exercise-card').removeClass('opacity-50 pointer-events-none');
@@ -1346,6 +1346,11 @@
             // 埋点：点击章节
             trackEvent('chapter_click', { chapter });
 
+            // 先变色，无论是否付费
+            $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50').css({'background':'', 'color':''});
+            const activeBtn = document.getElementById('nav-' + chapter);
+            if (activeBtn) $(activeBtn).addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50').css({'background':'#0f172a', 'color':'#fff'});
+
             // 检查是否为付费章节
             if (paidChapters.includes(chapter)) {
                 if (!currentUser) {
@@ -1359,9 +1364,6 @@
                     return;
                 }
             }
-            
-            $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50');
-            $(`#nav-${chapter}`).addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50');
             
             $('#exercise-card').removeClass('opacity-50 pointer-events-none');
             $('#progress-text').text('加载中...');
