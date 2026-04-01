@@ -1,336 +1,327 @@
-11-1
-caravan
-navigation
-demonstration
-candles
-canteen
-intermediate
-vegetarian
-campsite
-helicopter
-donations
-moonlight
-mid-range
-warehouse
-double-grill
-researcher
-website
-charge
-access
-bills
-waitress
-excursion
-duration
-elevator
-postage
-signature
-liberty
-adventure
-automatic
-painkillers
-sailing
-keyboard
-transit
-enjoyable
-snowboarding
-landscape
-helmet
-mask
-moderate
-ladder
-concentration
-categories
-variable
-sauna
-child-minding
-racket
-coach
-handles
-nylon
-package
-receipt
-waterfall
-partner
-voucher
-gym
-laptop
-yoga
-knife
-neck
-mat
-container
-buffet
-enlargement
-studio
-critic
-zoom
-lens
-infrastructure
-electricity
-resort
-infection
-fountain
-vest
-qualification
-poverty
-expectation
-glue
-font
-reliable
-keyboard
-violin
-manufacturing
-outfit
-shade
-myth
-harvested
-opened
-cleaned
-expanded
-cooled
-sealed
-segment
-disability
-spine
-pest
-intermediate
-laundry
-survey
-rape
-pegs
-scaffold
-hazel
-portrait
-symbolism
-mud
-variable
-certificate
-liquids
-plastic
-storage
-Sweden
-vest
-grocery
-socialise
-lemon
-congratulations
-pump
-mat
-mirror
-map
-birdwatching
-identification
-moderate
-date of birth
-internet cafe
-type of insurance
-fish tank
-snow boarding
-membership limitation
-planning meeting
-drama workshop
-outdoor activities
-group deposit
-joining fee (s)
-dance classes
-leisure centre
-round tables
-bunch of flowers
-total deposit
-delivery fee
-special items
-high seasons
-country living
-peaceful environment
-eating out
-existing skills
-house agent
-investment schemes
-branch manager
-house insurance
-side entrance/gate
-client engineer
-post office
-horse riding
-office furniture
-hot chocolate
-advanced lessons
-warm clothing
-free entry
-toy factory
-large slide
-petrol station
-evening appointment
-employment medical certificate
-regular check
-sports injury
-heart disease
-space museum
-sun cream
-personal attention
-paddling pool
-central heating
-bank statement
-book reservation
-daytime temperature
-cable car
-outdoor swimming pool
-baseball coach
-coral reef
-rock pool
-maintenance of gardens
-town hall
-good value
-ice pack
-alarm system
-order section
-walking boots
-advanced level
-book keeper
-washing staff
-home welcome
-evening meals
-health service
-old-fashioned exterior
-limited parking
-name cards
-service manager
-private company
-silver package
-family photo
-energy saving
-driving licence/license
-job title
-type of magazine
-starting salary
-calling diversion
-renew passport
-current address
-flower shop
-nursery supervisor
-gold stars
-film festival
-special requirement
-back row
-dark trousers
-furniture designers
-monthly rent
-preferred occupation
-previous major
-previous working experience
-decoration balloons
-vegetable burger
-safety regulations
-return tickets
-error message
-customer service officer
-garden room
-sleeping bag
-isolated spot
-washing machine
-car number
-group trip
-self drive
-non-smoking room
-culture centre
-dreamtime under stars
-modern authors
-long stick
-free parking
-weekly return
-extra room
-bank transfer
-short time
-required date
-accommodation type
-bills and meals
-sports centre
-road runners
-job requirement
-current occupation
-length of stay
-type of accommodation
-spring park
-starting date
-reference number
-estimated value
-family use
-safety check
-preferred equipment
-flight service
-off-peak time
-maximum price
-helicopter trip
-membership number
-organic food
-sports equipment
-poor quality
-fresh products
-organic farming
-cycling route
-language skill
-group discount
-night flight
-White Mountain
-dust bag
-golf court
-rock climbing
-friendly faces
-no nuts
-grocery stores
-egg cartons
-juice bottles
-electricity supply
-protection policy
-group booking discount
-sick pay
-van driver
-leather shoes
-advertising company
-teaching venue
-total payment
-vegetarian food
-different performers
-new opera
-fridge model
-top mount
-financial loss
-on the rack
-long strap
-leather jacket
-total value
-public outskirts
-customer service
-international express
-postal fee
-lost mails
-ID code numbers
-student discount
-leather shoes
-comfortable shoes
-daytime class
-value of money
-in transit
-length of waiting
-electronic game centre
-free recipe
-Asian cooking class
-conference centre
-business companies
-inconvenient location
-basic package
-good performance
-public show
-vocal class
-course fee
-personal tutor
-ozone layer
-coastal roads
-changing room
-extra transportation cost
-personal use
-baseball coach
-side gate
-central heating
-green ride
-child seat
+chapter,word,translation
+11.1,caravan,旅行拖车；车队
+11.1,navigation,导航；航行
+11.1,demonstration,示范；演示；示威
+11.1,candles,蜡烛
+11.1,canteen,食堂；水壶
+11.1,intermediate,中级的；中间的
+11.1,vegetarian,素食者；素食的
+11.1,campsite,露营地
+11.1,helicopter,直升机
+11.1,donations,捐款；捐赠物
+11.1,moonlight,月光
+11.1,mid-range,中档的；中等价位的
+11.1,warehouse,仓库
+11.1,double-grill,双烤架
+11.1,researcher,研究员；研究人员
+11.1,website,网站
+11.1,charge,费用；收费；充电
+11.1,access,通道；访问；获取
+11.1,bills,账单；钞票
+11.1,waitress,女服务员
+11.1,excursion,短途旅行；游览
+11.1,duration,持续时间；期间
+11.1,elevator,电梯
+11.1,postage,邮资；邮费
+11.1,signature,签名；特征
+11.1,liberty,自由；解放
+11.1,adventure,冒险；冒险经历
+11.1,automatic,自动的；自动装置
+11.1,painkillers,止痛药
+11.1,sailing,航行；帆船运动
+11.1,keyboard,键盘
+11.1,transit,运输；过境；中转
+11.1,enjoyable,令人愉快的；有趣的
+11.1,snowboarding,单板滑雪
+11.1,landscape,风景；景观
+11.1,helmet,头盔；安全帽
+11.1,mask,面具；口罩；掩盖
+11.1,moderate,适中的；温和的
+11.1,ladder,梯子；阶梯
+11.1,concentration,专注；浓度；集中
+11.1,categories,类别；种类
+11.1,variable,变量；可变的
+11.1,sauna,桑拿浴；桑拿室
+11.1,child-minding,照看儿童
+11.1,racket,球拍；喧闹声
+11.1,coach,教练；长途客车；辅导
+11.1,handles,把手；手柄；处理
+11.1,nylon,尼龙
+11.1,package,包裹；套餐；打包
+11.1,receipt,收据；收条
+11.1,waterfall,瀑布
+11.1,partner,伙伴；合伙人
+11.1,voucher,代金券；凭证
+11.1,gym,健身房；体育馆
+11.1,laptop,笔记本电脑
+11.1,yoga,瑜伽
+11.1,knife,刀；餐刀
+11.1,neck,脖子；颈部
+11.1,mat,垫子；席子
+11.1,container,容器；集装箱
+11.1,buffet,自助餐；餐具柜
+11.1,enlargement,扩大；放大；扩建
+11.1,studio,工作室；录音室；单间公寓
+11.1,critic,评论家；批评者
+11.1,zoom,变焦；快速移动
+11.1,lens,镜头；透镜
+11.1,infrastructure,基础设施；基础建设
+11.1,electricity,电；电力
+11.1,resort,度假胜地；手段；诉诸
+11.1,infection,感染；传染病
+11.1,fountain,喷泉；源泉
+11.1,vest,背心；马甲
+11.1,qualification,资格；资质；学历
+11.1,poverty,贫困；贫穷
+11.1,expectation,期望；预期
+11.1,glue,胶水；粘合剂
+11.1,font,字体；字形
+11.1,reliable,可靠的；可信赖的
+11.1,violin,小提琴
+11.1,manufacturing,制造业；生产
+11.1,outfit,服装；装备；团队
+11.1,shade,阴凉处；遮光物；色调
+11.1,myth,神话；错误观念
+11.1,harvested,收割的；收获的
+11.1,opened,打开的；开放的
+11.1,cleaned,清洁的；已清洗的
+11.1,expanded,扩大的；扩展的
+11.1,cooled,冷却的；降温的
+11.1,sealed,密封的；封闭的
+11.1,segment,部分；片段；细分
+11.1,disability,残疾；残障
+11.1,spine,脊柱；书脊；刺
+11.1,pest,害虫；有害生物
+11.1,laundry,洗衣店；待洗衣物
+11.1,survey,调查；勘测；概述
+11.1,rape,油菜；强奸
+11.1,pegs,衣夹；木钉；固定
+11.1,scaffold,脚手架；绞刑台
+11.1,hazel,榛树；淡褐色
+11.1,portrait,肖像；画像；竖向版式
+11.1,symbolism,象征主义；象征手法
+11.1,mud,泥；泥浆
+11.1,certificate,证书；证明；执照
+11.1,liquids,液体
+11.1,plastic,塑料；塑料制品
+11.1,storage,储存；仓储；存储空间
+11.1,Sweden,瑞典
+11.1,grocery,杂货店；食品杂货
+11.1,socialise,社交；交际
+11.1,lemon,柠檬；柠檬色
+11.1,congratulations,恭喜；祝贺
+11.1,pump,泵；抽水机；抽取
+11.1,mirror,镜子；反映
+11.1,map,地图；绘制地图
+11.1,birdwatching,观鸟
+11.1,identification,身份证明；识别；鉴定
+11.1,date of birth,出生日期
+11.1,internet cafe,网吧
+11.1,type of insurance,保险类型
+11.1,fish tank,鱼缸
+11.1,snow boarding,单板滑雪
+11.1,membership limitation,会员限制
+11.1,planning meeting,计划会议
+11.1,drama workshop,戏剧工作坊
+11.1,outdoor activities,户外活动
+11.1,group deposit,团体押金
+11.1,joining fee (s),入会费
+11.1,dance classes,舞蹈课
+11.1,leisure centre,休闲中心
+11.1,round tables,圆桌；圆桌会议
+11.1,bunch of flowers,一束花
+11.1,total deposit,总押金
+11.1,delivery fee,配送费；快递费
+11.1,special items,特殊物品
+11.1,high seasons,旺季
+11.1,country living,乡村生活
+11.1,peaceful environment,宁静的环境
+11.1,eating out,外出就餐
+11.1,existing skills,现有技能
+11.1,house agent,房产中介
+11.1,investment schemes,投资计划
+11.1,branch manager,分行经理；支行经理
+11.1,house insurance,房屋保险
+11.1,side entrance/gate,侧门；旁门
+11.1,client engineer,客户工程师
+11.1,post office,邮局
+11.1,horse riding,骑马
+11.1,office furniture,办公家具
+11.1,hot chocolate,热巧克力
+11.1,advanced lessons,高级课程
+11.1,warm clothing,保暖衣物
+11.1,free entry,免费入场
+11.1,toy factory,玩具工厂
+11.1,large slide,大滑梯
+11.1,petrol station,加油站
+11.1,evening appointment,晚间预约
+11.1,employment medical certificate,就业体检证明
+11.1,regular check,定期检查
+11.1,sports injury,运动损伤
+11.1,heart disease,心脏病
+11.1,space museum,太空博物馆
+11.1,sun cream,防晒霜
+11.1,personal attention,个人关注；专人服务
+11.1,paddling pool,儿童浅水池；戏水池
+11.1,central heating,集中供暖
+11.1,bank statement,银行对账单
+11.1,book reservation,预订书籍；图书预约
+11.1,daytime temperature,白天温度
+11.1,cable car,缆车
+11.1,outdoor swimming pool,室外游泳池
+11.1,baseball coach,棒球教练
+11.1,coral reef,珊瑚礁
+11.1,rock pool,岩石水潭
+11.1,maintenance of gardens,花园维护
+11.1,town hall,市政厅；镇政府
+11.1,good value,物有所值
+11.1,ice pack,冰袋；冰敷袋
+11.1,alarm system,报警系统
+11.1,order section,订购区；点餐区
+11.1,walking boots,登山靴；徒步靴
+11.1,advanced level,高级水平
+11.1,book keeper,簿记员；会计
+11.1,washing staff,洗涤人员；清洁员工
+11.1,home welcome,家庭欢迎；宾至如归
+11.1,evening meals,晚餐
+11.1,health service,医疗服务；卫生服务
+11.1,old-fashioned exterior,老式外观
+11.1,limited parking,有限停车位
+11.1,name cards,名片
+11.1,service manager,服务经理
+11.1,private company,私营公司
+11.1,silver package,银级套餐
+11.1,family photo,家庭照片
+11.1,energy saving,节能
+11.1,driving licence/license,驾驶执照
+11.1,job title,职位名称；职称
+11.1,type of magazine,杂志类型
+11.1,starting salary,起始薪资；入职工资
+11.1,calling diversion,呼叫转移
+11.1,renew passport,护照续签
+11.1,current address,现居地址
+11.1,flower shop,花店
+11.1,nursery supervisor,托儿所主管
+11.1,gold stars,金星；优秀奖励
+11.1,film festival,电影节
+11.1,special requirement,特殊要求
+11.1,back row,后排
+11.1,dark trousers,深色裤子
+11.1,furniture designers,家具设计师
+11.1,monthly rent,月租
+11.1,preferred occupation,首选职业
+11.1,previous major,以前的专业
+11.1,previous working experience,以往工作经验
+11.1,decoration balloons,装饰气球
+11.1,vegetable burger,蔬菜汉堡
+11.1,safety regulations,安全规定
+11.1,return tickets,往返票
+11.1,error message,错误信息；报错信息
+11.1,customer service officer,客服专员
+11.1,garden room,花园房；温室
+11.1,sleeping bag,睡袋
+11.1,isolated spot,偏僻地点；孤立地点
+11.1,washing machine,洗衣机
+11.1,car number,车牌号
+11.1,group trip,团体旅行
+11.1,self drive,自驾
+11.1,non-smoking room,无烟房间
+11.1,culture centre,文化中心
+11.1,dreamtime under stars,星空下的梦幻时光
+11.1,modern authors,现代作家
+11.1,long stick,长棍；长杆
+11.1,free parking,免费停车
+11.1,weekly return,每周往返票
+11.1,extra room,额外房间
+11.1,bank transfer,银行转账
+11.1,short time,短时间
+11.1,required date,所需日期
+11.1,accommodation type,住宿类型
+11.1,bills and meals,账单与餐食
+11.1,sports centre,体育中心
+11.1,road runners,路跑者；越野跑步者
+11.1,job requirement,工作要求
+11.1,current occupation,当前职业
+11.1,length of stay,住宿时长
+11.1,type of accommodation,住宿类型
+11.1,spring park,春季公园
+11.1,starting date,开始日期
+11.1,reference number,参考编号；参考号
+11.1,estimated value,估计价值
+11.1,family use,家庭使用
+11.1,safety check,安全检查
+11.1,preferred equipment,首选设备
+11.1,flight service,航班服务
+11.1,off-peak time,非高峰时段
+11.1,maximum price,最高价格
+11.1,helicopter trip,直升机之旅
+11.1,membership number,会员编号
+11.1,organic food,有机食品
+11.1,sports equipment,运动器材
+11.1,poor quality,质量差；劣质
+11.1,fresh products,新鲜产品
+11.1,organic farming,有机农业
+11.1,cycling route,骑行路线
+11.1,language skill,语言技能
+11.1,group discount,团体折扣
+11.1,night flight,夜间航班
+11.1,White Mountain,白山
+11.1,dust bag,尘袋；防尘袋
+11.1,golf court,高尔夫球场
+11.1,rock climbing,攀岩
+11.1,friendly faces,友好的面孔
+11.1,no nuts,不含坚果
+11.1,grocery stores,杂货店；超市
+11.1,egg cartons,鸡蛋盒
+11.1,juice bottles,果汁瓶
+11.1,electricity supply,电力供应
+11.1,protection policy,保护政策
+11.1,group booking discount,团体预订折扣
+11.1,sick pay,病假工资
+11.1,van driver,货车司机
+11.1,leather shoes,皮鞋
+11.1,advertising company,广告公司
+11.1,teaching venue,教学场地
+11.1,total payment,总付款；总金额
+11.1,vegetarian food,素食
+11.1,different performers,不同表演者
+11.1,new opera,新歌剧
+11.1,fridge model,冰箱型号
+11.1,top mount,顶部安装；上置式
+11.1,financial loss,经济损失
+11.1,on the rack,在架子上；处于困境
+11.1,long strap,长背带；长肩带
+11.1,leather jacket,皮夹克
+11.1,total value,总价值
+11.1,public outskirts,公共郊区
+11.1,customer service,客户服务
+11.1,international express,国际快递
+11.1,postal fee,邮费
+11.1,lost mails,丢失邮件
+11.1,ID code numbers,身份证号码
+11.1,student discount,学生折扣
+11.1,comfortable shoes,舒适的鞋子
+11.1,daytime class,白天课程
+11.1,value of money,货币价值；物有所值
+11.1,in transit,在途中；运输中
+11.1,length of waiting,等待时长
+11.1,electronic game centre,电子游戏中心
+11.1,free recipe,免费食谱
+11.1,Asian cooking class,亚洲烹饪课
+11.1,conference centre,会议中心
+11.1,business companies,商业公司
+11.1,inconvenient location,不便利的位置
+11.1,basic package,基础套餐
+11.1,good performance,良好表现
+11.1,public show,公开演出；公开展示
+11.1,vocal class,声乐课
+11.1,course fee,课程费用
+11.1,personal tutor,私人导师；个人辅导老师
+11.1,ozone layer,臭氧层
+11.1,coastal roads,沿海公路
+11.1,changing room,更衣室
+11.1,extra transportation cost,额外交通费用
+11.1,personal use,个人使用
+11.1,side gate,侧门
+11.1,green ride,绿色出行
+11.1,child seat,儿童座椅
