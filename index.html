@@ -197,6 +197,9 @@
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 List 5.12
             </button>
+
+            <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">Section 11</div>
+            <div id="nav-section-11" class="space-y-2"></div>
         </nav>
 
         <div class="p-4 border-t border-slate-100 space-y-3">
@@ -852,6 +855,20 @@
             window.open(`mailto:1160292859@qq.com?subject=${subject}&body=${body}`, '_blank');
         });
 
+        // 动态生成 Section 11 导航按钮
+        (function() {
+            const container = document.getElementById('nav-section-11');
+            for (let i = 1; i <= 14; i++) {
+                const ch = '11.' + i;
+                const btn = document.createElement('button');
+                btn.onclick = () => startExercise(ch);
+                btn.id = 'nav-' + ch;
+                btn.className = 'chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left';
+                btn.innerHTML = '<span class="w-2 h-2 rounded-full bg-slate-200"></span>List ' + ch;
+                container.appendChild(btn);
+            }
+        })();
+
         // 页面加载时检查登录状态
         $(document).ready(() => {
             // 埋点：进入网页
@@ -1160,7 +1177,7 @@
         let currentPageWords = [];
         let isRetryingWrong = false;
         let isNumberMode = false;
-        const paidChapters = ['3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.1', '4.2', '4.3', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12'];
+        const paidChapters = ['3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.1', '4.2', '4.3', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '11.2', '11.3', '11.4', '11.5', '11.6', '11.7', '11.8', '11.9', '11.10', '11.11', '11.12', '11.13', '11.14'];
         let numberGroups = [];
         let wordStats = {}; // 存储每个词的统计数据
 
@@ -1378,7 +1395,7 @@
             
             // 获取章节数据
             let chapterData;
-            const cloudChapters = ['3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.1', '4.2', '4.3', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12'];
+            const cloudChapters = ['3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.1', '4.2', '4.3', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '11.1', '11.2', '11.3', '11.4', '11.5', '11.6', '11.7', '11.8', '11.9', '11.10', '11.11', '11.12', '11.13', '11.14'];
             if (cloudChapters.includes(chapter)) {
                 chapterData = await fetchChapterData(chapter);
                 if (chapterData.length === 0) {
