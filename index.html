@@ -162,6 +162,16 @@
                 List 4.3
             </button>
 
+            <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">学术写作</div>
+            <button onclick="startExercise('task1-basic')" id="nav-task1-basic" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                小作文基础词
+            </button>
+            <button onclick="startExercise('task1-advanced')" id="nav-task1-advanced" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                小作文进阶词
+            </button>
+
             <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">数字练习</div>
             <button onclick="startNumberExercise('easy')" id="nav-numbers-easy" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
@@ -1419,7 +1429,7 @@
             
             // 获取章节数据
             let chapterData;
-            const cloudChapters = ['3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.1', '4.2', '4.3', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '11.1', '11.2', '11.3', '11.4', '11.5', '11.6', '11.7', '11.8', '11.9', '11.10', '11.11', '11.12', '11.13', '11.14'];
+            const cloudChapters = ['3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.1', '4.2', '4.3', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '11.1', '11.2', '11.3', '11.4', '11.5', '11.6', '11.7', '11.8', '11.9', '11.10', '11.11', '11.12', '11.13', '11.14', 'task1-basic', 'task1-advanced'];
             if (cloudChapters.includes(chapter)) {
                 chapterData = await fetchChapterData(chapter);
                 if (chapterData.length === 0) {
@@ -1431,7 +1441,8 @@
                 chapterData = allData[chapter] || [];
             }
             
-            $('#current-chapter-title').text(`雅思听力特训 / 章节: ${chapter}`);
+            const chapterTitleMap = { 'task1-basic': '小作文基础词', 'task1-advanced': '小作文进阶词' };
+            $('#current-chapter-title').text(`雅思听力特训 / 章节: ${chapterTitleMap[chapter] || chapter}`);
             $('#stat-total').text(chapterData.length);
             $('#stat-correct').text('0');
             $('#stat-accuracy').text('0%');
