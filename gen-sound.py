@@ -12,8 +12,9 @@ AZURE_SPEECH_KEY = "cc9095be4b154dc59067c6b4efe568e5"
 AZURE_REGION = "eastasia" # 或你的区域
 
 # CSV 路径（相对本脚本所在目录）
-CSV_PATH = Path(__file__).resolve().parent / "local-doc" / "chapter5_vocab.csv"
-TARGET_CHAPTER = "5.11"
+# CSV_PATH = Path(__file__).resolve().parent / "local-doc" / "chapter5_vocab.csv"
+CSV_PATH = Path(__file__).resolve().parent / "ielts-task1.csv"
+TARGET_CHAPTER = "task1-advanced"
 # TARGET_CHAPTER = "3.9"
 # TARGET_CHAPTER = "es-3"
 
