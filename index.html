@@ -243,14 +243,14 @@
         </nav>
 
         <div class="p-4 border-t border-slate-100 space-y-3">
-            <!-- 学习进度 -->
-            <div class="bg-slate-50 rounded-2xl p-4">
-                <p class="text-[10px] text-slate-400 font-bold uppercase mb-2">当前章节进度</p>
+            <!-- 今日学习统计 -->
+            <button id="today-stats-btn" class="w-full bg-gradient-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 rounded-2xl p-4 transition-all active:scale-95 border-2 border-transparent hover:border-blue-200">
+                <p class="text-[10px] text-slate-400 font-bold uppercase mb-2">今日学习统计</p>
                 <div class="flex items-end gap-2">
-                    <span id="global-progress" class="text-xl font-black italic text-blue-600">0%</span>
-                    <span class="text-[10px] text-slate-400 mb-1">已完成</span>
+                    <span id="today-correct-count" class="text-2xl font-black italic text-blue-600">0</span>
+                    <span class="text-[10px] text-slate-400 mb-1">词已掌握</span>
                 </div>
-            </div>
+            </button>
         </div>
     </aside>
 
@@ -542,6 +542,89 @@
             </div>
             
             <div id="login-error" class="hidden mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600"></div>
+        </div>
+    </div>
+
+    <!-- 今日学习统计弹窗 -->
+    <div id="today-stats-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-hidden p-8 relative animate-in fade-in zoom-in-95 flex flex-col" style="height: 90vh; max-height: 600px;">
+            <button id="close-today-stats" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 text-blue-600">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-black text-slate-800 mb-2">今日学习统计</h2>
+                <p class="text-sm text-slate-500" id="today-stats-date">2024年1月1日</p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-4 text-center">
+                    <p class="text-xs text-slate-500 font-medium mb-1">今日掌握</p>
+                    <p class="text-4xl font-black text-blue-600 mb-0.5" id="modal-today-count">0</p>
+                    <p class="text-xs text-slate-400">词</p>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-teal-50 rounded-2xl p-4 text-center">
+                    <p class="text-xs text-slate-500 font-medium mb-1">累计学习</p>
+                    <p class="text-4xl font-black text-green-600 mb-0.5" id="modal-total-days">0</p>
+                    <p class="text-xs text-slate-400">天</p>
+                </div>
+            </div>
+            
+            <!-- 今日学习的单词列表 -->
+            <div class="flex-1 overflow-hidden flex flex-col min-h-0">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-bold text-slate-700">今日学习单词</h3>
+                    <button id="view-history-btn" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all active:scale-95">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        历史记录
+                    </button>
+                </div>
+                <div id="today-words-list" class="flex-1 overflow-y-auto bg-slate-50 rounded-xl p-3 space-y-2">
+                    <p class="text-xs text-slate-400 text-center py-4">今天还没有学习记录</p>
+                </div>
+            </div>
+            
+            <button id="close-today-stats-btn" class="w-full mt-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl transition-all active:scale-95 flex-shrink-0">
+                知道了
+            </button>
+        </div>
+    </div>
+
+    <!-- 历史记录弹窗 -->
+    <div id="history-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden p-8 relative animate-in fade-in zoom-in-95 flex flex-col">
+            <button id="close-history" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 text-purple-600">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-black text-slate-800 mb-2">学习历史记录</h2>
+                <p class="text-sm text-slate-500">最近 30 天的学习数据</p>
+            </div>
+            
+            <div id="history-list" class="flex-1 overflow-y-auto space-y-3">
+                <p class="text-sm text-slate-400 text-center py-8">暂无历史记录</p>
+            </div>
+            
+            <button id="close-history-btn" class="w-full mt-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-xl transition-all active:scale-95">
+                关闭
+            </button>
         </div>
     </div>
 
@@ -871,6 +954,51 @@
         $('#login-modal').on('click', function(e) {
             if (e.target === this) closeLoginModal();
         });
+
+        // 今日学习统计弹窗
+        $('#today-stats-btn').on('click', () => {
+            const stats = getTodayStats();
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+            
+            $('#today-stats-date').text(dateStr);
+            $('#modal-today-count').text(stats.correctCount);
+            $('#modal-total-days').text(getTotalLearningDays());
+            renderTodayWordsList();
+            $('#today-stats-modal').removeClass('hidden');
+            
+            // 埋点：查看今日统计
+            trackEvent('view_today_stats', {
+                correct_count: stats.correctCount,
+                date: stats.date
+            });
+        });
+
+        $('#close-today-stats, #close-today-stats-btn').on('click', () => {
+            $('#today-stats-modal').addClass('hidden');
+        });
+
+        $('#today-stats-modal').on('click', function(e) {
+            if (e.target === this) $('#today-stats-modal').addClass('hidden');
+        });
+
+        // 查看历史记录
+        $('#view-history-btn').on('click', () => {
+            renderHistory();
+            $('#history-modal').removeClass('hidden');
+            
+            // 埋点：查看历史记录
+            trackEvent('view_learning_history');
+        });
+
+        $('#close-history, #close-history-btn').on('click', () => {
+            $('#history-modal').addClass('hidden');
+        });
+
+        $('#history-modal').on('click', function(e) {
+            if (e.target === this) $('#history-modal').addClass('hidden');
+        });
+
         $('#email-input').on('keydown', function(e) {
             if (e.key === 'Enter') sendMagicLink();
         });
@@ -919,6 +1047,7 @@
             
             checkAuth();
             loadWordStats();
+            initTodayStats(); // 初始化今日学习统计
 
             // 根据 paidChapters 动态注入锁图标
             const lockSvg = `<span class="ml-auto text-amber-700 lock-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" /></svg></span>`;
@@ -1221,6 +1350,152 @@
         let numberGroups = [];
         let wordStats = {}; // 存储每个词的统计数据
 
+        // 今日学习统计
+        function getTodayDateKey() {
+            const today = new Date();
+            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        }
+
+        function getTodayStats() {
+            const dateKey = getTodayDateKey();
+            const stats = localStorage.getItem('todayStats');
+            if (!stats) return { date: dateKey, correctCount: 0, words: [] };
+            
+            const parsed = JSON.parse(stats);
+            // 如果日期不是今天，先保存到历史记录，然后重置统计
+            if (parsed.date !== dateKey) {
+                saveToHistory(parsed);
+                return { date: dateKey, correctCount: 0, words: [] };
+            }
+            // 兼容旧版本数据
+            if (!parsed.words) {
+                parsed.words = [];
+            }
+            return parsed;
+        }
+
+        function updateTodayStats(word, translation, isRetry) {
+            const stats = getTodayStats();
+            const normalizedWord = word.toLowerCase().trim();
+            
+            // 去重：只有当这个单词今天第一次答对时才计数
+            const existingIndex = stats.words.findIndex(w => w.en.toLowerCase() === normalizedWord);
+            if (existingIndex === -1) {
+                // 新单词，直接加入
+                stats.words.push({
+                    en: word,
+                    zh: translation,
+                    timestamp: new Date().toISOString(),
+                    isRetry: isRetry || false
+                });
+                stats.correctCount = stats.words.length;
+                localStorage.setItem('todayStats', JSON.stringify(stats));
+                $('#today-correct-count').text(stats.correctCount);
+            }
+            // 已存在的单词不重复计数，标记也保持首次答对时的状态
+        }
+
+        function initTodayStats() {
+            const stats = getTodayStats();
+            $('#today-correct-count').text(stats.correctCount);
+        }
+
+        // 计算累计学习天数（历史记录天数 + 今天是否有学习）
+        function getTotalLearningDays() {
+            const history = getHistory();
+            const todayStats = getTodayStats();
+            const todayHasWords = todayStats.words && todayStats.words.length > 0;
+            return history.length + (todayHasWords ? 1 : 0);
+        }
+
+        // 历史记录管理
+        function saveToHistory(dayStats) {
+            if (!dayStats || !dayStats.date || dayStats.correctCount === 0) return;
+            
+            const history = getHistory();
+            // 检查是否已存在该日期的记录
+            const existingIndex = history.findIndex(h => h.date === dayStats.date);
+            if (existingIndex >= 0) {
+                history[existingIndex] = dayStats;
+            } else {
+                history.unshift(dayStats);
+            }
+            
+            // 只保留最近30天
+            const recentHistory = history.slice(0, 30);
+            localStorage.setItem('learningHistory', JSON.stringify(recentHistory));
+        }
+
+        function getHistory() {
+            const history = localStorage.getItem('learningHistory');
+            return history ? JSON.parse(history) : [];
+        }
+
+        function renderTodayWordsList() {
+            const stats = getTodayStats();
+            const container = $('#today-words-list');
+            
+            if (stats.words.length === 0) {
+                container.html('<p class="text-xs text-slate-400 text-center py-4">今天还没有学习记录</p>');
+                return;
+            }
+            
+            // 按时间倒序显示（最新的在上面）
+            const wordsHtml = stats.words.slice().reverse().map(word => `
+                <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-slate-200">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-sm font-bold text-slate-700">${word.en}</span>
+                            ${word.isRetry ? '<span class="text-[9px] font-bold text-orange-500 bg-orange-50 border border-orange-200 px-1.5 py-0.5 rounded-full">重练</span>' : ''}
+                        </div>
+                        <div class="text-xs text-slate-500">${word.zh}</div>
+                    </div>
+                    <div class="text-[10px] text-slate-400">${new Date(word.timestamp).toLocaleTimeString('zh-CN', {hour: '2-digit', minute: '2-digit'})}</div>
+                </div>
+            `).join('');
+            
+            container.html(wordsHtml);
+        }
+
+        function renderHistory() {
+            const history = getHistory();
+            const container = $('#history-list');
+            
+            if (history.length === 0) {
+                container.html('<p class="text-sm text-slate-400 text-center py-8">暂无历史记录</p>');
+                return;
+            }
+            
+            const historyHtml = history.map(day => {
+                const date = new Date(day.date);
+                const dateStr = `${date.getMonth() + 1}月${date.getDate()}日`;
+                const dayOfWeek = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()];
+                
+                return `
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-slate-700">${dateStr}</span>
+                                <span class="text-xs text-slate-400">${dayOfWeek}</span>
+                            </div>
+                            <span class="text-lg font-black text-blue-600">${day.correctCount} 词</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
+                            ${day.words.slice(0, 20).map(word => `
+                                <div class="text-xs p-2 bg-white rounded border border-slate-200">
+                                    <div class="font-bold text-slate-700 truncate">${word.en}</div>
+                                    <div class="text-slate-500 truncate">${word.zh}</div>
+                                </div>
+                            `).join('')}
+                            ${day.words.length > 20 ? `<div class="text-xs text-slate-400 p-2 text-center col-span-2">还有 ${day.words.length - 20} 个单词...</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.html(historyHtml);
+        }
+
         function shuffleArray(array) {
             let currentIndex = array.length, randomIndex;
             while (currentIndex != 0) {
@@ -1336,7 +1611,6 @@
             $('#stat-accuracy').text('0%');
             $('#log-container').empty();
             $('#log-count').text('0');
-            $('#global-progress').text('0%');
             $('#translation-display').addClass('hidden').text('');
             $('#start-btn-container').removeClass('hidden');
             $('#retry-wrong-container').addClass('hidden');
@@ -1454,7 +1728,6 @@
             $('#stat-accuracy').text('0%');
             $('#log-container').empty();
             $('#log-count').text('0');
-            $('#global-progress').text('0%');
             $('#translation-display').addClass('hidden').text('');
             $('#start-btn-container').removeClass('hidden');
             $('#retry-wrong-container').addClass('hidden');
@@ -1625,9 +1898,6 @@
             container.append(logHtml);
             container.scrollTop(container[0].scrollHeight);
             $('#log-count').text(attemptCount);
-            
-            const prog = Math.round((currentIndex / corpus.length) * 100);
-            $('#global-progress').text(prog + '%');
         }
 
         // 显示下一个单词及其翻译，重置输入框和相关状态
@@ -1657,7 +1927,6 @@
                 $('#user-input').val('Well Done!').prop('disabled', true);
                 $('#timer-bar').parent().hide();
                 $('#progress-text').text('完成');
-                $('#global-progress').text('100%');
                 
                 if (wrongWords.length > 0) {
                     $('#wrong-count').text(wrongWords.length);
@@ -1841,6 +2110,11 @@
                 correctCount++;
                 $('#stat-correct').text(correctCount);
                 updateAccuracy();
+                
+                // 统计今日学习（去重），重练模式也计入但标记
+                console.log('[stats] updateTodayStats:', currentData.en, 'isRetry:', isRetryingWrong);
+                updateTodayStats(currentData.en, currentData.zh, isRetryingWrong);
+                
                 currentIndex++;
                 renderWord();
             } else {
@@ -1953,7 +2227,6 @@
             $('#stat-accuracy').text('0%');
             $('#log-container').empty();
             $('#log-count').text('0');
-            $('#global-progress').text('0%');
             $('#current-chapter-title').text(`雅思听力特训 / 章节: ${currentChapter} 第${currentPage}页 / 错题练习`);
             
             $('#pause-menu').addClass('hidden');
@@ -2263,7 +2536,6 @@
             $('#stat-accuracy').text('0%');
             $('#log-container').empty();
             $('#log-count').text('0');
-            $('#global-progress').text('0%');
             $('#current-chapter-title').text(`雅思听力特训 / 章节: ${currentChapter} 第${currentPage}页 / 错题练习`);
             
             $('#retry-wrong-container').addClass('hidden');
