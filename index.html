@@ -309,25 +309,14 @@
                         </div>
                     </div>
                     <div class="bg-gradient-to-br from-green-50 to-teal-50 rounded-2xl p-5 text-center">
-                        <p class="text-xs text-slate-500 font-medium mb-1">累计学习</p>
-                        <p class="text-5xl font-black text-green-600 mb-0.5" id="stats-page-total-days">0</p>
-                        <p class="text-xs text-slate-400">天</p>
-                    </div>
-                </div>
-
-                <!-- 今日学习词汇 -->
-                <div class="bg-white border border-slate-200 rounded-2xl p-5 mb-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-sm font-black text-slate-700 uppercase tracking-widest">今日学习词汇</h3>
-                        <button id="stats-view-history-btn" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all active:scale-95">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+                        <p class="text-xs text-slate-500 font-medium mb-1">累计学习词数</p>
+                        <p class="text-5xl font-black text-green-600 mb-2" id="stats-page-total-words">0</p>
+                        <button id="stats-view-history-btn" class="text-[10px] text-green-600 hover:text-green-700 font-bold flex items-center gap-1 mx-auto transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            历史记录
+                            <span id="stats-page-total-days">0</span> 天 · 查看历史
                         </button>
-                    </div>
-                    <div id="stats-page-words" class="grid grid-cols-4 gap-1.5 text-xs">
-                        <p class="col-span-4 text-slate-400 text-center py-6">今天还没有学习记录</p>
                     </div>
                 </div>
 
