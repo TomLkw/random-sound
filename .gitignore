@@ -1,4 +1,8 @@
 *.txt
-*.csv
+
 /redbook
 /local-doc
+/sound-man
+/.vscode
+/local-key
+/backups
