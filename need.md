@@ -179,7 +179,7 @@ done: 困难版中记得加 triple
 
 57. todo 选择后变色 参考 数字 模式
 
-58. seo 随机听写
+58. done 随机听写
 
 59. done chapter11.csv 重新划分章节： 120 个词算一章 
 
