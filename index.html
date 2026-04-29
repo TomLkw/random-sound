@@ -652,30 +652,42 @@
 
     <!-- 历史记录弹窗 -->
     <div id="history-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden p-8 relative animate-in fade-in zoom-in-95 flex flex-col">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full relative animate-in fade-in zoom-in-95 flex flex-col" style="max-height:90vh;">
             <button id="close-history" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors z-10">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
-            
-            <div class="text-center mb-6">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 text-purple-600">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+
+            <!-- 标题 -->
+            <div class="text-center pt-7 pb-3 px-8 shrink-0">
+                <h2 class="text-xl font-black text-slate-800">学习历史记录</h2>
+                <p class="text-xs text-slate-400 mt-0.5">点击柱子查看当天单词</p>
+            </div>
+
+            <!-- 条形图区域 -->
+            <div class="px-6 shrink-0">
+                <div id="history-chart" class="flex items-end justify-center gap-1.5 h-36 bg-slate-50 rounded-2xl px-4 py-3 border border-slate-100">
+                    <p class="text-sm text-slate-400 self-center">暂无数据</p>
                 </div>
-                <h2 class="text-2xl font-black text-slate-800 mb-2">学习历史记录</h2>
-                <p class="text-sm text-slate-500">最近 30 天的学习数据</p>
             </div>
-            
-            <div id="history-list" class="flex-1 overflow-y-auto space-y-3">
-                <p class="text-sm text-slate-400 text-center py-8">暂无历史记录</p>
+
+            <!-- 单词表格区域 -->
+            <div class="flex-1 overflow-y-auto px-6 pb-2 mt-4 min-h-0">
+                <div id="history-table-header" class="hidden flex items-center justify-between mb-2">
+                    <span id="history-table-title" class="text-sm font-bold text-slate-700"></span>
+                    <span id="history-table-count" class="text-xs text-blue-600 font-bold"></span>
+                </div>
+                <div id="history-word-table">
+                    <p class="text-sm text-slate-400 text-center py-6">← 点击上方柱子查看单词</p>
+                </div>
             </div>
-            
-            <button id="close-history-btn" class="w-full mt-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-xl transition-all active:scale-95">
-                关闭
-            </button>
+
+            <div class="px-6 pb-5 pt-3 shrink-0">
+                <button id="close-history-btn" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-xl transition-all active:scale-95">
+                    关闭
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1573,41 +1585,110 @@
 
         function renderHistory() {
             const history = getHistory();
-            const container = $('#history-list');
-            
+            const chart = $('#history-chart');
+            const wordTable = $('#history-word-table');
+            const tableHeader = $('#history-table-header');
+
             if (history.length === 0) {
-                container.html('<p class="text-sm text-slate-400 text-center py-8">暂无历史记录</p>');
+                chart.html('<p class="text-sm text-slate-400 self-center">暂无数据</p>');
+                wordTable.html('<p class="text-sm text-slate-400 text-center py-6">暂无历史记录</p>');
+                tableHeader.addClass('hidden');
                 return;
             }
-            
-            const historyHtml = history.map(day => {
+
+            // 最多显示最近14天，按日期升序（左旧右新）
+            const recent = history.slice(0, 14).reverse();
+            const maxCount = Math.max(...recent.map(d => d.correctCount), 1);
+
+            // 渲染条形图
+            const barColors = [
+                'from-blue-400 to-blue-600',
+                'from-purple-400 to-purple-600',
+                'from-pink-400 to-pink-600',
+                'from-indigo-400 to-indigo-600',
+                'from-teal-400 to-teal-600',
+            ];
+
+            const barsHtml = recent.map((day, i) => {
                 const date = new Date(day.date);
-                const dateStr = `${date.getMonth() + 1}月${date.getDate()}日`;
-                const dayOfWeek = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()];
-                
+                const monthDay = `${date.getMonth() + 1}/${date.getDate()}`;
+                const dayOfWeek = ['日','一','二','三','四','五','六'][date.getDay()];
+                const heightPct = Math.max(8, Math.round((day.correctCount / maxCount) * 100));
+                const color = barColors[i % barColors.length];
+
                 return `
-                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm font-bold text-slate-700">${dateStr}</span>
-                                <span class="text-xs text-slate-400">${dayOfWeek}</span>
-                            </div>
-                            <span class="text-lg font-black text-blue-600">${day.correctCount} 词</span>
+                    <div class="history-bar-col flex flex-col items-center gap-1 cursor-pointer group flex-1 min-w-0"
+                         data-date="${day.date}" data-index="${i}">
+                        <span class="text-xs font-bold text-slate-500 group-hover:text-blue-600 transition-colors history-bar-num"
+                              style="font-size:10px;">${day.correctCount}</span>
+                        <div class="w-full flex items-end justify-center" style="height:80px;">
+                            <div class="history-bar w-full max-w-[32px] rounded-t-lg bg-gradient-to-t ${color} transition-all duration-200 group-hover:opacity-80 group-hover:scale-105 origin-bottom"
+                                 style="height:${heightPct}%;"></div>
                         </div>
-                        <div class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
-                            ${day.words.slice(0, 20).map(word => `
-                                <div class="text-xs p-2 bg-white rounded border border-slate-200">
-                                    <div class="font-bold text-slate-700 truncate">${word.en}</div>
-                                    <div class="text-slate-500 truncate">${word.zh}</div>
-                                </div>
-                            `).join('')}
-                            ${day.words.length > 20 ? `<div class="text-xs text-slate-400 p-2 text-center col-span-2">还有 ${day.words.length - 20} 个单词...</div>` : ''}
-                        </div>
+                        <span class="text-center leading-tight" style="font-size:9px;">
+                            <span class="block text-slate-500">${monthDay}</span>
+                            <span class="block text-slate-400">周${dayOfWeek}</span>
+                        </span>
                     </div>
                 `;
             }).join('');
-            
-            container.html(historyHtml);
+
+            chart.html(barsHtml);
+
+            // 点击柱子展示单词表格
+            function showDayWords(dayData, barEl) {
+                // 高亮选中柱子
+                $('.history-bar-col').removeClass('is-selected');
+                $('.history-bar').removeClass('ring-2 ring-offset-1 ring-blue-400');
+                barEl.addClass('is-selected');
+                barEl.find('.history-bar').addClass('ring-2 ring-offset-1 ring-blue-400');
+
+                const date = new Date(dayData.date);
+                const dateStr = `${date.getMonth()+1}月${date.getDate()}日 周${'日一二三四五六'[date.getDay()]}`;
+
+                tableHeader.removeClass('hidden');
+                $('#history-table-title').text(dateStr);
+                $('#history-table-count').text(`共 ${dayData.correctCount} 词`);
+
+                if (!dayData.words || dayData.words.length === 0) {
+                    wordTable.html('<p class="text-sm text-slate-400 text-center py-4">该天暂无单词记录</p>');
+                    return;
+                }
+
+                const rows = dayData.words.map((w, idx) => `
+                    <tr class="${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}">
+                        <td class="py-2 px-3 text-xs text-slate-400 w-8">${idx + 1}</td>
+                        <td class="py-2 px-3 text-sm font-bold text-slate-700">${w.en}</td>
+                        <td class="py-2 px-3 text-sm text-slate-500">${w.zh}</td>
+                    </tr>
+                `).join('');
+
+                wordTable.html(`
+                    <div class="rounded-xl overflow-hidden border border-slate-200">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-gradient-to-r from-purple-50 to-pink-50">
+                                    <th class="py-2 px-3 text-xs text-slate-400 font-semibold text-left w-8">#</th>
+                                    <th class="py-2 px-3 text-xs text-slate-500 font-semibold text-left">英文</th>
+                                    <th class="py-2 px-3 text-xs text-slate-500 font-semibold text-left">中文</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+                `);
+            }
+
+            // 默认展示最新一天（最右边）
+            const latestDay = recent[recent.length - 1];
+            const latestBar = $(`.history-bar-col[data-date="${latestDay.date}"]`);
+            showDayWords(latestDay, latestBar);
+
+            // 绑定点击事件
+            $(document).off('click.historybar').on('click.historybar', '.history-bar-col', function() {
+                const idx = $(this).data('index');
+                showDayWords(recent[idx], $(this));
+            });
         }
 
         function shuffleArray(array) {
