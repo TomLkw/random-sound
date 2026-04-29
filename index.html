@@ -1472,6 +1472,9 @@
             $('#stats-page-date').text(dateStr);
             $('#stats-page-today-count').text(stats.correctCount);
             $('#stats-page-total-days').text(getTotalLearningDays());
+            // 累计学习词数：wordStats 里 total > 0 的词数
+            const totalWords = Object.values(wordStats).filter(s => s.total > 0).length;
+            $('#stats-page-total-words').text(totalWords);
 
             // 今日词汇列表（4列，成绩统计页风格）
             const wordsContainer = $('#stats-page-words');
