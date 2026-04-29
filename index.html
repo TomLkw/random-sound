@@ -248,7 +248,7 @@
                 <p class="text-[10px] text-slate-400 font-bold uppercase mb-2">今日学习统计</p>
                 <div class="flex items-end gap-2">
                     <span id="today-correct-count" class="text-2xl font-black italic text-blue-600">0</span>
-                    <span class="text-[10px] text-slate-400 mb-1">词已掌握</span>
+                    <span class="text-[10px] text-slate-400 mb-1">词</span>
                 </div>
             </button>
         </div>
@@ -289,7 +289,69 @@
 
         <!-- 核心练习与日志区 -->
         <main class="flex-1 overflow-y-auto p-2 md:p-4 lg:p-6">
-            <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-8">
+
+            <!-- 统计页面 -->
+            <div id="stats-page" class="hidden max-w-2xl mx-auto">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-black text-slate-800">学习统计</h2>
+                    <p class="text-sm text-slate-400 mt-1" id="stats-page-date"></p>
+                </div>
+
+                <!-- 数字卡片 -->
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-5 text-center">
+                        <p class="text-xs text-slate-500 font-medium mb-1">今日学习</p>
+                        <p class="text-5xl font-black text-blue-600 mb-2" id="stats-page-today-count">0</p>
+                        <div class="flex justify-center gap-3 text-xs">
+                            <span class="flex items-center gap-1 text-blue-500 font-bold">🌱 新学 <span id="stats-new-badge">0</span></span>
+                            <span class="text-slate-300">|</span>
+                            <span class="flex items-center gap-1 text-green-500 font-bold">🔁 复习 <span id="stats-review-badge">0</span></span>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-50 to-teal-50 rounded-2xl p-5 text-center">
+                        <p class="text-xs text-slate-500 font-medium mb-1">累计学习</p>
+                        <p class="text-5xl font-black text-green-600 mb-0.5" id="stats-page-total-days">0</p>
+                        <p class="text-xs text-slate-400">天</p>
+                    </div>
+                </div>
+
+                <!-- 今日学习词汇 -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-5 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-black text-slate-700 uppercase tracking-widest">今日学习词汇</h3>
+                        <button id="stats-view-history-btn" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all active:scale-95">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            历史记录
+                        </button>
+                    </div>
+                    <div id="stats-page-words" class="grid grid-cols-4 gap-1.5 text-xs">
+                        <p class="col-span-4 text-slate-400 text-center py-6">今天还没有学习记录</p>
+                    </div>
+                </div>
+
+                <!-- 新学单词 / 复习单词 -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-5 mb-6">
+                    <h3 class="text-sm font-black text-slate-700 uppercase tracking-widest mb-4">
+                        🌱 新学单词 <span id="stats-new-count" class="text-blue-500 font-bold text-xs normal-case"></span>
+                    </h3>
+                    <div id="stats-page-new-words" class="grid grid-cols-4 gap-1.5 text-xs">
+                        <p class="col-span-4 text-slate-400 text-center py-4">暂无新学单词</p>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-2xl p-5">
+                    <h3 class="text-sm font-black text-slate-700 uppercase tracking-widest mb-4">
+                        🔁 复习单词 <span id="stats-review-count" class="text-green-500 font-bold text-xs normal-case"></span>
+                    </h3>
+                    <div id="stats-page-review-words" class="grid grid-cols-4 gap-1.5 text-xs">
+                        <p class="col-span-4 text-slate-400 text-center py-4">暂无复习单词</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="practice-area" class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-8">
                 
                 <!-- 练习卡片 -->
                 <div class="flex-[3]">
@@ -434,7 +496,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div><!-- end practice-area -->
         </main>
     </div>
 
@@ -955,23 +1017,9 @@
             if (e.target === this) closeLoginModal();
         });
 
-        // 今日学习统计弹窗
+        // 今日学习统计 → 切换到统计页面
         $('#today-stats-btn').on('click', () => {
-            const stats = getTodayStats();
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
-            
-            $('#today-stats-date').text(dateStr);
-            $('#modal-today-count').text(stats.correctCount);
-            $('#modal-total-days').text(getTotalLearningDays());
-            renderTodayWordsList();
-            $('#today-stats-modal').removeClass('hidden');
-            
-            // 埋点：查看今日统计
-            trackEvent('view_today_stats', {
-                correct_count: stats.correctCount,
-                date: stats.date
-            });
+            showStatsPage();
         });
 
         $('#close-today-stats, #close-today-stats-btn').on('click', () => {
@@ -982,7 +1030,14 @@
             if (e.target === this) $('#today-stats-modal').addClass('hidden');
         });
 
-        // 查看历史记录
+        // 查看历史记录（统计页面内的按钮）
+        $('#stats-view-history-btn').on('click', () => {
+            renderHistory();
+            $('#history-modal').removeClass('hidden');
+            trackEvent('view_learning_history');
+        });
+
+        // 查看历史记录（旧弹窗内的按钮，保留兼容）
         $('#view-history-btn').on('click', () => {
             renderHistory();
             $('#history-modal').removeClass('hidden');
@@ -1381,18 +1436,19 @@
             // 去重：只有当这个单词今天第一次答对时才计数
             const existingIndex = stats.words.findIndex(w => w.en.toLowerCase() === normalizedWord);
             if (existingIndex === -1) {
-                // 新单词，直接加入
+                // 在 updateWordStats 写入之前判断：wordStats 里没有记录 = 新词
+                const isNew = !wordStats[word] || wordStats[word].total === 0;
                 stats.words.push({
                     en: word,
                     zh: translation,
                     timestamp: new Date().toISOString(),
-                    isRetry: isRetry || false
+                    isRetry: isRetry || false,
+                    isNew: isNew
                 });
                 stats.correctCount = stats.words.length;
                 localStorage.setItem('todayStats', JSON.stringify(stats));
                 $('#today-correct-count').text(stats.correctCount);
             }
-            // 已存在的单词不重复计数，标记也保持首次答对时的状态
         }
 
         function initTodayStats() {
@@ -1406,6 +1462,72 @@
             const todayStats = getTodayStats();
             const todayHasWords = todayStats.words && todayStats.words.length > 0;
             return history.length + (todayHasWords ? 1 : 0);
+        }
+
+        function showStatsPage() {
+            const stats = getTodayStats();
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+
+            $('#stats-page-date').text(dateStr);
+            $('#stats-page-today-count').text(stats.correctCount);
+            $('#stats-page-total-days').text(getTotalLearningDays());
+
+            // 今日词汇列表（4列，成绩统计页风格）
+            const wordsContainer = $('#stats-page-words');
+            if (!stats.words || stats.words.length === 0) {
+                wordsContainer.html('<p class="col-span-4 text-slate-400 text-center py-6">今天还没有学习记录</p>');
+            } else {
+                const html = stats.words.slice().reverse().map(w => `
+                    <div class="p-1.5 bg-slate-50 rounded flex flex-col gap-0.5 relative">
+                        <div class="font-bold text-slate-700 truncate">${w.en}</div>
+                        <div class="text-slate-500 truncate">${w.zh}</div>
+                        ${w.isRetry ? '<span class="absolute top-1 right-1 text-[8px] font-bold text-orange-500 bg-orange-50 border border-orange-200 px-1 rounded-full">重练</span>' : ''}
+                    </div>
+                `).join('');
+                wordsContainer.html(html);
+            }
+
+            // 新学单词 vs 复习单词（用写入时记录的 isNew 字段判断）
+            const todayWords = stats.words || [];
+            const newWords = todayWords.filter(w => w.isNew);
+            const reviewWords = todayWords.filter(w => !w.isNew);
+
+            $('#stats-new-badge').text(newWords.length);
+            $('#stats-review-badge').text(reviewWords.length);
+
+            const renderWordGrid = (words, bgClass) => words.map(w => `
+                <div class="p-1.5 ${bgClass} rounded flex flex-col gap-0.5 relative">
+                    <div class="font-bold text-slate-700 truncate">${w.en}</div>
+                    <div class="text-slate-500 truncate">${w.zh}</div>
+                    ${w.isRetry ? '<span class="absolute top-1 right-1 text-[8px] font-bold text-orange-500 bg-orange-50 border border-orange-200 px-1 rounded-full">重练</span>' : ''}
+                </div>
+            `).join('');
+
+            const newContainer = $('#stats-page-new-words');
+            $('#stats-new-count').text(newWords.length ? `${newWords.length} 词` : '');
+            newContainer.html(newWords.length
+                ? renderWordGrid(newWords, 'bg-blue-50 border border-blue-100')
+                : '<p class="col-span-4 text-slate-400 text-center py-4">暂无新学单词</p>'
+            );
+
+            const reviewContainer = $('#stats-page-review-words');
+            $('#stats-review-count').text(reviewWords.length ? `${reviewWords.length} 词` : '');
+            reviewContainer.html(reviewWords.length
+                ? renderWordGrid(reviewWords, 'bg-green-50 border border-green-100')
+                : '<p class="col-span-4 text-slate-400 text-center py-4">暂无复习单词</p>'
+            );
+
+            $('#practice-area').addClass('hidden');
+            $('#stats-page').removeClass('hidden');
+            $('#current-chapter-title').text('学习统计');
+
+            trackEvent('view_today_stats', { correct_count: stats.correctCount });
+        }
+
+        function showPracticePage() {
+            $('#stats-page').addClass('hidden');
+            $('#practice-area').removeClass('hidden');
         }
 
         // 历史记录管理
@@ -1538,6 +1660,7 @@
 
         // 开始数字听力练习
         function startNumberExercise(level = 'hard') {
+            showPracticePage(); // 切回练习页面
             $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50').css({'background':'', 'color':''});
             if (level === 'easy') {
                 $('#nav-numbers-easy').addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50').css({'background':'#0f172a', 'color':'#fff'});
@@ -1674,6 +1797,7 @@
         }
 
         async function startExercise(chapter) {
+            showPracticePage(); // 切回练习页面
             // 埋点：点击章节
             trackEvent('chapter_click', { chapter });
 
@@ -2104,20 +2228,22 @@
             const currentData = corpus[currentIndex];
             attemptCount++;
 
-            addLog(isCorrect, userInput, currentData.en, currentData.zh);
-
             if (isCorrect) {
                 correctCount++;
                 $('#stat-correct').text(correctCount);
                 updateAccuracy();
                 
-                // 统计今日学习（去重），重练模式也计入但标记
-                console.log('[stats] updateTodayStats:', currentData.en, 'isRetry:', isRetryingWrong);
+                // 先统计今日学习（此时 wordStats 还未更新，能正确判断新词/复习词）
                 updateTodayStats(currentData.en, currentData.zh, isRetryingWrong);
+                
+                // 再记录日志（内部会调用 updateWordStats）
+                addLog(isCorrect, userInput, currentData.en, currentData.zh);
                 
                 currentIndex++;
                 renderWord();
             } else {
+                // 错误时直接记录日志
+                addLog(isCorrect, userInput, currentData.en, currentData.zh);
                 wrongWords.push(currentData);
                 updateAccuracy();
                 $('#correct-answer-text').text(currentData.en);
