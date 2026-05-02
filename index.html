@@ -724,6 +724,10 @@
         const SUPABASE_URL = 'https://elckemvmphbjjlpzgoqy.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsY2tlbXZtcGhiampscHpnb3F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg5Mzk4NDYsImV4cCI6MjA3NDUxNTg0Nn0.RElcl4dh0bhzYtV0SFTmkwKSy06qxZErZqcM8t137QM';
         const supabaseClinet = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Cloudflare R2 公开域名（task1 小作文音频）
+        const R2_BASE_URL = 'https://pub-1554b6d18677489f8ee3564ebb9f06e5.r2.dev';
+
         
         let currentUser = null;
 
@@ -2188,8 +2192,7 @@
                 }
 
                 try {
-                    const { data } = supabaseClinet.storage.from('word-audios').getPublicUrl(path);
-                    const publicUrl = data && data.publicUrl;
+                    const publicUrl = getAudioUrl(path);
                     if (!publicUrl) continue;
 
                     const audio = new Audio();
@@ -2210,7 +2213,16 @@
             }
         }
 
-        // 优先从 Supabase word-audios 获取音频，路径与 gen-sound.py 一致；不存在则系统发声
+        // 优先从 Supabase word-audios 获取音频，task1 章节从 Cloudflare R2 获取；不存在则系统发声
+        function getAudioUrl(path) {
+            const r2Chapters = ['task1-basic', 'task1-advanced', '3.1', '3.2', '3.3'];
+            if (currentChapter && r2Chapters.includes(currentChapter)) {
+                return `${R2_BASE_URL}/${path}`;
+            }
+            const { data } = supabaseClinet.storage.from('word-audios').getPublicUrl(path);
+            return data && data.publicUrl;
+        }
+
         function speak(text) {
             const ttsText = (isNumberMode && corpus[currentIndex] && corpus[currentIndex].speech)
                 ? corpus[currentIndex].speech : text;
@@ -2243,8 +2255,7 @@
 
             window.speechSynthesis.cancel();
             try {
-                const { data } = supabaseClinet.storage.from('word-audios').getPublicUrl(path);
-                const publicUrl = data && data.publicUrl;
+                const publicUrl = getAudioUrl(path);
                 if (!publicUrl) {
                     console.warn('[audio] 未找到远程音频，回退系统 TTS:', path);
                     systemSpeak(ttsText, ttsRate);
