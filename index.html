@@ -1810,6 +1810,9 @@
             $('#shuffle-btn').removeClass('hidden');
             $('#prev-page, #next-page').addClass('hidden');
             $('#word-list-container').removeClass('hidden');
+
+            // 点击侧边栏时立即开始预加载数字音频
+            preloadAudiosForWords(numberGroups);
         }
 
         // 检查订阅状态
@@ -2128,8 +2131,8 @@
             console.log('[audio] renderWord 当前索引/总数:', currentIndex, '/', corpus.length, '单词:', current.en);
             speak(current.en);
 
-            // 练习过程中，持续为后面的若干个单词预加载音频（仅单词模式）
-            if (!isNumberMode && corpus.length > 0) {
+            // 练习过程中，持续为后面的若干个单词预加载音频
+            if (corpus.length > 0) {
                 const start = currentIndex + 1;
                 if (start < corpus.length) {
                     const upcoming = corpus.slice(start, start + NEXT_PRELOAD_COUNT);
@@ -2176,7 +2179,7 @@
 
         // 预加载一批单词的音频到内存缓存
         function preloadAudiosForWords(words) {
-            if (!supabaseClinet || !Array.isArray(words) || isNumberMode) return;
+            if (!supabaseClinet || !Array.isArray(words)) return;
 
             console.log('[audio] 预加载请求 words:', words.map(w => w.en));
 
@@ -2215,7 +2218,7 @@
 
         // 优先从 Supabase word-audios 获取音频，task1 章节从 Cloudflare R2 获取；不存在则系统发声
         function getAudioUrl(path) {
-            const r2Chapters = ['task1-basic', 'task1-advanced', '3.1', '3.2', '3.3'];
+            const r2Chapters = ['task1-basic', 'task1-advanced', '3.1', '3.2', '3.3', 'numbers-easy', 'numbers-hard'];
             if (currentChapter && r2Chapters.includes(currentChapter)) {
                 return `${R2_BASE_URL}/${path}`;
             }
@@ -2647,15 +2650,46 @@
                     is_number_mode: true,
                     is_retry_wrong: false
                 });
-                
-                isStarted = true;
-                $('#word-list-container').addClass('hidden');
-                $('#start-btn-container').addClass('hidden');
-                $('#share-result-container').addClass('hidden');
-                $('#exercise-controls').removeClass('hidden');
-                $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
-                $('#progress-text').text('正在听写');
-                renderWord();
+
+                const doStartNumber = () => {
+                    $('#audio-loading-bar').addClass('hidden');
+                    $('#start-btn').prop('disabled', false).text('开始练习');
+                    isStarted = true;
+                    $('#word-list-container').addClass('hidden');
+                    $('#start-btn-container').addClass('hidden');
+                    $('#share-result-container').addClass('hidden');
+                    $('#exercise-controls').removeClass('hidden');
+                    $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
+                    $('#progress-text').text('正在听写');
+                    renderWord();
+                };
+
+                // 预加载全部数字音频
+                preloadAudiosForWords(corpus);
+
+                const NUM_WAIT_COUNT = Math.min(5, corpus.length);
+                const firstNums = corpus.slice(0, NUM_WAIT_COUNT);
+                const needWait = firstNums.some(w => !audioCache.has((w.en || '').replace(/\//g, '-') + '.mp3'));
+
+                if (!needWait) { doStartNumber(); return; }
+
+                $('#start-btn').prop('disabled', true).text('加载中...');
+                $('#audio-loading-bar').removeClass('hidden');
+
+                let numCheckCount = 0;
+                const numCheckInterval = setInterval(() => {
+                    const loaded = firstNums.filter(w => audioCache.has((w.en || '').replace(/\//g, '-') + '.mp3')).length;
+                    const realPct = Math.round(loaded / NUM_WAIT_COUNT * 100);
+                    const elapsed = (numCheckCount + 1) * 200;
+                    const minPct = elapsed >= 2000 ? 60 : 0;
+                    const pct = Math.max(realPct, minPct);
+                    $('#audio-loading-text').text(`${pct}%`);
+                    $('#audio-loading-progress').css('width', pct + '%');
+                    if (loaded >= NUM_WAIT_COUNT || ++numCheckCount >= 25) {
+                        clearInterval(numCheckInterval);
+                        doStartNumber();
+                    }
+                }, 200);
                 return;
             }
             
