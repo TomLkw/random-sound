@@ -28,10 +28,11 @@ SUPABASE_URL    = os.getenv("SUPABASE_URL",    "https://elckemvmphbjjlpzgoqy.sup
 SUPABASE_KEY    = os.getenv("SUPABASE_KEY",    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsY2tlbXZtcGhiampscHpnb3F5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODkzOTg0NiwiZXhwIjoyMDc0NTE1ODQ2fQ.nuUPwTiRqurO5aZvFYzLMH6OGkCnxYG4G1XGANXlCWk")
 SUPABASE_BUCKET = "word-audios"
 
-R2_ACCOUNT_ID        = os.getenv("R2_ACCOUNT_ID",        "YOUR_ACCOUNT_ID")
-R2_ACCESS_KEY_ID     = os.getenv("R2_ACCESS_KEY_ID",     "YOUR_ACCESS_KEY_ID")
-R2_SECRET_ACCESS_KEY = os.getenv("R2_SECRET_ACCESS_KEY", "YOUR_SECRET_ACCESS_KEY")
-R2_BUCKET_NAME       = os.getenv("R2_BUCKET_NAME",       "word-audios")
+R2_ACCOUNT_ID        = os.getenv("R2_ACCOUNT_ID",        "5d6465c39769dbba52037ae93dddea27")
+R2_ACCESS_KEY_ID     = os.getenv("R2_ACCESS_KEY_ID",     "73aece21c25ad9ffee2b10354353a064")
+R2_SECRET_ACCESS_KEY = os.getenv("R2_SECRET_ACCESS_KEY", "29038283da97449fc31434ea08019fb889106bb1f98ef065bd34c3570e63e8cd")
+R2_BUCKET_NAME       = os.getenv("R2_BUCKET_NAME",       "hear-audios")
+
 
 
 

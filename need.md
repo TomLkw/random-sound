@@ -216,3 +216,24 @@ add 累计学习天数
 
 累计 学习天数 后期 supabase 里区
 累计 学习词数 wordStatus 里获取
+
+68. todo: 历史记录弹窗做成 上面条形图 下面是表格 点击条形图下面表格展示单词 
+
+69. 今日学习 如何写入历史记录里呢
+
+70. todo sound: safari zoo error
+
+71. todo: 购买弹窗改为导向闲鱼： https://m.tb.cn/h.iwzu8Xp?tk=WqQN5lqvjb1
+
+
+72.  登录 同步练习数据到云端
+
+73. todo 听力进度条
+
+74. 写一个py 脚本 
+获取 task1 全部 单词音频上传到 (后续从supabase 表中获取) 
+cloudflare s2 storage
+写入日志 : 成功的 失败的 没有音频的
+日志要用于断点续传
+
+source .venv/bin/activate
