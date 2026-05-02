@@ -2252,12 +2252,30 @@
                 }
 
                 const audio = new Audio();
-                audio.onerror = () => systemSpeak(ttsText, ttsRate);
+                let played = false;
+                const fallbackTimer = setTimeout(() => {
+                    if (!played) {
+                        played = true;
+                        console.warn('[audio] 加载超时（1s），回退系统 TTS:', path);
+                        systemSpeak(ttsText, ttsRate);
+                    }
+                }, 1000);
+                audio.onerror = () => {
+                    if (!played) {
+                        played = true;
+                        clearTimeout(fallbackTimer);
+                        systemSpeak(ttsText, ttsRate);
+                    }
+                };
                 audio.oncanplaythrough = () => {
-                    audioCache.set(path, audio);
-                    console.log('[audio] 首次加载成功并写入缓存，开始播放:', path);
-                    audio.playbackRate = playbackRate;
-                    audio.play().catch(() => systemSpeak(ttsText, ttsRate));
+                    if (!played) {
+                        played = true;
+                        clearTimeout(fallbackTimer);
+                        audioCache.set(path, audio);
+                        console.log('[audio] 首次加载成功并写入缓存，开始播放:', path);
+                        audio.playbackRate = playbackRate;
+                        audio.play().catch(() => systemSpeak(ttsText, ttsRate));
+                    }
                 };
                 audio.src = publicUrl;
             } catch (e) {
@@ -2688,10 +2706,13 @@
             let checkCount = 0;
             const checkInterval = setInterval(() => {
                 const loaded = firstWords.filter(w => audioCache.has((w.en || '').replace(/\//g, '-') + '.mp3')).length;
-                const pct = Math.round(loaded / WAIT_COUNT * 100);
+                const realPct = Math.round(loaded / WAIT_COUNT * 100);
+                const elapsed = (checkCount + 1) * 200; // 已过毫秒数
+                const minPct = elapsed >= 2000 ? 60 : 0;
+                const pct = Math.max(realPct, minPct);
                 $('#audio-loading-text').text(`${pct}%`);
                 $('#audio-loading-progress').css('width', pct + '%');
-                if (loaded >= WAIT_COUNT || ++checkCount >= 10) {
+                if (loaded >= WAIT_COUNT || ++checkCount >= 15) {
                     clearInterval(checkInterval);
                     doStart();
                 }
