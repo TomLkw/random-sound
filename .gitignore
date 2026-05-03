@@ -6,3 +6,4 @@
 /.vscode
 /local-key
 /backups
+/upload-to-r2/*.log
