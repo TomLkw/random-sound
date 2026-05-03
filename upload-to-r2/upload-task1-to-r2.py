@@ -28,7 +28,7 @@ SUPABASE_KEY    = os.getenv("SUPABASE_KEY",    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpX
 SUPABASE_BUCKET = "word-audios"
 
 # 要迁移的章节，改这里即可，或用环境变量 TARGET_CHAPTER=3.2 python upload-task1-to-r2.py
-TARGET_CHAPTER = os.getenv("TARGET_CHAPTER", "5.2")
+TARGET_CHAPTER = os.getenv("TARGET_CHAPTER", "5.3")
 
 R2_ACCOUNT_ID        = os.getenv("R2_ACCOUNT_ID",        "5d6465c39769dbba52037ae93dddea27")
 R2_ACCESS_KEY_ID     = os.getenv("R2_ACCESS_KEY_ID",     "73aece21c25ad9ffee2b10354353a064")
@@ -56,15 +56,22 @@ log = logging.getLogger(__name__)
 # ── 日志工具 ──────────────────────────────────────────────────────────────────
 
 def _load_log(path: Path) -> set[str]:
+    """读取日志文件，返回已记录的单词集合，忽略章节标记行（# 开头）。"""
     if not path.exists():
         return set()
     with open(path, "r", encoding="utf-8") as f:
-        return {line.strip() for line in f if line.strip()}
+        return {line.strip() for line in f if line.strip() and not line.startswith("#")}
 
 
-def _append_log(path: Path, word: str) -> None:
+def _append_log(path: Path, chapter: str, word: str) -> None:
     with open(path, "a", encoding="utf-8") as f:
         f.write(word + "\n")
+
+
+def _write_chapter_header(path: Path, chapter: str) -> None:
+    """在日志开头写入章节标记（仅首次写入时）。"""
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(f"# chapter: {chapter}\n")
 
 
 # ── Supabase 查询单词 ─────────────────────────────────────────────────────────
@@ -159,6 +166,12 @@ def main() -> None:
     r2 = build_r2_client()
     success_count = failed_count = missing_count = 0
 
+    # 写入本次运行的章节标记
+    if pending:
+        _write_chapter_header(SUCCESS_LOG, TARGET_CHAPTER)
+        _write_chapter_header(FAILED_LOG, TARGET_CHAPTER)
+        _write_chapter_header(MISSING_LOG, TARGET_CHAPTER)
+
     for idx, word in enumerate(pending, 1):
         filename = build_audio_filename(word)
         log.info("[%d/%d] %s → %s", idx, len(pending), word, filename)
@@ -178,13 +191,13 @@ def main() -> None:
 
         if not download_ok:
             log.error("  ❌ 下载彻底失败: %s", word)
-            _append_log(FAILED_LOG, word)
+            _append_log(FAILED_LOG, TARGET_CHAPTER, word)
             failed_count += 1
             continue
 
         if audio_data is None:
             log.warning("  ⚠️  Supabase 无此音频（404）: %s", word)
-            _append_log(MISSING_LOG, word)
+            _append_log(MISSING_LOG, TARGET_CHAPTER, word)
             missing_count += 1
             continue
 
@@ -202,11 +215,11 @@ def main() -> None:
 
         if upload_ok:
             log.info("  ✅ 上传成功: %s", filename)
-            _append_log(SUCCESS_LOG, word)
+            _append_log(SUCCESS_LOG, TARGET_CHAPTER, word)
             success_count += 1
         else:
             log.error("  ❌ 上传彻底失败: %s", word)
-            _append_log(FAILED_LOG, word)
+            _append_log(FAILED_LOG, TARGET_CHAPTER, word)
             failed_count += 1
 
     log.info("─" * 50)
