@@ -1,7 +1,10 @@
-1 主页面加一个开始按钮
+1. 主页面加一个开始按钮
+
 2. 只练错题按钮 按钮上显示错题数目
- - 2.1 . 练习 错题时 也要展示是第几章 第几页
-3. 把随机开关改到主页面上
+ - 2.1 练习 错题时 也要展示是第几章 第几页
+
+3. done: 把随机开关改到主页面上
+
 4. done 如果一个章节单词太多，用户会疲惫，所以要分页
  - 4.1 todo pagesize
 5. done 切换章节时，让用户看到要出现的单词列表 开始记单词后就不用看到了
@@ -9,10 +12,12 @@
 6. done 加一个暂停功能 暂停时可以选择开始练习错题
 7. done 等待时间 由基本时长 和 单词时长构成 不然有的时候写不完
 8. bug 倒计时进度条有时会消失
+
 9. done 对于词组
 反馈时要精确到单词
  只练错题时包含单词 和词组
 加上复选框 练习 词组 单词
+
 10 todo supabase 前端添加登录按钮 增加邮箱验证码 登录功能
 REACT_APP_SUPABASE_URL=https://elckemvmphbjjlpzgoqy.supabase.co
 REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsY2tlbXZtcGhiampscHpnb3F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg5Mzk4NDYsImV4cCI6MjA3NDUxNTg0Nn0.RElcl4dh0bhzYtV0SFTmkwKSy06qxZErZqcM8t137QM
@@ -27,12 +32,15 @@ create table ielts_vocab (
   created_at timestamp with time zone default now()
 );
 
-✅ 加上 5.2 从 supabase 获取
+✅ done 加上 5.2 从 supabase 获取
 
 
-12. 弹窗告知用户收费功能
+12. done 弹窗告知用户收费功能
+
 13. todo 错误后不用摇摆
-14. to do : handle card catalog=card catalogue
+
+14. todo : handle card catalog=card catalogue
+
 15. done : 错题本 local storage
 
 16. 3.4 和 5.2 改成付费模式
@@ -50,14 +58,14 @@ create table public.user_subscriptions (
 没有登录时提醒登录后付费查看
 如果不是，弹窗提醒 转账到 支付宝 付费后使用 
 
-
 17. todo 退出登录按钮提示文案
 
 18. 收费模式 19.9 一个月 解锁 3.4 到 3.9 和 5.3 到 5.12
 转账到 1160292859@qq.com 后 注册邮箱 发送转账成功截图发送到 1160292859@qq.com 解锁章节
 
-19. 到期自动停止续费
-20. 成绩分享按钮 跳出弹窗显示 章节 页数 正确率 全部单词 + 错误单词 
+19. cancel: 到期自动停止续费
+
+20. done: 成绩分享按钮 跳出弹窗显示 章节 页数 正确率 全部单词 + 错误单词 
 网页二维码（https://random-sound.zgbtlkw.workers.dev/）
 
 21. done bug 暂停后切其他章节后 已暂停状态没有重制
@@ -207,33 +215,42 @@ todo: 重练后对的要标记出
 66. todo: 
 统计框展示：
 add 累计学习天数
-攻克高频错词： 
-高频错词（标红）
+cancel: 攻克高频错词： 
+cancel: 高频错词（标红）
 
-67. todo:
+67. done:
 统计不要 由弹窗 变成页面 
 展示 今日学习词汇  
 
-累计 学习天数 后期 supabase 里区
+累计 学习天数 todo: 后期 supabase 里区
 累计 学习词数 wordStatus 里获取
 
-68. todo: 历史记录弹窗做成 上面条形图 下面是表格 点击条形图下面表格展示单词 
+68. done: 历史记录弹窗做成 上面条形图 下面是表格 点击条形图下面表格展示单词 
 
-69. 今日学习 如何写入历史记录里呢
+69. done: 今日学习 如何写入历史记录里呢
 
-70. todo sound: safari zoo error
+70. todo gen-sound: safari zoo error
 
-71. todo: 购买弹窗改为导向闲鱼： https://m.tb.cn/h.iwzu8Xp?tk=WqQN5lqvjb1
+71. done: 购买弹窗改为导向闲鱼： https://m.tb.cn/h.iwzu8Xp?tk=WqQN5lqvjb1
 
 
-72.  登录 同步练习数据到云端
+72.  todo: 登录 同步练习历史到云端
 
-73. todo 听力进度条
+73. done update 听力进度条
 
-74. 写一个py 脚本 
+74. done 写一个py 脚本 
 获取 task1 全部 单词音频上传到 (后续从supabase 表中获取) 
 cloudflare s2 storage
 写入日志 : 成功的 失败的 没有音频的
 日志要用于断点续传
 
 source .venv/bin/activate
+
+75. done 写一个sql 找 user_action event_data 里 包含 5.1 的
+
+SELECT *
+FROM public.user_action
+WHERE event_type = 'practice_complete'
+  AND event_data @> '{"page": 5, "chapter": "5.1"}';
+
+
