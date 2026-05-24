@@ -254,3 +254,13 @@ WHERE event_type = 'practice_complete'
   AND event_data @> '{"page": 5, "chapter": "5.1"}';
 
 
+76. todo 加一个 练习模式 不要倒计时
+
+练习模式 名称 
+练习模式 小字说明
+
+练习模式/听写模式 切换
+
+77. todo seo 优化软文
+
+78. done supabase js 加载速度慢
