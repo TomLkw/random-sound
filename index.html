@@ -386,9 +386,19 @@
                             </div>
                             
                             <div id="start-btn-container" class="mb-6 hidden">
-                                <button id="start-btn" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-2xl transition-all active:scale-95 shadow-lg hover:shadow-xl">
-                                    开始练习
-                                </button>
+                                <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                                    <button id="start-btn" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-2xl transition-all active:scale-95 shadow-lg hover:shadow-xl">
+                                        开始练习
+                                    </button>
+                                    <label class="inline-flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-500 cursor-pointer select-none">
+                                        <span id="dictation-mode-label" class="text-blue-600">倒计时</span>
+                                        <span class="switch">
+                                            <input type="checkbox" id="practice-mode-toggle">
+                                            <span class="slider"></span>
+                                        </span>
+                                        <span id="practice-mode-label">无倒计时</span>
+                                    </label>
+                                </div>
                                 <div id="audio-loading-bar" class="hidden mt-3">
                                     <div class="text-xs text-slate-500 mb-1 text-center">音频加载中 <span id="audio-loading-text">0%</span></div>
                                     <div class="w-full bg-slate-200 rounded-full h-1.5">
@@ -414,7 +424,7 @@
                             </div>
                             
                             <div id="exercise-controls" class="hidden">
-                                <div class="max-w-[200px] mx-auto mb-6">
+                                <div id="timer-container" class="max-w-[200px] mx-auto mb-6">
                                     <div class="timer-progress">
                                         <div id="timer-bar" class="timer-bar" style="width: 0%"></div>
                                     </div>
@@ -1383,6 +1393,7 @@
         let currentPageWords = [];
         let isRetryingWrong = false;
         let isNumberMode = false;
+        let isPracticeMode = false;
         const paidChapters = ['3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.1', '4.2', '4.3', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '11.2', '11.3', '11.4', '11.5', '11.6', '11.7', '11.8', '11.9', '11.10', '11.11', '11.12', '11.13', '11.14'];
         let numberGroups = [];
         let wordStats = {}; // 存储每个词的统计数据
@@ -2081,6 +2092,42 @@
             $('#log-count').text(attemptCount);
         }
 
+        function getCurrentWaitTime() {
+            const currentWord = corpus[currentIndex];
+            if (!currentWord) return BASE_TIME;
+            const wordLength = currentWord.en.length;
+            return BASE_TIME + (wordLength * TIME_PER_CHAR) + (isNumberMode ? 5000 : 0);
+        }
+
+        function startCurrentTimer() {
+            clearTimeout(autoNextTimer);
+
+            if (isPracticeMode) {
+                $('#timer-bar').css({ 'transition': 'none', 'width': '0%' });
+                $('#timer-container').hide();
+                return;
+            }
+
+            const waitTime = getCurrentWaitTime();
+            $('#timer-container').show();
+            $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
+            setTimeout(() => {
+                if (!isPaused && !isPracticeMode) {
+                    $('#timer-bar').css({
+                        'transition': `width ${waitTime}ms linear`,
+                        'width': '0%'
+                    });
+                    
+                    autoNextTimer = setTimeout(() => {
+                        if (!isProcessingResult && !isPaused && !isPracticeMode) {
+                            const val = $('#user-input').val().trim();
+                            goToNext(false, val);
+                        }
+                    }, waitTime);
+                }
+            }, 50);
+        }
+
         // 显示下一个单词及其翻译，重置输入框和相关状态
         function renderWord() {
             if (isPaused) return;
@@ -2106,7 +2153,7 @@
                 
                 $('#translation-display').text('LIST 完成 🏁');
                 $('#user-input').val('Well Done!').prop('disabled', true);
-                $('#timer-bar').parent().hide();
+                $('#timer-container').hide();
                 $('#progress-text').text('完成');
                 
                 if (wrongWords.length > 0) {
@@ -2141,31 +2188,7 @@
                 }
             }
 
-            // 根据单词长度计算等待时间
-            const wordLength = current.en.length;
-            let waitTime;
-            if (isNumberMode) {
-                waitTime = BASE_TIME + (wordLength * TIME_PER_CHAR) + 5000; // 数字模式额外增加5秒
-            } else {
-                waitTime = BASE_TIME + (wordLength * TIME_PER_CHAR);
-            }
-
-            $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
-            setTimeout(() => {
-                if (!isPaused) {
-                    $('#timer-bar').css({
-                        'transition': `width ${waitTime}ms linear`,
-                        'width': '0%'
-                    });
-                    
-                    autoNextTimer = setTimeout(() => {
-                        if (!isProcessingResult && !isPaused) {
-                            const val = $('#user-input').val().trim();
-                            goToNext(false, val);
-                        }
-                    }, waitTime);
-                }
-            }, 50);
+            startCurrentTimer();
         }
 
         // 系统 TTS 发声（Supabase 无文件时回退）
@@ -2371,7 +2394,13 @@
             if (!isStarted || isPaused) return;
             isPaused = true;
             clearTimeout(autoNextTimer);
-            $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
+            if (isPracticeMode) {
+                $('#timer-bar').css({ 'transition': 'none', 'width': '0%' });
+                $('#timer-container').hide();
+            } else {
+                $('#timer-container').show();
+                $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
+            }
             $('#user-input').prop('disabled', true);
             $('#exercise-controls').addClass('hidden');
             $('#pause-menu').removeClass('hidden');
@@ -2388,31 +2417,7 @@
             $('#user-input').prop('disabled', false).focus();
             $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-orange-500');
             $('#progress-text').text('正在听写');
-            
-            // 恢复时重新计算当前单词的等待时间
-            const currentWord = corpus[currentIndex];
-            const wordLength = currentWord.en.length;
-            let waitTime;
-            if (isNumberMode) {
-                waitTime = BASE_TIME + (wordLength * TIME_PER_CHAR) + 5000;
-            } else {
-                waitTime = BASE_TIME + (wordLength * TIME_PER_CHAR);
-            }
-            
-            $('#timer-bar').css({ 'transition': 'none', 'width': '100%' });
-            setTimeout(() => {
-                $('#timer-bar').css({
-                    'transition': `width ${waitTime}ms linear`,
-                    'width': '0%'
-                });
-                
-                autoNextTimer = setTimeout(() => {
-                    if (!isProcessingResult && !isPaused) {
-                        const val = $('#user-input').val().trim();
-                        goToNext(false, val);
-                    }
-                }, waitTime);
-            }, 50);
+            startCurrentTimer();
         });
 
         $('#pause-retry-wrong-btn').on('click', () => {
@@ -2439,7 +2444,7 @@
             
             $('#pause-menu').addClass('hidden');
             $('#exercise-controls').removeClass('hidden');
-            $('#timer-bar').parent().show();
+            $('#timer-container').toggle(!isPracticeMode);
             $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-orange-500');
             $('#progress-text').text('正在听写');
             isStarted = true;
@@ -2510,9 +2515,33 @@
             $('#exercise-controls').addClass('hidden');
             $('#user-input').prop('disabled', true).val('').removeClass('text-red-500 border-red-500 bg-red-50');
             $('#answer-feedback').addClass('opacity-0');
-            $('#timer-bar').css({ 'transition': 'none', 'width': '0%' }).parent().show();
+            $('#timer-bar').css({ 'transition': 'none', 'width': '0%' });
+            $('#timer-container').show();
             $('#status-dot').removeClass('bg-blue-500 animate-pulse bg-orange-500').addClass('bg-slate-300');
         }
+
+        function updatePracticeModeToggleLabel() {
+            $('#dictation-mode-label').toggleClass('text-blue-600', !isPracticeMode);
+            $('#practice-mode-label').toggleClass('text-blue-600', isPracticeMode);
+        }
+
+        $('#practice-mode-toggle').on('change', function() {
+            isPracticeMode = this.checked;
+            updatePracticeModeToggleLabel();
+            if (!isStarted) {
+                $('#timer-container').toggle(!isPracticeMode);
+                return;
+            }
+
+            if (isPracticeMode) {
+                clearTimeout(autoNextTimer);
+                $('#timer-bar').css({ 'transition': 'none', 'width': '0%' });
+                $('#timer-container').hide();
+            } else if (!isPaused) {
+                startCurrentTimer();
+            }
+        });
+        updatePracticeModeToggleLabel();
         
         $('#sort-by-accuracy-btn').on('click', () => {
             if (isNumberMode) return;
@@ -2648,7 +2677,8 @@
                     chapter: currentChapter,
                     word_count: corpus.length,
                     is_number_mode: true,
-                    is_retry_wrong: false
+                    is_retry_wrong: false,
+                    is_practice_mode: isPracticeMode
                 });
 
                 const doStartNumber = () => {
@@ -2731,7 +2761,8 @@
                     page: currentPage,
                     word_count: corpus.length,
                     is_number_mode: false,
-                    is_retry_wrong: isRetryingWrong
+                    is_retry_wrong: isRetryingWrong,
+                    is_practice_mode: isPracticeMode
                 });
                 isStarted = true;
                 $('#word-list-container').addClass('hidden');
@@ -2783,7 +2814,7 @@
             $('#retry-wrong-container').addClass('hidden');
             $('#share-result-container').addClass('hidden');
             $('#exercise-controls').removeClass('hidden');
-            $('#timer-bar').parent().show();
+            $('#timer-container').toggle(!isPracticeMode);
             $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
             $('#progress-text').text('正在听写');
             isStarted = true;
