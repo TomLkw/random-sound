@@ -34,9 +34,7 @@
     }
     </script>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./tailwind-cdn.js"></script>
     <style>
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -729,6 +727,13 @@
         </div>
     </div>
 
+    <script src="./jquery-3.6.0.min.js"></script>
+    <script src="./supabase-js-v2.js"></script>
+    <script>
+        if (!window.supabase && typeof supabase !== 'undefined') {
+            window.supabase = supabase;
+        }
+    </script>
     <script>
         // Supabase 初始化
         const SUPABASE_URL = 'https://elckemvmphbjjlpzgoqy.supabase.co';
