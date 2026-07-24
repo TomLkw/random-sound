@@ -68,7 +68,7 @@
               "name": "练习内容包含哪些语料分类？",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "页面覆盖名词语料、形容词副词语料、词组连读语料、综合测试语料、数字听力练习，以及雅思写作 Task 1 相关词汇训练。"
+                "text": "页面覆盖名词语料、形容词副词语料、词组连读语料、综合测试语料、数字听力练习，以及雅思写作 Task 1 和 Task 2 相关词汇训练。"
               }
             },
             {
@@ -225,6 +225,18 @@
             <button onclick="startExercise('task1-advanced')" id="nav-task1-advanced" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 小作文进阶词
+            </button>
+            <button onclick="startExercise('task2-basic')" id="nav-task2-basic" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                大作文基础词
+            </button>
+            <button onclick="startExercise('task2-argument')" id="nav-task2-argument" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                大作文论证词
+            </button>
+            <button onclick="startExercise('task2-topic')" id="nav-task2-topic" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                大作文话题词
             </button>
 
             <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">数字练习</div>
@@ -480,7 +492,7 @@
                                 </details>
                                 <details class="group rounded-2xl border border-slate-200 bg-white/80 px-4 py-3">
                                     <summary class="cursor-pointer list-none font-bold text-slate-800">练习内容包含哪些语料分类？</summary>
-                                    <p class="mt-2 text-sm leading-7 text-slate-600">页面覆盖名词语料、形容词副词语料、词组连读语料、综合测试语料、数字听力练习，以及雅思写作 Task 1 相关词汇训练。</p>
+                                    <p class="mt-2 text-sm leading-7 text-slate-600">页面覆盖名词语料、形容词副词语料、词组连读语料、综合测试语料、数字听力练习，以及雅思写作 Task 1 和 Task 2 相关词汇训练。</p>
                                 </details>
                                 <details class="group rounded-2xl border border-slate-200 bg-white/80 px-4 py-3">
                                     <summary class="cursor-pointer list-none font-bold text-slate-800">使用这个工具能做什么？</summary>
@@ -895,7 +907,7 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsY2tlbXZtcGhiampscHpnb3F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg5Mzk4NDYsImV4cCI6MjA3NDUxNTg0Nn0.RElcl4dh0bhzYtV0SFTmkwKSy06qxZErZqcM8t137QM';
         const supabaseClinet = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Cloudflare R2 公开域名（task1 小作文音频）
+        // Cloudflare R2 公开域名（写作音频与部分章节音频）
         const R2_BASE_URL = 'https://pub-1554b6d18677489f8ee3564ebb9f06e5.r2.dev';
 
         
@@ -1554,6 +1566,7 @@
         let isRetryingWrong = false;
         let isNumberMode = false;
         let isPracticeMode = false;
+        const browserTtsChapters = ['task2-basic', 'task2-argument', 'task2-topic'];
         const paidChapters = ['3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.1', '4.2', '4.3', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '11.2', '11.3', '11.4', '11.5', '11.6', '11.7', '11.8', '11.9', '11.10', '11.11', '11.12', '11.13', '11.14'];
         let numberGroups = [];
         let wordStats = {}; // 存储每个词的统计数据
@@ -2076,7 +2089,7 @@
             
             // 获取章节数据
             let chapterData;
-            const cloudChapters = ['3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.1', '4.2', '4.3', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '11.1', '11.2', '11.3', '11.4', '11.5', '11.6', '11.7', '11.8', '11.9', '11.10', '11.11', '11.12', '11.13', '11.14', 'task1-basic', 'task1-advanced'];
+            const cloudChapters = ['3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.1', '4.2', '4.3', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '11.1', '11.2', '11.3', '11.4', '11.5', '11.6', '11.7', '11.8', '11.9', '11.10', '11.11', '11.12', '11.13', '11.14', 'task1-basic', 'task1-advanced', 'task2-basic', 'task2-argument', 'task2-topic'];
             if (cloudChapters.includes(chapter)) {
                 chapterData = await fetchChapterData(chapter);
                 if (chapterData.length === 0) {
@@ -2088,7 +2101,13 @@
                 chapterData = allData[chapter] || [];
             }
             
-            const chapterTitleMap = { 'task1-basic': '小作文基础词', 'task1-advanced': '小作文进阶词' };
+            const chapterTitleMap = {
+                'task1-basic': '小作文基础词',
+                'task1-advanced': '小作文进阶词',
+                'task2-basic': '大作文基础词',
+                'task2-argument': '大作文论证词',
+                'task2-topic': '大作文话题词'
+            };
             $('#current-chapter-title').text(`雅思听力特训 / 章节: ${chapterTitleMap[chapter] || chapter}`);
             $('#stat-total').text(chapterData.length);
             $('#stat-correct').text('0');
@@ -2378,6 +2397,7 @@
         // 预加载一批单词的音频到内存缓存
         function preloadAudiosForWords(words) {
             if (!supabaseClinet || !Array.isArray(words)) return;
+            if (currentChapter && browserTtsChapters.includes(currentChapter)) return;
 
             console.log('[audio] 预加载请求 words:', words.map(w => w.en));
 
@@ -2414,7 +2434,7 @@
             }
         }
 
-        // 优先从 Supabase word-audios 获取音频，task1 章节从 Cloudflare R2 获取；不存在则系统发声
+        // 优先从 Supabase word-audios 获取音频，指定章节从 Cloudflare R2 获取；不存在则系统发声
         function getAudioUrl(path) {
             const r2Chapters = ['task1-basic', 'task1-advanced', '3.1', '3.2', '3.3', 'numbers-easy', 'numbers-hard'];
             if (currentChapter && r2Chapters.includes(currentChapter)) {
@@ -2429,6 +2449,12 @@
                 ? corpus[currentIndex].speech : text;
             const ttsRate = isNumberMode ? 0.75 : 1;
             const playbackRate = isNumberMode ? 1.2 : 1;
+
+            if (currentChapter && browserTtsChapters.includes(currentChapter)) {
+                console.log('[audio] Task 2 使用浏览器系统 TTS:', text);
+                systemSpeak(ttsText, ttsRate);
+                return;
+            }
 
             const safeName = (typeof text === 'string' ? text : '').replace(/\//g, '-');
             const path = safeName ? (safeName + '.mp3') : '';
