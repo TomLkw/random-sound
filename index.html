@@ -541,16 +541,6 @@
                                         <div id="page-info" class="text-xs text-slate-400 font-bold"></div>
                                     </div>
                                 </div>
-                                <div id="writing-url-panel" class="hidden mb-3 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-left">
-                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                                        <div>
-                                            <div class="text-sm font-black text-slate-800">大作文写作练习</div>
-                                        </div>
-                                        <a href="https://ai-writing-qee7.onrender.com/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all active:scale-95 shadow-sm whitespace-nowrap">
-                                            打开写作练习
-                                        </a>
-                                    </div>
-                                </div>
                                 <div id="word-list" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-left mb-3"></div>
                                 <div id="pagination-controls" class="flex justify-center gap-2 pt-3 border-t border-slate-200">
                                     <button id="prev-page" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-sm rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed">
@@ -564,9 +554,14 @@
                             
                             <div id="start-btn-container" class="mb-6 hidden">
                                 <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-                                    <button id="start-btn" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-2xl transition-all active:scale-95 shadow-lg hover:shadow-xl">
-                                        开始练习
-                                    </button>
+                                    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                                        <button id="start-btn" class="min-w-[9rem] px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-2xl transition-all active:scale-95 shadow-lg hover:shadow-xl whitespace-nowrap">
+                                            开始练习
+                                        </button>
+                                        <a id="start-writing-url-btn" href="https://ai-writing-qee7.onrender.com/" target="_blank" rel="noopener noreferrer" class="hidden min-w-[7.5rem] px-5 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-xl transition-all active:scale-95 shadow-lg hover:shadow-xl whitespace-nowrap text-center">
+                                            大作文单句精炼
+                                        </a>
+                                    </div>
                                     <label class="inline-flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-500 cursor-pointer select-none">
                                         <span id="dictation-mode-label" class="text-blue-600">倒计时</span>
                                         <span class="switch">
@@ -600,6 +595,12 @@
                                 </button>
                             </div>
                             
+                            <div id="finish-writing-url-panel" class="mb-6 hidden">
+                                <a href="https://ai-writing-qee7.onrender.com/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition-all active:scale-95 shadow-lg whitespace-nowrap">
+                                    大作文单句精炼
+                                </a>
+                            </div>
+
                             <div id="exercise-controls" class="hidden">
                                 <div id="timer-container" class="max-w-[200px] mx-auto mb-6">
                                     <div class="timer-progress">
@@ -626,6 +627,9 @@
                                     <button id="pause-retry-wrong-btn" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-all active:scale-95">
                                         重练错题 (<span id="pause-wrong-count">0</span>)
                                     </button>
+                                    <a id="pause-writing-url-panel" href="https://ai-writing-qee7.onrender.com/" target="_blank" rel="noopener noreferrer" class="hidden px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all active:scale-95 text-center">
+                                        大作文单句精炼
+                                    </a>
                                     <p class="text-xs text-slate-500 text-center">💡 错题重练结果不计入正确率统计</p>
                                 </div>
                             </div>
@@ -2067,6 +2071,10 @@
             return ['task2-basic', 'task2-argument', 'task2-topic'].includes(chapter);
         }
 
+        function hideWritingActionPanels() {
+            $('#start-writing-url-btn, #pause-writing-url-panel, #finish-writing-url-panel').addClass('hidden');
+        }
+
         async function startExercise(chapter) {
             showPracticePage(); // 切回练习页面
             hideSeoIntro();
@@ -2137,7 +2145,7 @@
             $('#exercise-controls').addClass('hidden');
             $('#user-input').val('').prop('disabled', true);
             $('#progress-text').text('就绪');
-            $('#writing-url-panel').toggleClass('hidden', !isTask2WritingChapter(chapter));
+            $('#start-writing-url-btn').toggleClass('hidden', !isTask2WritingChapter(chapter));
             
             // 将数据存储到全局变量中
             allData[chapter] = chapterData;
@@ -2375,6 +2383,7 @@
                 if (!isRetryingWrong) {
                     $('#share-result-container').removeClass('hidden');
                 }
+                $('#finish-writing-url-panel').toggleClass('hidden', !isTask2WritingChapter(currentChapter));
                 return;
             }
 
@@ -2615,6 +2624,7 @@
             $('#user-input').prop('disabled', true);
             $('#exercise-controls').addClass('hidden');
             $('#pause-menu').removeClass('hidden');
+            $('#pause-writing-url-panel').toggleClass('hidden', !isTask2WritingChapter(currentChapter));
             $('#pause-wrong-count').text(wrongWords.length);
             $('#status-dot').removeClass('bg-blue-500 animate-pulse').addClass('bg-orange-500');
             $('#progress-text').text('已暂停');
@@ -2624,6 +2634,7 @@
             if (!isPaused) return;
             isPaused = false;
             $('#pause-menu').addClass('hidden');
+            $('#pause-writing-url-panel').addClass('hidden');
             $('#exercise-controls').removeClass('hidden');
             $('#user-input').prop('disabled', false).focus();
             $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-orange-500');
@@ -2729,7 +2740,7 @@
             $('#timer-bar').css({ 'transition': 'none', 'width': '0%' });
             $('#timer-container').show();
             $('#status-dot').removeClass('bg-blue-500 animate-pulse bg-orange-500').addClass('bg-slate-300');
-            $('#writing-url-panel').addClass('hidden');
+            hideWritingActionPanels();
         }
 
         function updatePracticeModeToggleLabel() {
@@ -2899,6 +2910,7 @@
                     isStarted = true;
                     $('#word-list-container').addClass('hidden');
                     $('#start-btn-container').addClass('hidden');
+                    $('#start-writing-url-btn').addClass('hidden');
                     $('#share-result-container').addClass('hidden');
                     $('#exercise-controls').removeClass('hidden');
                     $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
@@ -2979,6 +2991,7 @@
                 isStarted = true;
                 $('#word-list-container').addClass('hidden');
                 $('#start-btn-container').addClass('hidden');
+                $('#start-writing-url-btn').addClass('hidden');
                 $('#share-result-container').addClass('hidden');
                 $('#exercise-controls').removeClass('hidden');
                 $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
@@ -3025,6 +3038,7 @@
             
             $('#retry-wrong-container').addClass('hidden');
             $('#share-result-container').addClass('hidden');
+            $('#finish-writing-url-panel').addClass('hidden');
             $('#exercise-controls').removeClass('hidden');
             $('#timer-container').toggle(!isPracticeMode);
             $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
