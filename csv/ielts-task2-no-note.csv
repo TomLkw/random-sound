@@ -2,7 +2,7 @@ chapter,word,translation
 task2-basic,have different views,持有不同看法
 task2-basic,be responsible for,对……负责
 task2-basic,members of society,社会成员
-task2-basic,play an important role,发挥重要作用
+task2-basic,important role,重要作用
 task2-basic,direct influence,直接影响
 task2-basic,communicate with others,与他人交流
 task2-basic,follow rules,遵守规则
@@ -19,9 +19,9 @@ task2-basic,tend to,倾向于
 task2-basic,imitate,模仿
 task2-basic,parental behaviour,父母的行为
 task2-basic,be responsible,有责任感
-task2-basic,be more likely to,更有可能
-task2-basic,develop the same qualities,形成同样的品质
-task2-basic,treat others with respect,尊重他人
+task2-basic,more likely,更有可能
+task2-basic,same qualities,同样的品质
+task2-basic,treat with respect,尊重
 task2-basic,naturally learn,自然地学会
 task2-basic,behave similarly,以类似方式行事
 task2-basic,ignore these values,忽视这些价值观
@@ -29,7 +29,7 @@ task2-basic,correct such behaviour,纠正这种行为
 task2-basic,social rules,社会规则
 task2-basic,provide opportunities,提供机会
 task2-basic,main responsibility,主要责任
-task2-basic,play a role in,在……中发挥作用
+task2-basic,play a role,发挥作用
 task2-basic,rely on,依赖
 task2-basic,be affected,受到影响
 task2-basic,recover from,从……中恢复
@@ -44,7 +44,7 @@ task2-basic,temporary measure,临时方案
 task2-basic,long-term solution,长久之计
 task2-basic,a realistic prospect,现实的前景
 task2-basic,one major benefit,一个主要好处
-task2-basic,have the potential to,有潜力……
+task2-basic,potential,潜力
 task2-basic,significantly,显著地
 task2-basic,react more quickly,反应更快
 task2-basic,use time productively,高效利用时间
@@ -62,7 +62,7 @@ task2-basic,appear everywhere,随处出现
 task2-basic,become less visible,变得不再明显
 task2-basic,not necessarily,未必
 task2-basic,a better world,更美好的世界
-task2-basic,under the influence of,在……影响下
+task2-basic,under the influence,在……影响下
 task2-basic,acquire skills,获得技能
 task2-basic,attain a position,获得职位
 task2-basic,lead to,导致
@@ -70,15 +70,15 @@ task2-basic,change work patterns,改变工作模式
 task2-basic,greater freedom,更大的自由度
 task2-basic,physical presence,到场办公
 task2-basic,in the office,在办公室
-task2-basic,a sense of belonging,归属感
+task2-basic,sense of belonging,归属感
 task2-basic,judge employees,评价员工
 task2-basic,rather than,而不是
 task2-basic,consider doing,考虑做……
 task2-basic,force people to,强迫人们……
 task2-basic,be unfair to,对……不公平
 task2-basic,become increasingly common,日益普遍
-task2-basic,appealing to the public,对公众有吸引力
-task2-basic,maintain that,坚持认为
+task2-basic,appealing,有吸引力
+task2-basic,maintain,保持
 task2-basic,from this perspective,从这个角度看
 task2-basic,be able to,能够
 task2-basic,make informed choices,作出知情选择
@@ -86,9 +86,9 @@ task2-basic,eat and drink,吃什么和喝什么
 task2-basic,switch to,转向
 task2-basic,take genuine responsibility,真正承担责任
 task2-basic,make communities safer,使社区更安全
-task2-basic,maintain close contact with,与……保持密切联系
+task2-basic,contact with,联系
 task2-basic,drop out,辍学
-task2-basic,be involved in gangs,参与帮派活动
+task2-basic,involved in gangs,参与帮派活动
 task2-basic,protect citizens,保护公民
 task2-basic,secure employment,找到工作
 task2-basic,after release,出狱后
@@ -97,7 +97,7 @@ task2-basic,practical approach,实际可行的方法
 task2-basic,compensate for,弥补
 task2-basic,gain qualifications,获得资格证书
 task2-basic,too simplistic,过于简单化
-task2-basic,regard A as B,把 A 视为 B
+task2-basic,regard as,把……视为
 task2-basic,single solution,单一解决方案
 task2-basic,almost everywhere,几乎无处不在
 task2-basic,support business growth,促进商业发展
@@ -113,21 +113,20 @@ task2-basic,relate to,引起共鸣
 task2-basic,far outweigh,远远超过
 task2-basic,in terms of,就……而言
 task2-basic,be essential for,对……至关重要
-task2-basic,be less likely to,不太可能
+task2-basic,less likely,不太可能
 task2-basic,focus only on,只关注
-task2-basic,a large amount of,大量
+task2-basic,large amount,大量
 task2-basic,be concerned about,关注
 task2-basic,gradually weaken,逐渐削弱
 task2-basic,after they occur,在疾病发生后
-task2-basic,encourage sb to do,鼓励某人做……
+task2-basic,encourage,鼓励
 task2-basic,individual,个人
-task2-basic,have a responsibility to,有责任……
-task2-basic,be decided according to,根据……决定
+task2-basic,according to,根据……决定
 task2-basic,specific circumstances,具体情况
 task2-basic,depend largely on,很大程度上取决于
 task2-basic,provide care,提供照料
-task2-basic,be actively involved in,积极参与
-task2-basic,stay in touch with,与……保持联系
+task2-basic,actively involved in,积极参与
+task2-basic,stay in touch,保持联系
 task2-basic,anytime and anywhere,随时随地
 task2-basic,increasingly popular,越来越普及
 task2-basic,access services,获取服务
@@ -142,7 +141,7 @@ task2-argument,more urgent,更加紧迫
 task2-argument,disturb natural balance,破坏自然平衡
 task2-argument,wider in scale,影响规模更大
 task2-argument,broader problems,更广泛的问题
-task2-argument,have greater impact on,对……有更大影响
+task2-argument,greater impact on,更大影响
 task2-argument,financial restrictions,经济限制
 task2-argument,sustainable solution,可持续的解决方案
 task2-argument,financial pressure,经济压力
@@ -152,9 +151,9 @@ task2-argument,raise prices,提高价格
 task2-argument,revenue generated,税收产生的收入
 task2-argument,be reinvested into,重新投入
 task2-argument,state overreach,国家权力过度扩张
-task2-argument,implement a sugar tax,实施糖税
+task2-argument,implement sugar tax,实施糖税
 task2-argument,top-down mechanism,自上而下的机制
-task2-argument,reduce the intake of,减少……的摄入
+task2-argument,reduce intake,减少摄入
 task2-argument,fund healthcare,资助医疗
 task2-argument,use taxation,使用税收手段
 task2-argument,government intervention,政府干预
@@ -166,7 +165,7 @@ task2-argument,serious consequences,严重后果
 task2-argument,job displacement,就业替代
 task2-argument,raise concerns about,引发对……的担忧
 task2-argument,reduce traffic accidents,减少交通事故
-task2-argument,enhance quality of life,改善生活质量
+task2-argument,enhance,改善
 task2-argument,distinctive character,独特特色
 task2-argument,protect traditional culture,保护传统文化
 task2-argument,worthwhile investment,值得的投资
@@ -175,13 +174,13 @@ task2-argument,job satisfaction,工作满意度
 task2-argument,professional achievements,职业成就
 task2-argument,financial security,经济保障
 task2-argument,long-term job satisfaction,长期工作满意度
-task2-argument,from an employee’s perspective,从员工角度看
+task2-argument,employee’s perspective,员工角度
 task2-argument,financial rewards,经济回报
 task2-argument,personal fulfilment,个人成就感
-task2-argument,from an employer’s perspective,从雇主角度看
+task2-argument,employer's perspective,雇主角度
 task2-argument,productivity,生产力
 task2-argument,weaken teamwork,削弱团队合作
-task2-argument,raise the retirement age,提高退休年龄
+task2-argument,raise retirement age,提高退休年龄
 task2-argument,valuable experience,宝贵经验
 task2-argument,professional knowledge,专业知识
 task2-argument,fixed retirement age,固定退休年龄
@@ -200,24 +199,25 @@ task2-argument,long-term changes,长期改变
 task2-argument,ultimate focus,最终重点
 task2-argument,educate citizens,教育公民
 task2-argument,police responsibilities,警察职责
-task2-argument,combat and prevent crime,打击和预防犯罪
-task2-argument,pose a threat to,对……构成威胁
+task2-argument,combat crime,打击犯罪
+task2-argument,prevent,预防
+task2-argument,pose a threat,构成威胁
 task2-argument,social threat,社会威胁
-task2-argument,gradually become repeat offenders,逐渐成为惯犯
-task2-argument,education courses in prison,监狱教育课程
+task2-argument,become repeat offenders,成为惯犯
+task2-argument,prison education courses,监狱教育课程
 task2-argument,reduce crime,减少犯罪
 task2-argument,employment support,就业支持
 task2-argument,reasoning skills,推理能力
 task2-argument,lawful employment,合法就业
 task2-argument,low educational level,教育水平低
-task2-argument,be exposed to advertisements,接触到广告
+task2-argument,exposed to advertisements,接触到广告
 task2-argument,unnecessary consumption,不必要的消费
 task2-argument,unrealistic expectations,不现实的期待
 task2-argument,educational content,教育内容
 task2-argument,false information,虚假信息
 task2-argument,real-life conversations,现实生活中的交流
 task2-argument,promote media literacy,推广媒体素养
-task2-argument,be largely attributed to,主要归因于
+task2-argument,largely attributed to,主要归因于
 task2-argument,the rise of,……的兴起
 task2-argument,preserve historic buildings,保护历史建筑
 task2-argument,financial burden,财政负担
@@ -228,13 +228,13 @@ task2-argument,excessive use,过度使用
 task2-argument,real interaction,真实互动
 task2-argument,treat diseases,治疗疾病
 task2-argument,build healthier lifestyles,养成更健康的生活方式
-task2-argument,disrupt the ecological balance,破坏生态平衡
+task2-argument,disrupt ecological balance,破坏生态平衡
 task2-argument,long-term effect,长期影响
-task2-argument,small but consistent changes,小而持续的改变
-task2-argument,impose harsher penalties on,对……实施更严厉的处罚
+task2-argument,consistent small changes,小而持续的改变
+task2-argument,impose harsher penalties,实施更严厉的处罚
 task2-argument,be beneficial to,对……有利
 task2-argument,reintegrate into society,重新融入社会
-task2-topic,the loss of species,物种消失
+task2-topic,species loss,物种消失
 task2-topic,particular species,特定物种
 task2-topic,environmental problem,环境问题
 task2-topic,climate change,气候变化
@@ -340,12 +340,12 @@ task2-topic,social skills,社交能力
 task2-topic,online course,线上课程
 task2-topic,face-to-face teaching,面对面教学
 task2-topic,traditional classroom,传统课堂
-task2-topic,plant and animal species,动植物物种
+task2-topic,plant and animal,动植物
 task2-topic,daily habits,日常习惯
-task2-topic,care for elderly people,照顾老人
+task2-topic,care for,照顾
 task2-topic,daily lives,日常生活
 task2-topic,growth and education,成长和教育
-task2-topic,the way we communicate,沟通方式
+task2-topic,communication methods,沟通方式
 task2-topic,online stores,网络商店
 task2-topic,online services,在线服务
 task2-topic,dangerous drivers,危险驾驶者
