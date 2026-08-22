@@ -121,7 +121,7 @@ task2-basic,gradually weaken,逐渐削弱
 task2-basic,after they occur,在疾病发生后
 task2-basic,encourage,鼓励
 task2-basic,individual,个人
-task2-basic,according to,根据……决定
+task2-basic,according to,根据……
 task2-basic,specific circumstances,具体情况
 task2-basic,depend largely on,很大程度上取决于
 task2-basic,provide care,提供照料
@@ -158,7 +158,7 @@ task2-argument,fund healthcare,资助医疗
 task2-argument,use taxation,使用税收手段
 task2-argument,government intervention,政府干预
 task2-argument,public money,公共资金
-task2-argument,prioritise essential services,优先考虑基本服务
+task2-argument,essential services,基本服务
 task2-argument,immediate concern,最直接的担忧
 task2-argument,replace human labour,取代人类劳动
 task2-argument,serious consequences,严重后果
@@ -184,7 +184,7 @@ task2-argument,raise retirement age,提高退休年龄
 task2-argument,valuable experience,宝贵经验
 task2-argument,professional knowledge,专业知识
 task2-argument,fixed retirement age,固定退休年龄
-task2-argument,flexible retirement options,灵活的退休选择
+task2-argument,retirement options,退休选择
 task2-argument,excessive sugar intake,过量摄入糖分
 task2-argument,regulatory measures,监管措施
 task2-argument,healthier alternatives,更健康的替代品
@@ -217,9 +217,10 @@ task2-argument,educational content,教育内容
 task2-argument,false information,虚假信息
 task2-argument,real-life conversations,现实生活中的交流
 task2-argument,promote media literacy,推广媒体素养
-task2-argument,largely attributed to,主要归因于
+task2-argument,attributed to,归因于
 task2-argument,the rise of,……的兴起
-task2-argument,preserve historic buildings,保护历史建筑
+task2-argument,historic buildings,历史建筑
+task2-argument,preserve,保护
 task2-argument,financial burden,财政负担
 task2-argument,consume blindly,盲目消费
 task2-argument,distort values,扭曲价值观
@@ -227,11 +228,12 @@ task2-argument,quality of life,生活质量
 task2-argument,excessive use,过度使用
 task2-argument,real interaction,真实互动
 task2-argument,treat diseases,治疗疾病
-task2-argument,build healthier lifestyles,养成更健康的生活方式
-task2-argument,disrupt ecological balance,破坏生态平衡
+task2-argument,healthier lifestyles,更健康的生活方式
+task2-argument,ecological balance,生态平衡
+task2-argument,disrupt,破坏
 task2-argument,long-term effect,长期影响
 task2-argument,consistent small changes,小而持续的改变
-task2-argument,impose harsher penalties,实施更严厉的处罚
+task2-argument,harsher penalties,更严厉的处罚
 task2-argument,be beneficial to,对……有利
 task2-argument,reintegrate into society,重新融入社会
 task2-topic,species loss,物种消失
@@ -257,15 +259,16 @@ task2-topic,economic development,经济发展
 task2-topic,the planet's future,地球的未来
 task2-topic,the natural world,自然界
 task2-topic,sugar tax,糖税
-task2-topic,public healthcare systems,公共医疗系统
+task2-topic,healthcare systems,医疗系统
 task2-topic,sweet treats,甜食
 task2-topic,healthcare and education,医疗和教育
 task2-topic,affordable housing,保障性住房
 task2-topic,artificial intelligence,人工智能
-task2-topic,autonomous driving technology,自动驾驶技术
+task2-topic,driving technology,驾驶技术
 task2-topic,road safety,道路安全
 task2-topic,autonomous vehicles,自动驾驶车辆
-task2-topic,monitor road conditions,监测道路状况
+task2-topic,road conditions,道路状况
+task2-topic,monitor,监测
 task2-topic,traffic regulations,交通规则
 task2-topic,travel time,出行时间
 task2-topic,automation,自动化
@@ -287,7 +290,7 @@ task2-topic,local businesses,本地企业
 task2-topic,unique identity,独特身份
 task2-topic,historical heritage,历史遗产
 task2-topic,valuable traditions,宝贵传统
-task2-topic,rapid urban development,快速城市发展
+task2-topic,urban development,城市发展
 task2-topic,high salary,高薪
 task2-topic,online platforms,在线平台
 task2-topic,video conferencing,视频会议
@@ -313,7 +316,7 @@ task2-topic,literacy,读写能力
 task2-topic,poor education,教育不足
 task2-topic,poverty,贫困
 task2-topic,addiction,成瘾
-task2-topic,unstable family backgrounds,不稳定的家庭背景
+task2-topic,family backgrounds,家庭背景
 task2-topic,prison education,监狱教育
 task2-topic,social media,社交媒体
 task2-topic,public transport,公共交通
