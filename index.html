@@ -2089,6 +2089,23 @@
         }
 
         // 开始年份听写练习
+        function renderNumberGroupList(groups) {
+            return groups.map((item) => {
+                const accuracy = isYearMode ? getWordAccuracy(item.en) : null;
+                return `
+                    <div class="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-blue-600">${item.zh}</span>
+                            <span class="text-slate-400">-</span>
+                            <span class="text-slate-700 font-mono font-bold">${item.en}</span>
+                            ${accuracy !== null ? `<span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded ${accuracy >= 80 ? 'bg-green-100 text-green-600' : accuracy >= 60 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'}">${accuracy}%</span>` : ''}
+                        </div>
+                        <div class="text-[10px] text-slate-400 italic">读法: ${item.speech}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
         function startYearExercise() {
             showPracticePage();
             hideSeoIntro();
@@ -2106,6 +2123,10 @@
             isYearMode = true;
             currentChapter = 'years';
             numberGroups = JSON.parse(JSON.stringify(yearGroups));
+            fullChapterData = numberGroups;
+            currentPageWords = numberGroups;
+            totalPages = 1;
+            currentPage = 1;
 
             $('#current-chapter-title').text('年份听写练习');
             $('#stat-total').text(numberGroups.length);
@@ -2121,17 +2142,7 @@
             $('#user-input').val('').prop('disabled', true);
             $('#progress-text').text('就绪');
 
-            const listHtml = numberGroups.map((item, idx) => `
-                <div class="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg text-xs">
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-blue-600">${item.zh}</span>
-                        <span class="text-slate-400">-</span>
-                        <span class="text-slate-700 font-mono font-bold">${item.en}</span>
-                    </div>
-                    <div class="text-[10px] text-slate-400 italic">读法: ${item.speech}</div>
-                </div>
-            `).join('');
-            $('#word-list').html(listHtml);
+            $('#word-list').html(renderNumberGroupList(numberGroups));
             $('#page-info').text(`共 ${numberGroups.length} 组年份`);
             $('#shuffle-btn').removeClass('hidden');
             $('#prev-page, #next-page').addClass('hidden');
@@ -2888,7 +2899,7 @@
         updatePracticeModeToggleLabel();
         
         $('#sort-by-accuracy-btn').on('click', () => {
-            if (isNumberMode || isYearMode) return;
+            if (isNumberMode) return;
             
             // 获取本章所有词语的错误率数据
             const allChapterWords = fullChapterData || allData[currentChapter] || [];
@@ -2924,6 +2935,22 @@
             
             const listHtml = pageWords.map(item => {
                 const accuracy = 100 - item.errorRate;
+                if (isYearMode) {
+                    return `
+                        <div class="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-blue-600">${item.zh}</span>
+                                <span class="text-slate-400">-</span>
+                                <span class="text-slate-700 font-mono font-bold">${item.en}</span>
+                                <span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded ${accuracy >= 80 ? 'bg-green-100 text-green-600' : accuracy >= 60 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'}">${accuracy}%</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="text-[10px] text-slate-400 italic">读法: ${item.speech}</div>
+                                <span class="text-[8px] text-slate-400">${item.stats.correct}/${item.stats.total}</span>
+                            </div>
+                        </div>
+                    `;
+                }
                 return `
                     <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg text-xs">
                         <span class="font-bold text-slate-700">${item.en}</span>
@@ -2949,17 +2976,7 @@
             if (isNumberMode || isYearMode) {
                 // 数字/年份模式下随机打乱组题列表
                 const shuffled = shuffleArray([...numberGroups]);
-                const listHtml = shuffled.map((item, idx) => `
-                    <div class="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg text-xs">
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-blue-600">${item.zh}</span>
-                            <span class="text-slate-400">-</span>
-                            <span class="text-slate-700 font-mono font-bold">${item.en}</span>
-                        </div>
-                        <div class="text-[10px] text-slate-400 italic">读法: ${item.speech}</div>
-                    </div>
-                `).join('');
-                $('#word-list').html(listHtml);
+                $('#word-list').html(renderNumberGroupList(shuffled));
                 return;
             }
             
