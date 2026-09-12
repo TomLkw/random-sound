@@ -952,6 +952,89 @@
             return anonymousId;
         }
 
+        const OPERATION_CHANGE_ENDPOINT = 'https://ai-writing-qee7.onrender.com/edu.js';
+
+        function getOperationContext(extra = {}) {
+            return {
+                anonymous_id: getAnonymousId(),
+                user_id: currentUser ? currentUser.id : '',
+                chapter: typeof currentChapter !== 'undefined' ? (currentChapter || '') : '',
+                page: typeof currentPage !== 'undefined' ? (currentPage || '') : '',
+                is_started: typeof isStarted !== 'undefined' ? (isStarted ? '1' : '0') : '',
+                is_paused: typeof isPaused !== 'undefined' ? (isPaused ? '1' : '0') : '',
+                is_practice_mode: typeof isPracticeMode !== 'undefined' ? (isPracticeMode ? '1' : '0') : '',
+                path: window.location.pathname,
+                referrer: document.referrer || '',
+                ts: Date.now(),
+                ...extra
+            };
+        }
+
+        // 操作变化上报：只发送页面状态和操作类型，不发送听写答案、邮箱、验证码等输入内容。
+        function sendOperationChange(operation, details = {}) {
+            try {
+                const params = new URLSearchParams(getOperationContext({
+                    operation,
+                    ...details
+                }));
+                const beacon = new Image();
+                beacon.referrerPolicy = 'no-referrer-when-downgrade';
+                beacon.src = `${OPERATION_CHANGE_ENDPOINT}?${params.toString()}`;
+            } catch (error) {
+                console.warn('操作变化上报失败:', error);
+            }
+        }
+
+        function describeOperationElement(element) {
+            if (!element) return {};
+            const result = {
+                tag: element.tagName ? element.tagName.toLowerCase() : '',
+                id: element.id || '',
+                name: element.getAttribute('name') || '',
+                type: element.getAttribute('type') || '',
+                role: element.getAttribute('role') || '',
+                action: element.dataset && element.dataset.operation ? element.dataset.operation : ''
+            };
+
+            if (element.matches && element.matches('a[href]')) {
+                try {
+                    const hrefUrl = new URL(element.getAttribute('href'), window.location.href);
+                    result.href_host = hrefUrl.host;
+                    result.href_path = hrefUrl.pathname;
+                } catch (error) {
+                    result.href_host = '';
+                    result.href_path = '';
+                }
+            }
+
+            return result;
+        }
+
+        function bindOperationChangeTracking() {
+            sendOperationChange('page_open');
+
+            document.addEventListener('click', function(event) {
+                const target = event.target.closest('button, a, [role="button"]');
+                if (!target) return;
+                sendOperationChange('click', describeOperationElement(target));
+            }, true);
+
+            document.addEventListener('change', function(event) {
+                const target = event.target;
+                if (!target || !target.matches('input, select, textarea')) return;
+
+                const inputType = (target.getAttribute('type') || '').toLowerCase();
+                if (['text', 'email', 'password', 'search', 'tel', 'url', 'number'].includes(inputType) || target.tagName === 'TEXTAREA') {
+                    return;
+                }
+
+                sendOperationChange('change', {
+                    ...describeOperationElement(target),
+                    checked: target.checked ? '1' : '0'
+                });
+            }, true);
+        }
+
         // 解析 User Agent 获取浏览器和系统信息
         function parseUserAgent() {
             const ua = navigator.userAgent;
@@ -3252,6 +3335,8 @@
         $('#share-modal').on('click', function(e) {
             if (e.target === this) $('#share-modal').addClass('hidden');
         });
+
+        bindOperationChangeTracking();
     </script>
 
     <!-- Mobile sidebar toggling -->
