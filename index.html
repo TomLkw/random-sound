@@ -2553,7 +2553,6 @@
         // 预加载一批单词的音频到内存缓存
         function preloadAudiosForWords(words) {
             if (!supabaseClinet || !Array.isArray(words)) return;
-            if (isYearMode) return;
 
             console.log('[audio] 预加载请求 words:', words.map(w => w.en));
 
@@ -2592,8 +2591,7 @@
 
         // 优先从 Supabase word-audios 获取音频，指定章节从 Cloudflare R2 获取；不存在则系统发声
         function getAudioUrl(path) {
-            if (isYearMode) return '';
-            const r2Chapters = ['task1-basic', 'task1-advanced', 'task2-basic', 'task2-argument', 'task2-topic', '3.1', '3.2', '3.3', 'numbers-easy', 'numbers-hard', 'date'];
+            const r2Chapters = ['task1-basic', 'task1-advanced', 'task2-basic', 'task2-argument', 'task2-topic', '3.1', '3.2', '3.3', 'numbers-easy', 'numbers-hard', 'date', 'years'];
             if (currentChapter && r2Chapters.includes(currentChapter)) {
                 return `${R2_BASE_URL}/${path}`;
             }
