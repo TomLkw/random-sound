@@ -93,6 +93,13 @@
             75% { transform: translateX(6px); }
         }
         .error-shake { animation: shake 0.2s ease-in-out 0s 2; }
+
+        @keyframes streak-pop {
+            0% { transform: translateY(-4px) scale(0.94); }
+            60% { transform: translateY(0) scale(1.04); }
+            100% { transform: translateY(0) scale(1); }
+        }
+        .streak-pop { animation: streak-pop 0.25s ease-out; }
         
         .timer-progress {
             height: 4px;
@@ -657,18 +664,25 @@
                                 placeholder="...">
                         </div>
 
-                        <div class="mt-12 pt-8 border-t border-slate-100 grid grid-cols-3 gap-4">
-                            <div>
-                                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">正确数</p>
-                                <p id="stat-correct" class="text-xl font-black text-green-500">0</p>
+                        <div class="relative mt-12 pt-8 border-t border-slate-100">
+                            <div class="absolute -top-4 left-1/2 flex min-h-7 -translate-x-1/2 items-center justify-center">
+                                <div id="streak-toast" role="status" aria-live="polite" aria-atomic="true"
+                                    class="hidden whitespace-nowrap rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-600 ring-1 ring-emerald-100 pointer-events-none">
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">准确率</p>
-                                <p id="stat-accuracy" class="text-xl font-black text-slate-800">0%</p>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">剩余</p>
-                                <p id="stat-total" class="text-xl font-black text-slate-800">0</p>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div>
+                                    <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">正确数</p>
+                                    <p id="stat-correct" class="text-xl font-black text-green-500">0</p>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">准确率</p>
+                                    <p id="stat-accuracy" class="text-xl font-black text-slate-800">0%</p>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">剩余</p>
+                                    <p id="stat-total" class="text-xl font-black text-slate-800">0</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1681,6 +1695,7 @@
         let currentIndex = 0;
         let correctCount = 0;
         let attemptCount = 0;
+        let currentStreak = 0;
         let autoNextTimer = null;
         let isProcessingResult = false;
         let isStarted = false;
@@ -2759,6 +2774,20 @@
             $('#stat-accuracy').text(acc + '%');
         }
 
+        function resetStreak() {
+            currentStreak = 0;
+            $('#streak-toast').addClass('hidden').removeClass('streak-pop').text('');
+        }
+
+        function updateStreakDisplay() {
+            if (currentStreak < 2) return;
+
+            const toast = $('#streak-toast');
+            toast.removeClass('hidden streak-pop').text(`连续答对 ${currentStreak} 题`);
+            void toast[0].offsetWidth;
+            toast.addClass('streak-pop');
+        }
+
         function goToNext(isCorrect, userInput) {
             if (isProcessingResult) return;
             isProcessingResult = true;
@@ -2768,8 +2797,10 @@
 
             if (isCorrect) {
                 correctCount++;
+                currentStreak++;
                 $('#stat-correct').text(correctCount);
                 updateAccuracy();
+                updateStreakDisplay();
                 
                 // 先统计今日学习（此时 wordStats 还未更新，能正确判断新词/复习词）
                 updateTodayStats(currentData.en, currentData.zh, isRetryingWrong);
@@ -2780,6 +2811,7 @@
                 currentIndex++;
                 renderWord();
             } else {
+                resetStreak();
                 // 错误时直接记录日志
                 addLog(isCorrect, userInput, currentData.en, currentData.zh);
                 wrongWords.push(currentData);
@@ -2866,6 +2898,7 @@
             currentIndex = 0;
             correctCount = 0;
             attemptCount = 0;
+            resetStreak();
             isPaused = false;
             isRetryingWrong = true;
             answerRecords = [];
@@ -2932,6 +2965,7 @@
             currentIndex = 0;
             correctCount = 0;
             attemptCount = 0;
+            resetStreak();
             isStarted = false;
             isPaused = false;
             wrongWords = [];
@@ -3246,6 +3280,7 @@
             currentIndex = 0;
             correctCount = 0;
             attemptCount = 0;
+            resetStreak();
             isRetryingWrong = true;
             answerRecords = [];
             

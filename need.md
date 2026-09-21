@@ -264,3 +264,19 @@ WHERE event_type = 'practice_complete'
 77. todo seo 优化软文
 
 78. done supabase js 加载速度慢
+
+79. todo 上次练习 
+
+80. done writing url https://ai-writing-qee7.onrender.com/ 
+
+练习结束或暂停 时也要展示这个url 
+
+81. todo 听力练习 https://todo-listen.pages.dev/   header
+
+82. done 年份练习要统计正确率 
+
+83.  done 设计一个函数 当网页上发生操作变化时发送请求 ：https://ai-writing-qee7.onrender.com/edu.js
+
+84. todo 整体的高度ui占用低一点 
+
+85. todo   加正确 音效 连对记录 
