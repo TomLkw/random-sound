@@ -329,6 +329,9 @@
                     <span class="text-[10px] text-slate-400 mb-1">词</span>
                 </div>
             </button>
+            <button id="wrong-book-btn" class="w-full bg-gradient-to-br from-orange-50 to-amber-50 hover:from-orange-100 hover:to-amber-100 rounded-2xl p-4 transition-all active:scale-95 border-2 border-transparent hover:border-orange-200 text-left">
+                <div class="text-xl font-black text-orange-600">错题本</div>
+            </button>
         </div>
     </aside>
 
@@ -423,6 +426,39 @@
                     </h3>
                     <div id="stats-page-review-words" class="grid grid-cols-4 gap-1.5 text-xs">
                         <p class="col-span-4 text-slate-400 text-center py-4">暂无复习单词</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 错词本页面 -->
+            <div id="wrong-book-page" class="hidden max-w-4xl mx-auto">
+                <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800">错词本</h2>
+                        <p class="text-sm text-slate-400 mt-1">答错的单词会自动保存在这里</p>
+                    </div>
+                    <button id="start-wrong-book-btn" class="px-5 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+                        开始重练
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-5 text-center">
+                        <p class="text-xs text-slate-500 font-medium mb-1">累计错词</p>
+                        <p class="text-5xl font-black text-red-600 mb-2" id="wrong-book-page-count">0</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-5 text-center">
+                        <p class="text-xs text-slate-500 font-medium mb-1">错误次数</p>
+                        <p class="text-5xl font-black text-amber-600 mb-2" id="wrong-book-total-mistakes">0</p>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-2xl p-4 md:p-5">
+                    <div class="flex items-center justify-between gap-3 mb-4">
+                        <h3 class="text-sm font-black text-slate-700 uppercase tracking-widest">高频错词</h3>
+                    </div>
+                    <div id="wrong-book-list" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-left">
+                        <p class="md:col-span-2 text-slate-400 text-center py-8">暂无错词</p>
                     </div>
                 </div>
             </div>
@@ -1317,6 +1353,14 @@
             showStatsPage();
         });
 
+        $('#wrong-book-btn').on('click', () => {
+            showMistakeReviewPage();
+        });
+
+        $('#start-wrong-book-btn').on('click', () => {
+            startMistakeReviewPractice();
+        });
+
         $('#close-today-stats, #close-today-stats-btn').on('click', () => {
             $('#today-stats-modal').addClass('hidden');
         });
@@ -1398,6 +1442,7 @@
             
             checkAuth();
             loadWordStats();
+            updateMistakeReviewBadge();
             initTodayStats(); // 初始化今日学习统计
 
             // 根据 paidChapters 动态注入锁图标
@@ -1864,7 +1909,7 @@
                 : '<p class="col-span-4 text-slate-400 text-center py-4">暂无复习单词</p>'
             );
 
-            $('#practice-area').addClass('hidden');
+            $('#practice-area, #wrong-book-page').addClass('hidden');
             $('#stats-page').removeClass('hidden');
             $('#current-chapter-title').text('学习统计');
 
@@ -1872,8 +1917,17 @@
         }
 
         function showPracticePage() {
-            $('#stats-page').addClass('hidden');
+            $('#stats-page, #wrong-book-page').addClass('hidden');
             $('#practice-area').removeClass('hidden');
+        }
+
+        async function showMistakeReviewPage() {
+            hideSeoIntro();
+            $('#practice-area, #stats-page').addClass('hidden');
+            $('#wrong-book-page').removeClass('hidden');
+            $('#current-chapter-title').text('错词本');
+            await renderMistakeReviewPage();
+            trackEvent('view_wrong_book', { wrong_book_count: getMistakeReviewItems().length });
         }
 
         function hideSeoIntro() {
@@ -1887,6 +1941,209 @@
             $('#show-seo-intro-btn').addClass('hidden').removeClass('flex');
             const seoIntro = document.getElementById('seo-intro');
             if (seoIntro) seoIntro.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        const mistakeReviewMetaCache = {};
+
+        function findKnownWordMeta(word) {
+            const normalized = String(word || '').toLowerCase().trim();
+            if (!normalized) return null;
+
+            if (mistakeReviewMetaCache[normalized]) {
+                return mistakeReviewMetaCache[normalized];
+            }
+
+            for (const chapterWords of Object.values(allData || {})) {
+                if (!Array.isArray(chapterWords)) continue;
+                const found = chapterWords.find(item => item && item.en && item.en.toLowerCase().trim() === normalized);
+                if (found) return found;
+            }
+            return null;
+        }
+
+        function isDigitReviewWord(word) {
+            return /^\d+$/.test(String(word || '').trim());
+        }
+
+        function getDigitSpeech(word) {
+            const digitMap = {
+                '0': 'or',
+                '1': 'one',
+                '2': 'two',
+                '3': 'three',
+                '4': 'four',
+                '5': 'five',
+                '6': 'six',
+                '7': 'seven',
+                '8': 'eight',
+                '9': 'nine'
+            };
+            return String(word || '').split('').map(ch => digitMap[ch] || ch).join(', ');
+        }
+
+        async function hydrateMistakeReviewTranslations(items) {
+            if (!supabaseClinet || !Array.isArray(items) || items.length === 0) return false;
+
+            const missingWords = [...new Set(items
+                .filter(item => item && !item.zh && !item.isNumberReview && !item.isYearReview)
+                .map(item => item.en)
+                .filter(Boolean)
+            )];
+            if (missingWords.length === 0) return false;
+
+            let changed = false;
+            for (let i = 0; i < missingWords.length; i += 50) {
+                const chunk = missingWords.slice(i, i + 50);
+                try {
+                    const { data, error } = await supabaseClinet
+                        .from('ielts_vocab')
+                        .select('word, translation')
+                        .in('word', chunk);
+                    if (error) throw error;
+
+                    (data || []).forEach(item => {
+                        if (!item || !item.word || !item.translation) return;
+                        const key = item.word.toLowerCase().trim();
+                        mistakeReviewMetaCache[key] = {
+                            en: item.word,
+                            zh: item.translation
+                        };
+                        changed = true;
+                    });
+                } catch (error) {
+                    console.warn('补全错词翻译失败:', error);
+                    break;
+                }
+            }
+
+            return changed;
+        }
+
+        function getMistakeReviewItems() {
+            return Object.entries(wordStats || {})
+                .map(([word, stats]) => {
+                    if (!word || !stats || !stats.total) return;
+
+                    const wrongCount = (stats.total || 0) - (stats.correct || 0);
+                    if (wrongCount <= 0) return;
+
+                    const knownMeta = findKnownWordMeta(word);
+                    const isDigitWord = isDigitReviewWord(word);
+                    const isYearWord = isDigitWord && String(word).length === 4;
+                    return {
+                        en: word,
+                        zh: knownMeta ? knownMeta.zh : (isDigitWord ? (isYearWord ? '年份复习' : '数字复习') : ''),
+                        speech: knownMeta && knownMeta.speech ? knownMeta.speech : (isDigitWord ? getDigitSpeech(word) : ''),
+                        isNumberReview: isDigitWord && !isYearWord,
+                        isYearReview: isYearWord,
+                        wrongCount,
+                        correctCount: stats.correct || 0,
+                        totalAttempts: stats.total || 0
+                    };
+                })
+                .filter(Boolean)
+                .sort((a, b) => {
+                    if (b.wrongCount !== a.wrongCount) return b.wrongCount - a.wrongCount;
+                    return b.totalAttempts - a.totalAttempts;
+                });
+        }
+
+        function updateMistakeReviewBadge() {
+            const count = getMistakeReviewItems().length;
+            $('#wrong-book-page-count').text(count);
+        }
+
+        async function renderMistakeReviewPage() {
+            let items = getMistakeReviewItems();
+            if (await hydrateMistakeReviewTranslations(items)) {
+                items = getMistakeReviewItems();
+            }
+            const totalMistakes = items.reduce((sum, item) => sum + (item.wrongCount || 0), 0);
+            updateMistakeReviewBadge();
+            $('#wrong-book-total-mistakes').text(totalMistakes);
+            $('#start-wrong-book-btn').prop('disabled', items.length === 0);
+
+            if (items.length === 0) {
+                $('#wrong-book-list').html('<p class="md:col-span-2 text-slate-400 text-center py-8">暂无错词</p>');
+                return;
+            }
+
+            const html = items.map(item => `
+                    <div class="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="font-black text-slate-800">${escapeHtml(item.en)}</span>
+                                <span class="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-black text-red-600">错 ${item.wrongCount || 0}</span>
+                            </div>
+                            <div class="mt-1 text-xs text-slate-500">${escapeHtml(item.zh)}</div>
+                            <div class="mt-2 flex flex-wrap gap-2 text-[10px] text-slate-400">
+                                ${item.totalAttempts ? `<span>统计: ${item.correctCount || 0}/${item.totalAttempts}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+            $('#wrong-book-list').html(html);
+        }
+
+        function startMistakeReviewPractice() {
+            const items = getMistakeReviewItems().map(item => ({
+                en: item.en,
+                zh: item.zh || '错词复习',
+                speech: item.speech || '',
+                isNumberReview: item.isNumberReview || false,
+                isYearReview: item.isYearReview || false,
+                wrongCount: item.wrongCount
+            }));
+
+            if (items.length === 0) {
+                alert('暂无错词');
+                return;
+            }
+
+            showPracticePage();
+            hideSeoIntro();
+            resetChapterState();
+
+            isNumberMode = false;
+            isDateMode = false;
+            isYearMode = false;
+            isRetryingWrong = true;
+            currentChapter = 'wrong-book';
+            corpus = JSON.parse(JSON.stringify(items));
+            allData[currentChapter] = items;
+            fullChapterData = items;
+            totalPages = Math.ceil(items.length / WORDS_PER_PAGE);
+
+            $('#exercise-card').removeClass('opacity-50 pointer-events-none');
+            $('#current-chapter-title').text('错词本 / 重练');
+            $('#stat-total').text(corpus.length);
+            $('#stat-correct').text('0');
+            $('#stat-accuracy').text('0%');
+            $('#log-container').empty();
+            $('#log-count').text('0');
+            $('#translation-display').addClass('hidden').text('');
+            $('#word-list-container, #start-btn-container, #retry-wrong-container, #share-result-container').addClass('hidden');
+            $('#finish-writing-url-panel').addClass('hidden');
+            $('#exercise-controls').removeClass('hidden');
+            $('#user-input').val('').prop('disabled', false).removeClass('text-red-500 border-red-500 bg-red-50');
+            $('#answer-feedback').addClass('opacity-0');
+            $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
+            $('#progress-text').text('正在听写');
+
+            trackEvent('start_wrong_book_practice', { word_count: corpus.length });
+            preloadAudiosForWords(corpus.slice(0, PRELOAD_COUNT));
+            isStarted = true;
+            renderWord();
         }
 
         // 历史记录管理
@@ -2309,7 +2566,8 @@
                 'task2-argument': '大作文论证词',
                 'task2-topic': '大作文话题词',
                 'numbers-easy': '数字听力练习 (简单版)',
-                'numbers-hard': '数字听力练习 (困难版)'
+                'numbers-hard': '数字听力练习 (困难版)',
+                'wrong-book': '错词本'
             };
             return chapterTitleMap[chapter] || chapter;
         }
@@ -2384,6 +2642,7 @@
             // 将数据存储到全局变量中
             allData[chapter] = chapterData;
             fullChapterData = chapterData;
+            updateMistakeReviewBadge();
             totalPages = Math.ceil(chapterData.length / WORDS_PER_PAGE);
             
             // 显示单词列表（第一页）
@@ -2445,6 +2704,7 @@
                     // 云端有数据：覆盖本地
                     wordStats = data.stats_data || {};
                     localStorage.setItem('wordStats', JSON.stringify(wordStats));
+                    updateMistakeReviewBadge();
                     console.log('已从云端加载 wordStats');
                 } else {
                     // 云端无数据：以本地为准插入
@@ -2468,6 +2728,8 @@
                 wordStats[word].correct++;
             }
             saveWordStats();
+            updateMistakeReviewBadge();
+            if (!$('#wrong-book-page').hasClass('hidden')) renderMistakeReviewPage();
             // 用户判题后触发云端同步（防抖 3s）
             scheduleWordStatsSync();
         }
@@ -2549,7 +2811,8 @@
             const currentWord = corpus[currentIndex];
             if (!currentWord) return BASE_TIME;
             const wordLength = currentWord.en.length;
-            return BASE_TIME + (wordLength * TIME_PER_CHAR) + (isNumberMode ? 5000 : 0);
+            const isCurrentNumberLike = isNumberMode || currentWord.isNumberReview;
+            return BASE_TIME + (wordLength * TIME_PER_CHAR) + (isCurrentNumberLike ? 5000 : 0);
         }
 
         function startCurrentTimer() {
@@ -2704,10 +2967,12 @@
         }
 
         function speak(text) {
-            const ttsText = (corpus[currentIndex] && corpus[currentIndex].speech)
-                ? corpus[currentIndex].speech : text;
-            const ttsRate = isNumberMode ? 0.75 : (isDateMode || isYearMode ? 0.85 : 1);
-            const playbackRate = isNumberMode ? 1.2 : 1;
+            const currentAudioItem = corpus[currentIndex] || {};
+            const ttsText = currentAudioItem.speech ? currentAudioItem.speech : text;
+            const isCurrentNumberLike = isNumberMode || currentAudioItem.isNumberReview;
+            const isCurrentSlowMode = isDateMode || isYearMode || currentAudioItem.isYearReview;
+            const ttsRate = isCurrentNumberLike ? 0.75 : (isCurrentSlowMode ? 0.85 : 1);
+            const playbackRate = isCurrentNumberLike ? 1.2 : 1;
 
             const safeName = (typeof text === 'string' ? text : '').replace(/\//g, '-');
             const path = safeName ? (safeName + '.mp3') : '';
@@ -3407,7 +3672,7 @@
             $('#mobile-menu-btn').on('click', openMobileSidebar);
             $backdrop.on('click', closeMobileSidebar);
             $(document).on('keydown', function (e) { if (e.key === 'Escape') closeMobileSidebar(); });
-            $aside.on('click', '.chapter-nav, #nav-numbers-easy, #nav-numbers-hard, #nav-years', closeMobileSidebar);
+            $aside.on('click', '.chapter-nav, #nav-numbers-easy, #nav-numbers-hard, #nav-years, #wrong-book-btn', closeMobileSidebar);
 
             // Ensure correct state on resize
             $(window).on('resize', function () {
