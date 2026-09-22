@@ -1366,6 +1366,12 @@
         $('#payment-modal').on('click', function(e) {
             if (e.target === this) $('#payment-modal').addClass('hidden');
         });
+        $('#goto-xianyu').on('click', () => {
+            trackEvent('xianyu_purchase_click', {
+                source: 'payment_modal',
+                href_host: 'm.tb.cn'
+            });
+        });
         // 闲鱼购买链接由 HTML <a> 标签直接处理，无需额外 JS
 
         // 动态生成 Section 11 导航按钮
