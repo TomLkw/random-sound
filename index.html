@@ -361,7 +361,7 @@
                     </svg>
                     <span class="text-sm font-bold hidden md:inline">介绍</span>
                 </button>
-                <a href="https://ai-writing-qee7.onrender.com/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-blue-600 px-3 md:px-4 py-2 rounded-full border border-blue-600 shadow-sm hover:shadow-md transition-all hover:bg-blue-700 text-white">
+                <a id="top-writing-practice-link" href="https://ai-writing-qee7.onrender.com/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-blue-600 px-3 md:px-4 py-2 rounded-full border border-blue-600 shadow-sm hover:shadow-md transition-all hover:bg-blue-700 text-white">
                     <span class="text-sm font-bold whitespace-nowrap">写作练习</span>
                 </a>
                 <button id="login-btn" class="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm hover:shadow-md transition-all hover:border-blue-300 text-slate-600">
@@ -647,7 +647,7 @@
                             </div>
                             
                             <div id="finish-writing-url-panel" class="mb-6 hidden">
-                                <a href="https://ai-writing-qee7.onrender.com/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition-all active:scale-95 shadow-lg whitespace-nowrap">
+                                <a id="finish-writing-url-btn" href="https://ai-writing-qee7.onrender.com/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition-all active:scale-95 shadow-lg whitespace-nowrap">
                                     大作文单句精炼
                                 </a>
                             </div>
@@ -1410,6 +1410,30 @@
             trackEvent('xianyu_purchase_click', {
                 source: 'payment_modal',
                 href_host: 'm.tb.cn'
+            });
+        });
+        $('#top-writing-practice-link').on('click', () => {
+            trackEvent('writing_practice_click', {
+                source: 'top_nav',
+                href_host: 'ai-writing-qee7.onrender.com'
+            });
+        });
+        $('#start-writing-url-btn').on('click', () => {
+            trackEvent('writing_practice_click', {
+                source: 'practice_start_panel',
+                href_host: 'ai-writing-qee7.onrender.com'
+            });
+        });
+        $('#finish-writing-url-btn').on('click', () => {
+            trackEvent('writing_practice_click', {
+                source: 'practice_finish_panel',
+                href_host: 'ai-writing-qee7.onrender.com'
+            });
+        });
+        $('#pause-writing-url-panel').on('click', () => {
+            trackEvent('writing_practice_click', {
+                source: 'pause_panel',
+                href_host: 'ai-writing-qee7.onrender.com'
             });
         });
         // 闲鱼购买链接由 HTML <a> 标签直接处理，无需额外 JS
