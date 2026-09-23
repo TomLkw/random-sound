@@ -2027,6 +2027,7 @@
         }
 
         const mistakeReviewMetaCache = {};
+        const mistakeReviewMissingSourceWords = new Set();
         const MISTAKE_REVIEW_PAGE_SIZE = 20;
         let mistakeReviewCurrentPage = 1;
         let currentMistakeReviewPageItems = [];
@@ -2034,6 +2035,10 @@
         function findKnownWordMeta(word) {
             const normalized = String(word || '').toLowerCase().trim();
             if (!normalized) return null;
+
+            if (mistakeReviewMissingSourceWords.has(normalized)) {
+                return null;
+            }
 
             if (mistakeReviewMetaCache[normalized]) {
                 return mistakeReviewMetaCache[normalized];
@@ -2044,6 +2049,12 @@
                 const found = chapterWords.find(item => item && item.en && item.en.toLowerCase().trim() === normalized);
                 if (found) return found;
             }
+
+            if (typeof yearGroups !== 'undefined' && Array.isArray(yearGroups)) {
+                const foundYear = yearGroups.find(item => item && item.en && item.en.toLowerCase().trim() === normalized);
+                if (foundYear) return foundYear;
+            }
+
             return null;
         }
 
@@ -2075,10 +2086,18 @@
             )];
         }
 
+        function getUnresolvedSourceWords(items) {
+            return [...new Set((items || [])
+                .filter(item => item && !item.zh && !item.isNumberReview && !item.isYearReview)
+                .map(item => item.en)
+                .filter(Boolean)
+            )];
+        }
+
         async function hydrateMistakeReviewTranslations(items) {
             if (!supabaseClinet || !Array.isArray(items) || items.length === 0) return false;
 
-            const missingWords = getMissingTranslationWords(items);
+            const missingWords = getUnresolvedSourceWords(items);
             if (missingWords.length === 0) return false;
 
             let changed = false;
@@ -2091,13 +2110,21 @@
                         .in('word', chunk);
                     if (error) throw error;
 
+                    const foundWords = new Set();
                     (data || []).forEach(item => {
                         if (!item || !item.word || !item.translation) return;
                         const key = item.word.toLowerCase().trim();
+                        foundWords.add(key);
                         mistakeReviewMetaCache[key] = {
                             en: item.word,
                             zh: item.translation
                         };
+                        changed = true;
+                    });
+                    chunk.forEach(word => {
+                        const key = String(word || '').toLowerCase().trim();
+                        if (!key || foundWords.has(key)) return;
+                        mistakeReviewMissingSourceWords.add(key);
                         changed = true;
                     });
                 } catch (error) {
@@ -2120,12 +2147,15 @@
                     const knownMeta = findKnownWordMeta(word);
                     const isDigitWord = isDigitReviewWord(word);
                     const isYearWord = isDigitWord && String(word).length === 4;
+                    const isKnownYear = Boolean(isYearWord && knownMeta);
+                    const isUnresolvedCloudWord = !knownMeta && !isDigitWord && !mistakeReviewMissingSourceWords.has(String(word).toLowerCase().trim());
+                    if (!knownMeta && !isUnresolvedCloudWord) return;
                     return {
                         en: word,
-                        zh: knownMeta ? knownMeta.zh : (isDigitWord ? (isYearWord ? '年份复习' : '数字复习') : ''),
+                        zh: knownMeta ? knownMeta.zh : '',
                         speech: knownMeta && knownMeta.speech ? knownMeta.speech : (isDigitWord ? getDigitSpeech(word) : ''),
-                        isNumberReview: isDigitWord && !isYearWord,
-                        isYearReview: isYearWord,
+                        isNumberReview: false,
+                        isYearReview: isKnownYear,
                         errorRate: wrongCount / (stats.total || 1),
                         accuracy: Math.round(((stats.correct || 0) / (stats.total || 1)) * 100),
                         wrongCount,
@@ -2200,17 +2230,28 @@
                 return;
             }
 
-            const needsTranslation = getMissingTranslationWords(pageItems).length > 0;
-            if (needsTranslation) {
+            let lookupAttempts = 0;
+            const maxLookupAttempts = Math.max(1, Math.ceil(Object.keys(wordStats || {}).length / MISTAKE_REVIEW_PAGE_SIZE) + 1);
+            while (getMissingTranslationWords(pageItems).length > 0 && lookupAttempts < maxLookupAttempts) {
+                lookupAttempts++;
                 currentMistakeReviewPageItems = [];
                 $('#shuffle-wrong-book-page-btn').prop('disabled', true);
                 $('#wrong-book-list').html('<p class="md:col-span-2 text-slate-400 text-center py-8">加载中...</p>');
                 const didHydrate = await hydrateMistakeReviewTranslations(pageItems);
-                if (didHydrate) {
-                    items = getMistakeReviewItems();
-                    pageItems = getMistakeReviewPageItems(items);
-                    updateMistakeReviewPagination(items.length);
-                }
+                if (!didHydrate) break;
+                items = getMistakeReviewItems();
+                pageItems = getMistakeReviewPageItems(items);
+                updateMistakeReviewPagination(items.length);
+            }
+            updateMistakeReviewBadge();
+
+            if (items.length === 0) {
+                currentMistakeReviewPageItems = [];
+                updateMistakeReviewBadge();
+                $('#wrong-book-list').html('<p class="md:col-span-2 text-slate-400 text-center py-8">暂无错词</p>');
+                $('#wrong-book-pagination').addClass('hidden');
+                $('#shuffle-wrong-book-page-btn').prop('disabled', true);
+                return;
             }
 
             renderMistakeReviewItems(pageItems);
