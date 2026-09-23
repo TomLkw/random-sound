@@ -1376,7 +1376,7 @@
         });
 
         $('#wrong-book-practice-mode-toggle').on('change', function() {
-            isPracticeMode = this.checked;
+            isPracticeMode = !this.checked;
             updatePracticeModeToggleLabel();
             if (isStarted && !isPaused) {
                 if (isPracticeMode) {
@@ -3390,11 +3390,11 @@
             $('#practice-mode-label').toggleClass('text-blue-600', isPracticeMode);
             $('#wrong-book-dictation-mode-label').toggleClass('text-blue-600', !isPracticeMode);
             $('#wrong-book-practice-mode-label').toggleClass('text-blue-600', isPracticeMode);
-            $('#practice-mode-toggle, #wrong-book-practice-mode-toggle').prop('checked', isPracticeMode);
+            $('#practice-mode-toggle, #wrong-book-practice-mode-toggle').prop('checked', !isPracticeMode);
         }
 
         $('#practice-mode-toggle').on('change', function() {
-            isPracticeMode = this.checked;
+            isPracticeMode = !this.checked;
             updatePracticeModeToggleLabel();
             if (!isStarted) {
                 $('#timer-container').toggle(!isPracticeMode);
