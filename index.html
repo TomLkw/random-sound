@@ -2028,6 +2028,7 @@
 
         const mistakeReviewMetaCache = {};
         const mistakeReviewMissingSourceWords = new Set();
+        const mistakeReviewExcludedChapters = ['es-2', 'es-3'];
         const MISTAKE_REVIEW_PAGE_SIZE = 20;
         let mistakeReviewCurrentPage = 1;
         let currentMistakeReviewPageItems = [];
@@ -2106,15 +2107,21 @@
                 try {
                     const { data, error } = await supabaseClinet
                         .from('ielts_vocab')
-                        .select('word, translation')
+                        .select('word, translation, chapter')
                         .in('word', chunk);
                     if (error) throw error;
 
                     const foundWords = new Set();
                     (data || []).forEach(item => {
-                        if (!item || !item.word || !item.translation) return;
+                        if (!item || !item.word) return;
                         const key = item.word.toLowerCase().trim();
                         foundWords.add(key);
+                        if (mistakeReviewExcludedChapters.includes(item.chapter)) {
+                            mistakeReviewMissingSourceWords.add(key);
+                            changed = true;
+                            return;
+                        }
+                        if (!item.translation) return;
                         mistakeReviewMetaCache[key] = {
                             en: item.word,
                             zh: item.translation
