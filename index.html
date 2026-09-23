@@ -434,27 +434,45 @@
             <div id="wrong-book-page" class="hidden max-w-4xl mx-auto">
                 <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                        <h2 class="text-2xl font-black text-slate-800">错词本</h2>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h2 class="text-2xl font-black text-slate-800">错词本</h2>
+                            <span class="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-black text-orange-600"><span id="wrong-book-page-count">0</span> 词</span>
+                        </div>
                         <p class="text-sm text-slate-400 mt-1">答错的单词会自动保存在这里</p>
                     </div>
-                    <button id="start-wrong-book-btn" class="px-5 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
-                        开始重练
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 gap-4 mb-6">
-                    <div class="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-5 text-center">
-                        <p class="text-xs text-slate-500 font-medium mb-1">累计错词</p>
-                        <p class="text-5xl font-black text-red-600 mb-2" id="wrong-book-page-count">0</p>
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                        <button id="start-wrong-book-btn" class="px-5 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+                            开始重练
+                        </button>
+                        <label class="inline-flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-500 cursor-pointer select-none">
+                            <span id="wrong-book-dictation-mode-label" class="text-blue-600">倒计时</span>
+                            <span class="switch">
+                                <input type="checkbox" id="wrong-book-practice-mode-toggle">
+                                <span class="slider"></span>
+                            </span>
+                            <span id="wrong-book-practice-mode-label">无倒计时</span>
+                        </label>
                     </div>
                 </div>
 
                 <div class="bg-white border border-slate-200 rounded-2xl p-4 md:p-5">
                     <div class="flex items-center justify-between gap-3 mb-4">
                         <h3 class="text-sm font-black text-slate-700 uppercase tracking-widest">高频错词</h3>
+                        <button id="shuffle-wrong-book-page-btn" class="px-3 py-1.5 bg-white border-2 border-slate-200 hover:border-orange-400 text-slate-600 hover:text-orange-600 font-bold text-xs rounded-lg transition-all active:scale-95 hover:shadow-md">
+                            随机当前页
+                        </button>
                     </div>
                     <div id="wrong-book-list" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-left">
                         <p class="md:col-span-2 text-slate-400 text-center py-8">暂无错词</p>
+                    </div>
+                    <div id="wrong-book-pagination" class="hidden mt-4 flex items-center justify-center gap-3 border-t border-slate-100 pt-4">
+                        <button id="wrong-book-prev-page" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-sm rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                            上一页
+                        </button>
+                        <span id="wrong-book-page-info" class="text-xs font-bold text-slate-400"></span>
+                        <button id="wrong-book-next-page" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-sm rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                            下一页
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1357,6 +1375,39 @@
             startMistakeReviewPractice();
         });
 
+        $('#wrong-book-practice-mode-toggle').on('change', function() {
+            isPracticeMode = this.checked;
+            updatePracticeModeToggleLabel();
+            if (isStarted && !isPaused) {
+                if (isPracticeMode) {
+                    clearTimeout(autoNextTimer);
+                    $('#timer-bar').css({ 'transition': 'none', 'width': '0%' });
+                    $('#timer-container').hide();
+                } else {
+                    startCurrentTimer();
+                }
+            }
+        });
+
+        $('#shuffle-wrong-book-page-btn').on('click', () => {
+            if ($('#start-wrong-book-btn').prop('disabled') || currentMistakeReviewPageItems.length <= 1) return;
+            currentMistakeReviewPageItems = shuffleArray([...currentMistakeReviewPageItems]);
+            renderMistakeReviewItems(currentMistakeReviewPageItems);
+        });
+
+        $('#wrong-book-prev-page').on('click', () => {
+            if (mistakeReviewCurrentPage <= 1) return;
+            mistakeReviewCurrentPage--;
+            renderMistakeReviewPage();
+        });
+
+        $('#wrong-book-next-page').on('click', () => {
+            const totalPages = getMistakeReviewTotalPages(getMistakeReviewItems().length);
+            if (mistakeReviewCurrentPage >= totalPages) return;
+            mistakeReviewCurrentPage++;
+            renderMistakeReviewPage();
+        });
+
         $('#close-today-stats, #close-today-stats-btn').on('click', () => {
             $('#today-stats-modal').addClass('hidden');
         });
@@ -1946,6 +1997,9 @@
             $('#practice-area, #stats-page').addClass('hidden');
             $('#wrong-book-page').removeClass('hidden');
             $('#current-chapter-title').text('错词本');
+            mistakeReviewCurrentPage = 1;
+            currentMistakeReviewPageItems = [];
+            updatePracticeModeToggleLabel();
             await renderMistakeReviewPage();
             trackEvent('view_wrong_book', { wrong_book_count: getMistakeReviewItems().length });
         }
@@ -1973,6 +2027,9 @@
         }
 
         const mistakeReviewMetaCache = {};
+        const MISTAKE_REVIEW_PAGE_SIZE = 20;
+        let mistakeReviewCurrentPage = 1;
+        let currentMistakeReviewPageItems = [];
 
         function findKnownWordMeta(word) {
             const normalized = String(word || '').toLowerCase().trim();
@@ -2069,6 +2126,8 @@
                         speech: knownMeta && knownMeta.speech ? knownMeta.speech : (isDigitWord ? getDigitSpeech(word) : ''),
                         isNumberReview: isDigitWord && !isYearWord,
                         isYearReview: isYearWord,
+                        errorRate: wrongCount / (stats.total || 1),
+                        accuracy: Math.round(((stats.correct || 0) / (stats.total || 1)) * 100),
                         wrongCount,
                         correctCount: stats.correct || 0,
                         totalAttempts: stats.total || 0
@@ -2076,6 +2135,7 @@
                 })
                 .filter(Boolean)
                 .sort((a, b) => {
+                    if (b.errorRate !== a.errorRate) return b.errorRate - a.errorRate;
                     if (b.wrongCount !== a.wrongCount) return b.wrongCount - a.wrongCount;
                     return b.totalAttempts - a.totalAttempts;
                 });
@@ -2086,51 +2146,81 @@
             $('#wrong-book-page-count').text(count);
         }
 
+        function getMistakeReviewTotalPages(totalCount) {
+            return Math.max(1, Math.ceil(totalCount / MISTAKE_REVIEW_PAGE_SIZE));
+        }
+
+        function getMistakeReviewPageItems(items) {
+            const totalPages = getMistakeReviewTotalPages(items.length);
+            mistakeReviewCurrentPage = Math.min(Math.max(1, mistakeReviewCurrentPage), totalPages);
+            const start = (mistakeReviewCurrentPage - 1) * MISTAKE_REVIEW_PAGE_SIZE;
+            return items.slice(start, start + MISTAKE_REVIEW_PAGE_SIZE);
+        }
+
+        function updateMistakeReviewPagination(totalCount) {
+            const totalPages = getMistakeReviewTotalPages(totalCount);
+            const shouldShow = totalCount > MISTAKE_REVIEW_PAGE_SIZE;
+
+            $('#wrong-book-pagination').toggleClass('hidden', !shouldShow);
+            $('#wrong-book-page-info').text(`第 ${mistakeReviewCurrentPage}/${totalPages} 页`);
+            $('#wrong-book-prev-page').prop('disabled', mistakeReviewCurrentPage <= 1);
+            $('#wrong-book-next-page').prop('disabled', mistakeReviewCurrentPage >= totalPages);
+        }
+
         function renderMistakeReviewItems(items) {
+            currentMistakeReviewPageItems = [...items];
             const html = items.map(item => `
                 <div class="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
                     <div class="min-w-0">
                         <div class="flex flex-wrap items-center gap-2">
                             <span class="font-black text-slate-800">${escapeHtml(item.en)}</span>
+                            <span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded ${item.accuracy >= 80 ? 'bg-green-100 text-green-600' : item.accuracy >= 60 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'}">${item.accuracy}%</span>
                         </div>
                         <div class="mt-1 text-xs text-slate-500">${escapeHtml(item.zh)}</div>
-                        <div class="mt-2 flex flex-wrap gap-2 text-[10px] text-slate-400">
-                            ${item.totalAttempts ? `<span>统计: ${item.correctCount || 0}/${item.totalAttempts}</span>` : ''}
-                        </div>
                     </div>
                 </div>
             `).join('');
 
             $('#wrong-book-list').html(html);
+            $('#shuffle-wrong-book-page-btn').prop('disabled', items.length <= 1);
         }
 
         async function renderMistakeReviewPage() {
             let items = getMistakeReviewItems();
+            let pageItems = getMistakeReviewPageItems(items);
             updateMistakeReviewBadge();
+            updateMistakeReviewPagination(items.length);
             $('#start-wrong-book-btn').prop('disabled', true);
 
             if (items.length === 0) {
+                currentMistakeReviewPageItems = [];
                 $('#wrong-book-list').html('<p class="md:col-span-2 text-slate-400 text-center py-8">暂无错词</p>');
+                $('#wrong-book-pagination').addClass('hidden');
+                $('#shuffle-wrong-book-page-btn').prop('disabled', true);
                 return;
             }
 
-            const needsTranslation = getMissingTranslationWords(items).length > 0;
+            const needsTranslation = getMissingTranslationWords(pageItems).length > 0;
             if (needsTranslation) {
+                currentMistakeReviewPageItems = [];
+                $('#shuffle-wrong-book-page-btn').prop('disabled', true);
                 $('#wrong-book-list').html('<p class="md:col-span-2 text-slate-400 text-center py-8">加载中...</p>');
-                const didHydrate = await hydrateMistakeReviewTranslations(items);
+                const didHydrate = await hydrateMistakeReviewTranslations(pageItems);
                 if (didHydrate) {
                     items = getMistakeReviewItems();
+                    pageItems = getMistakeReviewPageItems(items);
+                    updateMistakeReviewPagination(items.length);
                 }
             }
 
-            renderMistakeReviewItems(items);
+            renderMistakeReviewItems(pageItems);
             $('#start-wrong-book-btn').prop('disabled', false);
         }
 
         function startMistakeReviewPractice() {
             if ($('#start-wrong-book-btn').prop('disabled')) return;
 
-            const items = getMistakeReviewItems().map(item => ({
+            const items = currentMistakeReviewPageItems.map(item => ({
                 en: item.en,
                 zh: item.zh || '错词复习',
                 speech: item.speech || '',
@@ -2159,7 +2249,7 @@
             totalPages = Math.ceil(items.length / WORDS_PER_PAGE);
 
             $('#exercise-card').removeClass('opacity-50 pointer-events-none');
-            $('#current-chapter-title').text('错词本 / 重练');
+            $('#current-chapter-title').text(`错词本 / 第${mistakeReviewCurrentPage}页重练`);
             $('#stat-total').text(corpus.length);
             $('#stat-correct').text('0');
             $('#stat-accuracy').text('0%');
@@ -3298,6 +3388,9 @@
         function updatePracticeModeToggleLabel() {
             $('#dictation-mode-label').toggleClass('text-blue-600', !isPracticeMode);
             $('#practice-mode-label').toggleClass('text-blue-600', isPracticeMode);
+            $('#wrong-book-dictation-mode-label').toggleClass('text-blue-600', !isPracticeMode);
+            $('#wrong-book-practice-mode-label').toggleClass('text-blue-600', isPracticeMode);
+            $('#practice-mode-toggle, #wrong-book-practice-mode-toggle').prop('checked', isPracticeMode);
         }
 
         $('#practice-mode-toggle').on('change', function() {
