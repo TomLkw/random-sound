@@ -442,14 +442,10 @@
                     </button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="grid grid-cols-1 gap-4 mb-6">
                     <div class="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-5 text-center">
                         <p class="text-xs text-slate-500 font-medium mb-1">累计错词</p>
                         <p class="text-5xl font-black text-red-600 mb-2" id="wrong-book-page-count">0</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-5 text-center">
-                        <p class="text-xs text-slate-500 font-medium mb-1">错误次数</p>
-                        <p class="text-5xl font-black text-amber-600 mb-2" id="wrong-book-total-mistakes">0</p>
                     </div>
                 </div>
 
@@ -1990,14 +1986,18 @@
             return String(word || '').split('').map(ch => digitMap[ch] || ch).join(', ');
         }
 
-        async function hydrateMistakeReviewTranslations(items) {
-            if (!supabaseClinet || !Array.isArray(items) || items.length === 0) return false;
-
-            const missingWords = [...new Set(items
+        function getMissingTranslationWords(items) {
+            return [...new Set((items || [])
                 .filter(item => item && !item.zh && !item.isNumberReview && !item.isYearReview)
                 .map(item => item.en)
                 .filter(Boolean)
             )];
+        }
+
+        async function hydrateMistakeReviewTranslations(items) {
+            if (!supabaseClinet || !Array.isArray(items) || items.length === 0) return false;
+
+            const missingWords = getMissingTranslationWords(items);
             if (missingWords.length === 0) return false;
 
             let changed = false;
@@ -2062,40 +2062,50 @@
             $('#wrong-book-page-count').text(count);
         }
 
+        function renderMistakeReviewItems(items) {
+            const html = items.map(item => `
+                <div class="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                    <div class="min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="font-black text-slate-800">${escapeHtml(item.en)}</span>
+                        </div>
+                        <div class="mt-1 text-xs text-slate-500">${escapeHtml(item.zh)}</div>
+                        <div class="mt-2 flex flex-wrap gap-2 text-[10px] text-slate-400">
+                            ${item.totalAttempts ? `<span>统计: ${item.correctCount || 0}/${item.totalAttempts}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            $('#wrong-book-list').html(html);
+        }
+
         async function renderMistakeReviewPage() {
             let items = getMistakeReviewItems();
-            if (await hydrateMistakeReviewTranslations(items)) {
-                items = getMistakeReviewItems();
-            }
-            const totalMistakes = items.reduce((sum, item) => sum + (item.wrongCount || 0), 0);
             updateMistakeReviewBadge();
-            $('#wrong-book-total-mistakes').text(totalMistakes);
-            $('#start-wrong-book-btn').prop('disabled', items.length === 0);
+            $('#start-wrong-book-btn').prop('disabled', true);
 
             if (items.length === 0) {
                 $('#wrong-book-list').html('<p class="md:col-span-2 text-slate-400 text-center py-8">暂无错词</p>');
                 return;
             }
 
-            const html = items.map(item => `
-                    <div class="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
-                        <div class="min-w-0">
-                            <div class="flex flex-wrap items-center gap-2">
-                                <span class="font-black text-slate-800">${escapeHtml(item.en)}</span>
-                                <span class="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-black text-red-600">错 ${item.wrongCount || 0}</span>
-                            </div>
-                            <div class="mt-1 text-xs text-slate-500">${escapeHtml(item.zh)}</div>
-                            <div class="mt-2 flex flex-wrap gap-2 text-[10px] text-slate-400">
-                                ${item.totalAttempts ? `<span>统计: ${item.correctCount || 0}/${item.totalAttempts}</span>` : ''}
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
+            const needsTranslation = getMissingTranslationWords(items).length > 0;
+            if (needsTranslation) {
+                $('#wrong-book-list').html('<p class="md:col-span-2 text-slate-400 text-center py-8">加载中...</p>');
+                const didHydrate = await hydrateMistakeReviewTranslations(items);
+                if (didHydrate) {
+                    items = getMistakeReviewItems();
+                }
+            }
 
-            $('#wrong-book-list').html(html);
+            renderMistakeReviewItems(items);
+            $('#start-wrong-book-btn').prop('disabled', false);
         }
 
         function startMistakeReviewPractice() {
+            if ($('#start-wrong-book-btn').prop('disabled')) return;
+
             const items = getMistakeReviewItems().map(item => ({
                 en: item.en,
                 zh: item.zh || '错词复习',
