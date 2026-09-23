@@ -2282,7 +2282,7 @@
             isNumberMode = false;
             isDateMode = false;
             isYearMode = false;
-            isRetryingWrong = true;
+            isRetryingWrong = false;
             currentChapter = 'wrong-book';
             corpus = JSON.parse(JSON.stringify(items));
             allData[currentChapter] = items;
@@ -2916,7 +2916,7 @@
                 translation
             });
             
-            // 更新词汇统计（仅在非错题模式下）
+            // 更新词汇统计（重练错题和数字练习不计入）
             if (!isRetryingWrong && !isNumberMode) {
                 updateWordStats(correctWord, isCorrect);
             }
