@@ -247,11 +247,11 @@
             </button>
 
             <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">数字练习</div>
-            <button onclick="startNumberExercise('easy')" id="nav-numbers-easy" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+            <button onclick="openNumberRoute('easy')" id="nav-numbers-easy" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 数字听力(简单)
             </button>
-            <button onclick="startNumberExercise('hard')" id="nav-numbers-hard" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+            <button onclick="openNumberRoute('hard')" id="nav-numbers-hard" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 数字听力(困难)
             </button>
@@ -498,7 +498,7 @@
                                 <button onclick="openChapterRoute('3.1')" class="px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-200 transition-all active:scale-95">
                                     从 List 3.1 开始
                                 </button>
-                                <button onclick="startNumberExercise('easy')" class="px-5 py-3 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold border border-slate-200 transition-all active:scale-95">
+                                <button onclick="openNumberRoute('easy')" class="px-5 py-3 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold border border-slate-200 transition-all active:scale-95">
                                     先练数字听力
                                 </button>
                             </div>
@@ -1996,6 +1996,11 @@
             showMistakeReviewPage();
         }
 
+        function openNumberRoute(level) {
+            setAppPath(level === 'easy' ? '/number-easy' : '/number-hard');
+            startNumberExercise(level, { keepRoute: true });
+        }
+
         function openChapterRoute(chapter) {
             const pathMap = {
                 '3.1': '/list-3-1',
@@ -2030,7 +2035,7 @@
 
         function clearPageRoute() {
             const url = new URL(window.location.href);
-            const appPaths = ['/wrong-book', '/date-listening', '/year-listening', '/list-3-1', '/list-3-2', '/list-3-3', '/task1-basic-vocabulary', '/task1-advanced-vocabulary', '/task2-basic-vocabulary', '/task2-argument-vocabulary', '/task2-topic-vocabulary'];
+            const appPaths = ['/wrong-book', '/number-easy', '/number-hard', '/date-listening', '/year-listening', '/list-3-1', '/list-3-2', '/list-3-3', '/task1-basic-vocabulary', '/task1-advanced-vocabulary', '/task2-basic-vocabulary', '/task2-argument-vocabulary', '/task2-topic-vocabulary'];
             if (!appPaths.includes(url.pathname)) return;
             url.pathname = '/';
             url.search = '';
@@ -2052,6 +2057,16 @@
 
             if (path === '/wrong-book') {
                 await showMistakeReviewPage({ keepPage: true });
+                return;
+            }
+
+            if (path === '/number-easy') {
+                startNumberExercise('easy', { keepRoute: true });
+                return;
+            }
+
+            if (path === '/number-hard') {
+                startNumberExercise('hard', { keepRoute: true });
                 return;
             }
 
@@ -2605,8 +2620,8 @@
         }
 
         // 开始数字听力练习
-        function startNumberExercise(level = 'hard') {
-            showPracticePage(); // 切回练习页面
+        function startNumberExercise(level = 'hard', options = {}) {
+            showPracticePage({ keepRoute: options.keepRoute }); // 切回练习页面
             hideSeoIntro();
             $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50').css({'background':'', 'color':''});
             if (level === 'easy') {
