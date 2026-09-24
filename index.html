@@ -173,15 +173,15 @@
         
         <nav class="flex-1 overflow-y-auto p-4 space-y-2 sidebar-scroll">
             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">名词语料</div>
-            <button onclick="startExercise('3.1')" id="nav-3.1" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+            <button onclick="openChapterRoute('3.1')" id="nav-3.1" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 List 3.1
             </button>
-            <button onclick="startExercise('3.2')" id="nav-3.2" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+            <button onclick="openChapterRoute('3.2')" id="nav-3.2" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 List 3.2
             </button>
-            <button onclick="startExercise('3.3')" id="nav-3.3" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+            <button onclick="openChapterRoute('3.3')" id="nav-3.3" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 List 3.3
             </button>
@@ -225,23 +225,23 @@
             </button>
 
             <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">学术写作</div>
-            <button onclick="startExercise('task1-basic')" id="nav-task1-basic" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+            <button onclick="openChapterRoute('task1-basic')" id="nav-task1-basic" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 小作文基础词
             </button>
-            <button onclick="startExercise('task1-advanced')" id="nav-task1-advanced" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+            <button onclick="openChapterRoute('task1-advanced')" id="nav-task1-advanced" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 小作文进阶词
             </button>
-            <button onclick="startExercise('task2-basic')" id="nav-task2-basic" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+            <button onclick="openChapterRoute('task2-basic')" id="nav-task2-basic" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 大作文基础词
             </button>
-            <button onclick="startExercise('task2-argument')" id="nav-task2-argument" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+            <button onclick="openChapterRoute('task2-argument')" id="nav-task2-argument" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 大作文论证词
             </button>
-            <button onclick="startExercise('task2-topic')" id="nav-task2-topic" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+            <button onclick="openChapterRoute('task2-topic')" id="nav-task2-topic" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 大作文话题词
             </button>
@@ -495,7 +495,7 @@
                                 你可以直接开始练习，也可以先按章节、错词和学习统计来安排复习节奏。
                             </p>
                             <div class="mt-6 flex flex-col sm:flex-row gap-3">
-                                <button onclick="startExercise('3.1')" class="px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-200 transition-all active:scale-95">
+                                <button onclick="openChapterRoute('3.1')" class="px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-200 transition-all active:scale-95">
                                     从 List 3.1 开始
                                 </button>
                                 <button onclick="startNumberExercise('easy')" class="px-5 py-3 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold border border-slate-200 transition-all active:scale-95">
@@ -1992,24 +1992,24 @@
         }
 
         function openWrongBookRoute() {
-            const url = new URL(window.location.href);
-            url.searchParams.set('pageName', 'wrong-book');
-            url.searchParams.delete('chapter');
-            url.searchParams.delete('page');
-            if (url.href !== window.location.href) {
-                history.pushState({}, '', url);
-            }
+            setAppPath('/wrong-book');
             showMistakeReviewPage();
         }
 
         function openChapterRoute(chapter) {
-            const url = new URL(window.location.href);
-            url.searchParams.delete('pageName');
-            url.searchParams.delete('page');
-            url.searchParams.set('chapter', chapter);
-            if (url.href !== window.location.href) {
-                history.pushState({}, '', url);
-            }
+            const pathMap = {
+                '3.1': '/list-3-1',
+                '3.2': '/list-3-2',
+                '3.3': '/list-3-3',
+                'task1-basic': '/task1-basic-vocabulary',
+                'task1-advanced': '/task1-advanced-vocabulary',
+                'task2-basic': '/task2-basic-vocabulary',
+                'task2-argument': '/task2-argument-vocabulary',
+                'task2-topic': '/task2-topic-vocabulary',
+                date: '/date-listening',
+                years: '/year-listening'
+            };
+            setAppPath(pathMap[chapter] || '/');
             if (chapter === 'years') {
                 startYearExercise({ keepRoute: true });
                 return;
@@ -2017,33 +2017,56 @@
             startExercise(chapter, { keepRoute: true });
         }
 
+        function setAppPath(path) {
+            if (window.location.protocol === 'file:') return;
+            const url = new URL(window.location.href);
+            url.pathname = path;
+            url.search = '';
+            url.hash = '';
+            if (url.href !== window.location.href) {
+                history.pushState({}, '', url);
+            }
+        }
+
         function clearPageRoute() {
             const url = new URL(window.location.href);
-            if (!url.searchParams.has('pageName') && !url.searchParams.has('chapter')) return;
-            url.searchParams.delete('pageName');
-            url.searchParams.delete('chapter');
-            url.searchParams.delete('page');
+            const appPaths = ['/wrong-book', '/date-listening', '/year-listening', '/list-3-1', '/list-3-2', '/list-3-3', '/task1-basic-vocabulary', '/task1-advanced-vocabulary', '/task2-basic-vocabulary', '/task2-argument-vocabulary', '/task2-topic-vocabulary'];
+            if (!appPaths.includes(url.pathname)) return;
+            url.pathname = '/';
+            url.search = '';
             history.replaceState({}, '', url);
         }
 
         async function handlePageRoute() {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('pageName') === 'wrong-book') {
-                const requestedPage = Number(params.get('page'));
-                if (Number.isInteger(requestedPage) && requestedPage > 0) {
-                    mistakeReviewCurrentPage = requestedPage;
-                }
+            const path = window.location.pathname;
+            const chapterPathMap = {
+                '/list-3-1': '3.1',
+                '/list-3-2': '3.2',
+                '/list-3-3': '3.3',
+                '/task1-basic-vocabulary': 'task1-basic',
+                '/task1-advanced-vocabulary': 'task1-advanced',
+                '/task2-basic-vocabulary': 'task2-basic',
+                '/task2-argument-vocabulary': 'task2-argument',
+                '/task2-topic-vocabulary': 'task2-topic'
+            };
+
+            if (path === '/wrong-book') {
                 await showMistakeReviewPage({ keepPage: true });
                 return;
             }
 
-            if (params.get('chapter') === 'date') {
+            if (path === '/date-listening') {
                 await startExercise('date', { keepRoute: true });
                 return;
             }
 
-            if (params.get('chapter') === 'years') {
+            if (path === '/year-listening') {
                 startYearExercise({ keepRoute: true });
+                return;
+            }
+
+            if (chapterPathMap[path]) {
+                await startExercise(chapterPathMap[path], { keepRoute: true });
                 return;
             }
 
