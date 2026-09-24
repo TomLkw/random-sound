@@ -257,11 +257,11 @@
             </button>
 
             <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">日期练习</div>
-            <button onclick="startExercise('date')" id="nav-date" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+            <button onclick="openChapterRoute('date')" id="nav-date" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 日期听写
             </button>
-            <button onclick="startYearExercise()" id="nav-years" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+            <button onclick="openChapterRoute('years')" id="nav-years" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 年份听写
             </button>
@@ -1368,7 +1368,7 @@
         });
 
         $('#wrong-book-btn').on('click', () => {
-            showMistakeReviewPage();
+            openWrongBookRoute();
         });
 
         $('#start-wrong-book-btn').on('click', () => {
@@ -1515,6 +1515,7 @@
             loadWordStats();
             updateMistakeReviewBadge();
             initTodayStats(); // 初始化今日学习统计
+            handlePageRoute();
 
             // 根据 paidChapters 动态注入锁图标
             const lockSvg = `<span class="ml-auto text-amber-700 lock-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" /></svg></span>`;
@@ -1523,6 +1524,8 @@
                 if (btn) btn.insertAdjacentHTML('beforeend', lockSvg);
             });
         });
+
+        window.addEventListener('popstate', handlePageRoute);
 
         // 从 Supabase 获取章节数据
         async function fetchChapterData(chapter) {
@@ -1924,6 +1927,7 @@
         }
 
         function showStatsPage() {
+            clearPageRoute();
             const stats = getTodayStats();
             const today = new Date();
             const dateStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
@@ -1987,17 +1991,79 @@
             trackEvent('view_today_stats', { correct_count: stats.correctCount });
         }
 
-        function showPracticePage() {
+        function openWrongBookRoute() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('pageName', 'wrong-book');
+            url.searchParams.delete('chapter');
+            url.searchParams.delete('page');
+            if (url.href !== window.location.href) {
+                history.pushState({}, '', url);
+            }
+            showMistakeReviewPage();
+        }
+
+        function openChapterRoute(chapter) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('pageName');
+            url.searchParams.delete('page');
+            url.searchParams.set('chapter', chapter);
+            if (url.href !== window.location.href) {
+                history.pushState({}, '', url);
+            }
+            if (chapter === 'years') {
+                startYearExercise({ keepRoute: true });
+                return;
+            }
+            startExercise(chapter, { keepRoute: true });
+        }
+
+        function clearPageRoute() {
+            const url = new URL(window.location.href);
+            if (!url.searchParams.has('pageName') && !url.searchParams.has('chapter')) return;
+            url.searchParams.delete('pageName');
+            url.searchParams.delete('chapter');
+            url.searchParams.delete('page');
+            history.replaceState({}, '', url);
+        }
+
+        async function handlePageRoute() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('pageName') === 'wrong-book') {
+                const requestedPage = Number(params.get('page'));
+                if (Number.isInteger(requestedPage) && requestedPage > 0) {
+                    mistakeReviewCurrentPage = requestedPage;
+                }
+                await showMistakeReviewPage({ keepPage: true });
+                return;
+            }
+
+            if (params.get('chapter') === 'date') {
+                await startExercise('date', { keepRoute: true });
+                return;
+            }
+
+            if (params.get('chapter') === 'years') {
+                startYearExercise({ keepRoute: true });
+                return;
+            }
+
+            if (!$('#wrong-book-page').hasClass('hidden')) {
+                showPracticePage({ keepRoute: true });
+            }
+        }
+
+        function showPracticePage(options = {}) {
+            if (!options.keepRoute) clearPageRoute();
             $('#stats-page, #wrong-book-page').addClass('hidden');
             $('#practice-area').removeClass('hidden');
         }
 
-        async function showMistakeReviewPage() {
+        async function showMistakeReviewPage(options = {}) {
             hideSeoIntro();
             $('#practice-area, #stats-page').addClass('hidden');
             $('#wrong-book-page').removeClass('hidden');
             $('#current-chapter-title').text('错词本');
-            mistakeReviewCurrentPage = 1;
+            if (!options.keepPage) mistakeReviewCurrentPage = 1;
             currentMistakeReviewPageItems = [];
             updatePracticeModeToggleLabel();
             await renderMistakeReviewPage();
@@ -2639,8 +2705,8 @@
             }).join('');
         }
 
-        function startYearExercise() {
-            showPracticePage();
+        function startYearExercise(options = {}) {
+            showPracticePage({ keepRoute: options.keepRoute });
             hideSeoIntro();
             trackEvent('chapter_click', { chapter: 'years' });
 
@@ -2744,8 +2810,8 @@
             return chapterTitleMap[chapter] || chapter;
         }
 
-        async function startExercise(chapter) {
-            showPracticePage(); // 切回练习页面
+        async function startExercise(chapter, options = {}) {
+            showPracticePage({ keepRoute: options.keepRoute }); // 切回练习页面
             hideSeoIntro();
             // 埋点：点击章节
             trackEvent('chapter_click', { chapter });
@@ -2877,6 +2943,7 @@
                     wordStats = data.stats_data || {};
                     localStorage.setItem('wordStats', JSON.stringify(wordStats));
                     updateMistakeReviewBadge();
+                    if (!$('#wrong-book-page').hasClass('hidden')) renderMistakeReviewPage();
                     console.log('已从云端加载 wordStats');
                 } else {
                     // 云端无数据：以本地为准插入
