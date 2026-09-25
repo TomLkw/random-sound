@@ -255,6 +255,14 @@
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 数字听力(困难)
             </button>
+            <button onclick="openPriceRoute('easy')" id="nav-prices-easy" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                价格听写(简单)
+            </button>
+            <button onclick="openPriceRoute('hard')" id="nav-prices-hard" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                价格听写(困难)
+            </button>
 
             <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">日期练习</div>
             <button onclick="openChapterRoute('date')" id="nav-date" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
@@ -1840,9 +1848,54 @@
         let isNumberMode = false;
         let isDateMode = false;
         let isYearMode = false;
+        let isPriceMode = false;
         let isPracticeMode = false;
         const paidChapters = ['3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.1', '4.2', '4.3', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '11.2', '11.3', '11.4', '11.5', '11.6', '11.7', '11.8', '11.9', '11.10', '11.11', '11.12', '11.13', '11.14'];
         let numberGroups = [];
+        const priceGroupsEasy = [
+            { en: '£5', zh: '价格 1', speech: 'five pounds' },
+            { en: '£12', zh: '价格 2', speech: 'twelve pounds' },
+            { en: '£18', zh: '价格 3', speech: 'eighteen pounds' },
+            { en: '£25', zh: '价格 4', speech: 'twenty-five pounds' },
+            { en: '£40', zh: '价格 5', speech: 'forty pounds' },
+            { en: '£64', zh: '价格 6', speech: 'sixty-four pounds' },
+            { en: '£75', zh: '价格 7', speech: 'seventy-five pounds' },
+            { en: '£99', zh: '价格 8', speech: 'ninety-nine pounds' },
+            { en: '£120', zh: '价格 9', speech: 'one hundred and twenty pounds' },
+            { en: '£250', zh: '价格 10', speech: 'two hundred and fifty pounds' },
+            { en: '$6', zh: '价格 11', speech: 'six dollars' },
+            { en: '$15', zh: '价格 12', speech: 'fifteen dollars' },
+            { en: '$22', zh: '价格 13', speech: 'twenty-two dollars' },
+            { en: '$35', zh: '价格 14', speech: 'thirty-five dollars' },
+            { en: '$48', zh: '价格 15', speech: 'forty-eight dollars' },
+            { en: '$70', zh: '价格 16', speech: 'seventy dollars' },
+            { en: '$86', zh: '价格 17', speech: 'eighty-six dollars' },
+            { en: '$120', zh: '价格 18', speech: 'one hundred and twenty dollars' },
+            { en: '$150', zh: '价格 19', speech: 'one hundred and fifty dollars' },
+            { en: '$300', zh: '价格 20', speech: 'three hundred dollars' }
+        ];
+        const priceGroupsHard = [
+            { en: '£12.50', zh: '价格 1', speech: 'twelve pounds fifty' },
+            { en: '£7.99', zh: '价格 2', speech: 'seven pounds ninety-nine' },
+            { en: '£3.75', zh: '价格 3', speech: 'three pounds seventy-five' },
+            { en: '£18.20', zh: '价格 4', speech: 'eighteen pounds twenty' },
+            { en: '£0.80', zh: '价格 5', speech: 'eighty pence' },
+            { en: '£64.50', zh: '价格 6', speech: 'sixty-four pounds fifty' },
+            { en: '£9.05', zh: '价格 7', speech: 'nine pounds five' },
+            { en: '£22.40', zh: '价格 8', speech: 'twenty-two pounds forty' },
+            { en: '£105.60', zh: '价格 9', speech: 'one hundred and five pounds sixty' },
+            { en: '£14.30', zh: '价格 10', speech: 'fourteen pounds thirty' },
+            { en: '$15.99', zh: '价格 11', speech: 'fifteen dollars ninety-nine' },
+            { en: '$8.50', zh: '价格 12', speech: 'eight dollars fifty' },
+            { en: '$4.25', zh: '价格 13', speech: 'four dollars twenty-five' },
+            { en: '$32.40', zh: '价格 14', speech: 'thirty-two dollars forty' },
+            { en: '$0.75', zh: '价格 15', speech: 'seventy-five cents' },
+            { en: '$99.95', zh: '价格 16', speech: 'ninety-nine dollars ninety-five' },
+            { en: '$205.60', zh: '价格 17', speech: 'two hundred and five dollars sixty' },
+            { en: '$48.30', zh: '价格 18', speech: 'forty-eight dollars thirty' },
+            { en: '$11.05', zh: '价格 19', speech: 'eleven dollars five' },
+            { en: '$72.80', zh: '价格 20', speech: 'seventy-two dollars eighty' }
+        ];
         const yearGroups = [
             { en: '1984', zh: '年份 1', speech: 'nineteen eighty-four' },
             { en: '1991', zh: '年份 2', speech: 'nineteen ninety-one' },
@@ -2001,6 +2054,11 @@
             startNumberExercise(level, { keepRoute: true });
         }
 
+        function openPriceRoute(level = 'easy') {
+            setAppPath(level === 'hard' ? '/price-hard' : '/price-easy');
+            startPriceExercise(level, { keepRoute: true });
+        }
+
         function openChapterRoute(chapter) {
             const pathMap = {
                 '3.1': '/list-3-1',
@@ -2035,7 +2093,7 @@
 
         function clearPageRoute() {
             const url = new URL(window.location.href);
-            const appPaths = ['/wrong-book', '/number-easy', '/number-hard', '/date-listening', '/year-listening', '/list-3-1', '/list-3-2', '/list-3-3', '/task1-basic-vocabulary', '/task1-advanced-vocabulary', '/task2-basic-vocabulary', '/task2-argument-vocabulary', '/task2-topic-vocabulary'];
+            const appPaths = ['/wrong-book', '/number-easy', '/number-hard', '/price-easy', '/price-hard', '/price-listening', '/date-listening', '/year-listening', '/list-3-1', '/list-3-2', '/list-3-3', '/task1-basic-vocabulary', '/task1-advanced-vocabulary', '/task2-basic-vocabulary', '/task2-argument-vocabulary', '/task2-topic-vocabulary'];
             if (!appPaths.includes(url.pathname)) return;
             url.pathname = '/';
             url.search = '';
@@ -2067,6 +2125,16 @@
 
             if (path === '/number-hard') {
                 startNumberExercise('hard', { keepRoute: true });
+                return;
+            }
+
+            if (path === '/price-easy' || path === '/price-listening') {
+                startPriceExercise('easy', { keepRoute: true });
+                return;
+            }
+
+            if (path === '/price-hard') {
+                startPriceExercise('hard', { keepRoute: true });
                 return;
             }
 
@@ -2167,6 +2235,10 @@
             return /^\d+$/.test(String(word || '').trim());
         }
 
+        function isPriceReviewWord(word) {
+            return /^[£$]\d+(?:\.\d+)?$/.test(String(word || '').trim());
+        }
+
         function getDigitSpeech(word) {
             const digitMap = {
                 '0': 'or',
@@ -2256,6 +2328,7 @@
                     if (wrongCount <= 0) return;
 
                     const knownMeta = findKnownWordMeta(word);
+                    if (!knownMeta && isPriceReviewWord(word)) return;
                     const isDigitWord = isDigitReviewWord(word);
                     const isYearWord = isDigitWord && String(word).length === 4;
                     const isKnownYear = Boolean(isYearWord && knownMeta);
@@ -2393,6 +2466,7 @@
             isNumberMode = false;
             isDateMode = false;
             isYearMode = false;
+            isPriceMode = false;
             isRetryingWrong = false;
             currentChapter = 'wrong-book';
             corpus = JSON.parse(JSON.stringify(items));
@@ -2640,6 +2714,7 @@
             isNumberMode = true;
             isDateMode = false;
             isYearMode = false;
+            isPriceMode = false;
             currentChapter = level === 'easy' ? 'numbers-easy' : 'numbers-hard';
             
             if (level === 'easy') {
@@ -2722,7 +2797,7 @@
         // 开始年份听写练习
         function renderNumberGroupList(groups) {
             return groups.map((item) => {
-                const accuracy = (isNumberMode || isYearMode) ? getWordAccuracy(item.en) : null;
+                const accuracy = (isNumberMode || isYearMode || isPriceMode) ? getWordAccuracy(item.en) : null;
                 return `
                     <div class="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg text-xs">
                         <div class="flex items-center gap-2">
@@ -2735,6 +2810,52 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        function startPriceExercise(level = 'easy', options = {}) {
+            showPracticePage({ keepRoute: options.keepRoute });
+            hideSeoIntro();
+            const isHard = level === 'hard';
+            const chapter = isHard ? 'prices-hard' : 'prices-easy';
+            trackEvent('chapter_click', { chapter });
+
+            $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50').css({'background':'', 'color':''});
+            $(isHard ? '#nav-prices-hard' : '#nav-prices-easy').addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50').css({'background':'#0f172a', 'color':'#fff'});
+
+            $('#exercise-card').removeClass('opacity-50 pointer-events-none');
+            $('#progress-text').text('准备中...');
+
+            resetChapterState();
+            isNumberMode = false;
+            isDateMode = false;
+            isYearMode = false;
+            isPriceMode = true;
+            currentChapter = chapter;
+            numberGroups = JSON.parse(JSON.stringify(isHard ? priceGroupsHard : priceGroupsEasy));
+            fullChapterData = numberGroups;
+            currentPageWords = numberGroups;
+            totalPages = 1;
+            currentPage = 1;
+
+            $('#current-chapter-title').text(isHard ? '价格听写练习 (困难版 小数金额)' : '价格听写练习 (简单版 整数金额)');
+            $('#stat-total').text(numberGroups.length);
+            $('#stat-correct').text('0');
+            $('#stat-accuracy').text('0%');
+            $('#log-container').empty();
+            $('#log-count').text('0');
+            $('#translation-display').addClass('hidden').text('');
+            $('#start-btn-container').removeClass('hidden');
+            $('#retry-wrong-container').addClass('hidden');
+            $('#share-result-container').addClass('hidden');
+            $('#exercise-controls').addClass('hidden');
+            $('#user-input').val('').prop('disabled', true);
+            $('#progress-text').text('就绪');
+
+            $('#word-list').html(renderNumberGroupList(numberGroups));
+            $('#page-info').text(`共 ${numberGroups.length} 组价格`);
+            $('#shuffle-btn').removeClass('hidden');
+            $('#prev-page, #next-page').addClass('hidden');
+            $('#word-list-container').removeClass('hidden');
         }
 
         function startYearExercise(options = {}) {
@@ -2752,6 +2873,7 @@
             isNumberMode = false;
             isDateMode = false;
             isYearMode = true;
+            isPriceMode = false;
             currentChapter = 'years';
             numberGroups = JSON.parse(JSON.stringify(yearGroups));
             fullChapterData = numberGroups;
@@ -2837,6 +2959,8 @@
                 'task2-topic': '大作文话题词',
                 'numbers-easy': '数字听力练习 (简单版)',
                 'numbers-hard': '数字听力练习 (困难版)',
+                'prices-easy': '价格听写练习 (简单版)',
+                'prices-hard': '价格听写练习 (困难版)',
                 'wrong-book': '错词本'
             };
             return chapterTitleMap[chapter] || chapter;
@@ -2878,6 +3002,7 @@
             isNumberMode = false;
             isDateMode = chapter === 'date';
             isYearMode = false;
+            isPriceMode = false;
             currentChapter = chapter;
             
             // 获取章节数据
@@ -3082,7 +3207,7 @@
             const currentWord = corpus[currentIndex];
             if (!currentWord) return BASE_TIME;
             const wordLength = currentWord.en.length;
-            const isCurrentNumberLike = isNumberMode || currentWord.isNumberReview;
+            const isCurrentNumberLike = isNumberMode || isPriceMode || currentWord.isNumberReview;
             return BASE_TIME + (wordLength * TIME_PER_CHAR) + (isCurrentNumberLike ? 5000 : 0);
         }
 
@@ -3240,13 +3365,19 @@
         function speak(text) {
             const currentAudioItem = corpus[currentIndex] || {};
             const ttsText = currentAudioItem.speech ? currentAudioItem.speech : text;
-            const isCurrentNumberLike = isNumberMode || currentAudioItem.isNumberReview;
+            const isCurrentNumberLike = isNumberMode || isPriceMode || currentAudioItem.isNumberReview;
             const isCurrentSlowMode = isDateMode || isYearMode || currentAudioItem.isYearReview;
             const ttsRate = isCurrentNumberLike ? 0.75 : (isCurrentSlowMode ? 0.85 : 1);
             const playbackRate = isCurrentNumberLike ? 1.2 : 1;
 
             const safeName = (typeof text === 'string' ? text : '').replace(/\//g, '-');
             const path = safeName ? (safeName + '.mp3') : '';
+
+            if (isPriceMode) {
+                console.log('[audio] 价格听写使用系统 TTS:', ttsText);
+                systemSpeak(ttsText, ttsRate);
+                return;
+            }
 
             if (!path || !supabaseClinet) {
                 console.log('[audio] 使用系统 TTS（无路径或无 supabase）:', text);
@@ -3372,13 +3503,31 @@
             }
         }
 
+        function getPriceAmountCents(value) {
+            const text = String(value || '').trim().replace(/,/g, '');
+            const match = text.replace(/[£$]/g, '').match(/\d+(?:\.\d+)?|\.\d+/);
+            if (!match) return null;
+
+            const amount = Number(match[0]);
+            if (!Number.isFinite(amount)) return null;
+            return Math.round(amount * 100);
+        }
+
+        function isPriceAnswerCorrect(userInput, target) {
+            const inputCents = getPriceAmountCents(userInput);
+            const targetCents = getPriceAmountCents(target);
+            return inputCents !== null && targetCents !== null && inputCents === targetCents;
+        }
+
         function checkSubmission() {
             if (isProcessingResult || !currentChapter || isPaused) return;
 
             const input = $('#user-input').val().trim().toLowerCase();
             const target = corpus[currentIndex].en.toLowerCase();
 
-            if (input === target) {
+            const isCorrect = isPriceMode ? isPriceAnswerCorrect(input, target) : input === target;
+
+            if (isCorrect) {
                 goToNext(true, input);
             } else {
                 $('#user-input').addClass('error-shake');
@@ -3593,7 +3742,7 @@
             
             const listHtml = pageWords.map(item => {
                 const accuracy = 100 - item.errorRate;
-                if (isNumberMode || isYearMode) {
+                if (isNumberMode || isYearMode || isPriceMode) {
                     return `
                         <div class="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg text-xs">
                             <div class="flex items-center gap-2">
@@ -3629,12 +3778,12 @@
             
             // 更新当前页面单词数据供随机使用
             currentPageWords = pageWords;
-            // 预加载音频
-            preloadAudiosForWords(pageWords);
+            // 预加载音频；价格听写第一版使用浏览器 TTS
+            if (!isPriceMode) preloadAudiosForWords(pageWords);
         }
         $('#shuffle-btn').on('click', () => {
-            if (isNumberMode || isYearMode) {
-                // 数字/年份模式下随机打乱组题列表
+            if (isNumberMode || isYearMode || isPriceMode) {
+                // 数字/年份/价格模式下随机打乱组题列表
                 const shuffled = shuffleArray([...numberGroups]);
                 $('#word-list').html(renderNumberGroupList(shuffled));
                 return;
@@ -3678,8 +3827,8 @@
         $('#start-btn').on('click', async () => {
             if (!currentChapter) return;
             
-            // 数字/年份模式
-            if (isNumberMode || isYearMode) {
+            // 数字/年份/价格模式
+            if (isNumberMode || isYearMode || isPriceMode) {
                 // 从当前显示的列表获取组题（可能已随机）
                 const displayedNumbers = [];
                 $('#word-list .bg-slate-50').each(function() {
@@ -3698,7 +3847,7 @@
                     chapter: currentChapter,
                     word_count: corpus.length,
                     is_number_mode: isNumberMode,
-                    training_mode: isYearMode ? 'year' : 'number',
+                    training_mode: isPriceMode ? 'price' : (isYearMode ? 'year' : 'number'),
                     is_retry_wrong: false,
                     is_practice_mode: isPracticeMode
                 });
@@ -3717,8 +3866,8 @@
                     renderWord();
                 };
 
-                // 预加载全部数字音频；年份模式使用浏览器朗读，会直接跳过
-                preloadAudiosForWords(corpus);
+                // 预加载数字/年份音频；价格听写第一版使用浏览器 TTS
+                if (!isPriceMode) preloadAudiosForWords(corpus);
 
                 const NUM_WAIT_COUNT = Math.min(5, corpus.length);
                 const firstNums = corpus.slice(0, NUM_WAIT_COUNT);
@@ -3946,7 +4095,7 @@
             $('#mobile-menu-btn').on('click', openMobileSidebar);
             $backdrop.on('click', closeMobileSidebar);
             $(document).on('keydown', function (e) { if (e.key === 'Escape') closeMobileSidebar(); });
-            $aside.on('click', '.chapter-nav, #nav-numbers-easy, #nav-numbers-hard, #nav-years, #wrong-book-btn', closeMobileSidebar);
+            $aside.on('click', '.chapter-nav, #nav-numbers-easy, #nav-numbers-hard, #nav-prices-easy, #nav-prices-hard, #nav-years, #wrong-book-btn', closeMobileSidebar);
 
             // Ensure correct state on resize
             $(window).on('resize', function () {
