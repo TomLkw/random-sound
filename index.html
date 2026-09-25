@@ -438,7 +438,7 @@
                             <h2 class="text-2xl font-black text-slate-800">错词本</h2>
                             <span class="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-black text-orange-600"><span id="wrong-book-page-count">0</span> 词</span>
                         </div>
-                        <p class="text-sm text-slate-400 mt-1">答错的单词会自动保存在这里</p>
+                        <p class="text-sm text-slate-400 mt-1">答错的单词会自动保存在这里, 数字听力不进入错题本</p>
                     </div>
                     <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                         <button id="start-wrong-book-btn" class="px-5 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
@@ -2693,6 +2693,10 @@
                 ];
                 $('#current-chapter-title').text('数字听力练习 (困难版 7-11位)');
             }
+            fullChapterData = numberGroups;
+            currentPageWords = numberGroups;
+            totalPages = 1;
+            currentPage = 1;
             $('#stat-total').text(numberGroups.length);
             $('#stat-correct').text('0');
             $('#stat-accuracy').text('0%');
@@ -2705,17 +2709,7 @@
             $('#exercise-controls').addClass('hidden');
             $('#user-input').val('').prop('disabled', true);
             $('#progress-text').text('就绪');
-            const listHtml = numberGroups.map((item, idx) => `
-                <div class="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg text-xs">
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-blue-600">${item.zh}</span>
-                        <span class="text-slate-400">-</span>
-                        <span class="text-slate-700 font-mono font-bold">${item.en}</span>
-                    </div>
-                    <div class="text-[10px] text-slate-400 italic">读法: ${item.speech}</div>
-                </div>
-            `).join('');
-            $('#word-list').html(listHtml);
+            $('#word-list').html(renderNumberGroupList(numberGroups));
             $('#page-info').text(`共 ${numberGroups.length} 组数字`);
             $('#shuffle-btn').removeClass('hidden');
             $('#prev-page, #next-page').addClass('hidden');
@@ -2728,7 +2722,7 @@
         // 开始年份听写练习
         function renderNumberGroupList(groups) {
             return groups.map((item) => {
-                const accuracy = isYearMode ? getWordAccuracy(item.en) : null;
+                const accuracy = (isNumberMode || isYearMode) ? getWordAccuracy(item.en) : null;
                 return `
                     <div class="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg text-xs">
                         <div class="flex items-center gap-2">
@@ -3028,8 +3022,8 @@
                 translation
             });
             
-            // 更新词汇统计（重练错题和数字练习不计入）
-            if (!isRetryingWrong && !isNumberMode) {
+            // 更新练习统计（重练错题不计入）
+            if (!isRetryingWrong) {
                 updateWordStats(correctWord, isCorrect);
             }
             
@@ -3069,7 +3063,7 @@
                         <div class="flex justify-between items-center mb-0.5">
                             <span class="font-bold ${isCorrect ? 'text-green-700' : 'text-green-600'} text-sm">${correctWord}</span>
                             <div class="flex items-center gap-2">
-                                ${accuracy !== null && !isNumberMode ? `<span class="text-[10px] ${accuracy >= 80 ? 'text-green-500' : accuracy >= 60 ? 'text-yellow-500' : 'text-red-500'} font-bold px-1.5 py-0.5 rounded bg-white/50">${accuracy}%</span>` : ''}
+                                ${accuracy !== null ? `<span class="text-[10px] ${accuracy >= 80 ? 'text-green-500' : accuracy >= 60 ? 'text-yellow-500' : 'text-red-500'} font-bold px-1.5 py-0.5 rounded bg-white/50">${accuracy}%</span>` : ''}
                                 <span class="text-[10px] ${isCorrect ? 'text-green-400' : 'text-red-300'} font-medium uppercase">${time}</span>
                             </div>
                         </div>
@@ -3565,8 +3559,6 @@
         updatePracticeModeToggleLabel();
         
         $('#sort-by-accuracy-btn').on('click', () => {
-            if (isNumberMode) return;
-            
             // 获取本章所有词语的错误率数据
             const allChapterWords = fullChapterData || allData[currentChapter] || [];
             const wordsWithStats = allChapterWords
@@ -3601,7 +3593,7 @@
             
             const listHtml = pageWords.map(item => {
                 const accuracy = 100 - item.errorRate;
-                if (isYearMode) {
+                if (isNumberMode || isYearMode) {
                     return `
                         <div class="flex flex-col gap-1 p-3 bg-slate-50 rounded-lg text-xs">
                             <div class="flex items-center gap-2">
@@ -3632,6 +3624,8 @@
             
             $('#prev-page').prop('disabled', page === 1);
             $('#next-page').prop('disabled', page === totalPages);
+            $('#prev-page, #next-page').removeClass('hidden');
+            $('#word-list-container').removeClass('hidden');
             
             // 更新当前页面单词数据供随机使用
             currentPageWords = pageWords;
