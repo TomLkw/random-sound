@@ -3363,7 +3363,7 @@
 
         // 优先从 Supabase word-audios 获取音频，指定章节从 Cloudflare R2 获取；不存在则系统发声
         function getAudioUrl(path) {
-            const r2Chapters = ['task1-basic', 'task1-advanced', 'task2-basic', 'task2-argument', 'task2-topic', '3.1', '3.2', '3.3', 'numbers-easy', 'numbers-hard', 'date', 'years'];
+            const r2Chapters = ['task1-basic', 'task1-advanced', 'task2-basic', 'task2-argument', 'task2-topic', '3.1', '3.2', '3.3', 'numbers-easy', 'numbers-hard', 'prices-easy', 'prices-hard', 'date', 'years'];
             if (currentChapter && r2Chapters.includes(currentChapter)) {
                 return `${R2_BASE_URL}/${path}`;
             }
@@ -3381,12 +3381,6 @@
 
             const safeName = (typeof text === 'string' ? text : '').replace(/\//g, '-');
             const path = safeName ? (safeName + '.mp3') : '';
-
-            if (isPriceMode) {
-                console.log('[audio] 价格听写使用系统 TTS:', ttsText);
-                systemSpeak(ttsText, ttsRate);
-                return;
-            }
 
             if (!path || !supabaseClinet) {
                 console.log('[audio] 使用系统 TTS（无路径或无 supabase）:', text);
@@ -3787,8 +3781,8 @@
             
             // 更新当前页面单词数据供随机使用
             currentPageWords = pageWords;
-            // 预加载音频；价格听写第一版使用浏览器 TTS
-            if (!isPriceMode) preloadAudiosForWords(pageWords);
+            // 预加载音频
+            preloadAudiosForWords(pageWords);
         }
         $('#shuffle-btn').on('click', () => {
             if (isNumberMode || isYearMode || isPriceMode) {
@@ -3875,12 +3869,12 @@
                     renderWord();
                 };
 
-                // 预加载数字/年份音频；价格听写第一版使用浏览器 TTS
-                if (!isPriceMode) preloadAudiosForWords(corpus);
+                // 预加载数字/年份/价格音频
+                preloadAudiosForWords(corpus);
 
                 const NUM_WAIT_COUNT = Math.min(5, corpus.length);
                 const firstNums = corpus.slice(0, NUM_WAIT_COUNT);
-                const needWait = isNumberMode && firstNums.some(w => !audioCache.has((w.en || '').replace(/\//g, '-') + '.mp3'));
+                const needWait = (isNumberMode || isPriceMode) && firstNums.some(w => !audioCache.has((w.en || '').replace(/\//g, '-') + '.mp3'));
 
                 if (!needWait) { doStartNumber(); return; }
 
