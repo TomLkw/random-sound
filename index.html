@@ -372,6 +372,9 @@
                 <a id="top-writing-practice-link" href="https://ai-writing-qee7.onrender.com/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-blue-600 px-3 md:px-4 py-2 rounded-full border border-blue-600 shadow-sm hover:shadow-md transition-all hover:bg-blue-700 text-white">
                     <span class="text-sm font-bold whitespace-nowrap">写作练习</span>
                 </a>
+                <a id="top-todo-listen-link" href="https://todo-listen.pages.dev/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-emerald-600 px-3 md:px-4 py-2 rounded-full border border-emerald-600 shadow-sm hover:shadow-md transition-all hover:bg-emerald-700 text-white">
+                    <span class="text-sm font-bold whitespace-nowrap">真题精听</span>
+                </a>
                 <button id="login-btn" class="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm hover:shadow-md transition-all hover:border-blue-300 text-slate-600">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -1475,6 +1478,12 @@
             trackEvent('writing_practice_click', {
                 source: 'top_nav',
                 href_host: 'ai-writing-qee7.onrender.com'
+            });
+        });
+        $('#top-todo-listen-link').on('click', () => {
+            trackEvent('todo_listen_click', {
+                source: 'top_nav',
+                href_host: 'todo-listen.pages.dev'
             });
         });
         $('#start-writing-url-btn').on('click', () => {
