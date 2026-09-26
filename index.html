@@ -375,6 +375,9 @@
                 <a id="top-todo-listen-link" href="https://todo-listen.pages.dev/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-emerald-600 px-3 md:px-4 py-2 rounded-full border border-emerald-600 shadow-sm hover:shadow-md transition-all hover:bg-emerald-700 text-white">
                     <span class="text-sm font-bold whitespace-nowrap">真题精听</span>
                 </a>
+                <button id="top-purchase-btn" class="flex items-center gap-2 px-3 md:px-4 py-2 rounded-full border border-yellow-400 shadow-sm hover:shadow-md transition-all text-slate-900 font-bold" style="background:#FFD000;">
+                    <span class="text-sm whitespace-nowrap">购买解锁</span>
+                </button>
                 <button id="login-btn" class="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm hover:shadow-md transition-all hover:border-blue-300 text-slate-600">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -798,6 +801,7 @@
                 <div class="flex items-center gap-2"><span class="text-green-500 font-bold">✓</span> 闲鱼平台交易，安全有保障</div>
                 <div class="flex items-center gap-2"><span class="text-green-500 font-bold">✓</span> 付款后把注册邮箱发给客服，三个小时内开通</div>
             </div>
+            <p id="payment-note" class="mb-4 rounded-xl bg-slate-50 px-4 py-3 text-xs font-bold text-slate-500 text-center">购买后请回到本站登录，并把注册邮箱发给客服开通</p>
 
             <a id="goto-xianyu" href="https://m.tb.cn/h.8tD7p9i?tk=AaX7TPc7vaX" target="_blank" rel="noopener noreferrer"
                class="flex items-center justify-center gap-2 w-full py-3.5 text-white font-bold rounded-xl transition-all active:scale-95 shadow-lg text-base"
@@ -1209,10 +1213,12 @@
             if (session) {
                 currentUser = session.user;
                 updateUIForLoggedIn();
+                updatePurchaseButtonVisibility();
                 // 登录态存在时，进行一次 wordStats 云同步
                 syncWordStatsOnLogin();
             } else {
                 updateUIForLoggedOut();
+                updatePurchaseButtonVisibility();
             }
         }
 
@@ -1330,6 +1336,7 @@
             await supabaseClinet.auth.signOut();
             currentUser = null;
             updateUIForLoggedOut();
+            updatePurchaseButtonVisibility();
         }
 
         // 显示错误
@@ -1354,12 +1361,14 @@
             if (event === 'SIGNED_IN') {
                 currentUser = session.user;
                 updateUIForLoggedIn();
+                updatePurchaseButtonVisibility();
                 closeLoginModal();
                 // 首次登录后立即尝试云同步 wordStats
                 syncWordStatsOnLogin();
             } else if (event === 'SIGNED_OUT') {
                 currentUser = null;
                 updateUIForLoggedOut();
+                updatePurchaseButtonVisibility();
                 hasSyncedWordStatsOnce = false; // 下次登录可再次拉取
             }
         });
@@ -1475,6 +1484,16 @@
             trackEvent('xianyu_purchase_click', {
                 source: 'payment_modal',
                 href_host: 'm.tb.cn'
+            });
+        });
+        $('#top-purchase-btn').on('click', async () => {
+            if (currentUser && await checkSubscription()) {
+                updatePurchaseButtonVisibility();
+                return;
+            }
+            showPaymentModal();
+            trackEvent('purchase_modal_open', {
+                source: 'top_nav'
             });
         });
         $('#top-writing-practice-link').on('click', () => {
@@ -2937,10 +2956,28 @@
             }
         }
 
+        async function updatePurchaseButtonVisibility() {
+            if (!currentUser) {
+                $('#top-purchase-btn').removeClass('hidden');
+                return false;
+            }
+
+            const checkedUserId = currentUser.id;
+            const hasSubscription = await checkSubscription();
+            if (!currentUser || currentUser.id !== checkedUserId) {
+                $('#top-purchase-btn').toggleClass('hidden', !!currentUser);
+                return false;
+            }
+            $('#top-purchase-btn').toggleClass('hidden', hasSubscription);
+            return hasSubscription;
+        }
+
         // 显示付费弹窗
         function showPaymentModal() {
             if (currentUser) {
-                $('#payment-note').text(`${currentUser.email}`);
+                $('#payment-note').text(`当前登录邮箱：${currentUser.email}。付款后把这个邮箱发给客服开通。`);
+            } else {
+                $('#payment-note').text('购买后请回到本站登录，并把注册邮箱发给客服开通。');
             }
             $('#payment-modal').removeClass('hidden');
         }
@@ -2992,7 +3029,7 @@
             // 检查是否为付费章节
             if (paidChapters.includes(chapter)) {
                 if (!currentUser) {
-                    showLoginRequiredModal();
+                    showPaymentModal();
                     return;
                 }
                 
