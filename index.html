@@ -794,7 +794,7 @@
             </div>
 
             <div class="space-y-2 mb-6 text-sm text-slate-600">
-                <div class="flex items-center gap-2"><span class="text-green-500 font-bold">✓</span> 永久解锁全部付费章节</div>
+                <div class="flex items-center gap-2"><span class="text-green-500 font-bold">✓</span> 一次性解锁所有章节</div>
                 <div class="flex items-center gap-2"><span class="text-green-500 font-bold">✓</span> 闲鱼平台交易，安全有保障</div>
                 <div class="flex items-center gap-2"><span class="text-green-500 font-bold">✓</span> 付款后把注册邮箱发给客服，三个小时内开通</div>
             </div>
@@ -1562,7 +1562,7 @@
                     zh: item.translation
                 }));
             } catch (error) {
-                console.error('获取章节数据失败:', error);
+                console.error('获取章节数据失败:', { chapter, error });
                 return [];
             }
         }
