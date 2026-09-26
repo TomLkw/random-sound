@@ -456,12 +456,12 @@
                             开始重练
                         </button>
                         <label class="inline-flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-500 cursor-pointer select-none">
-                            <span id="wrong-book-dictation-mode-label" class="text-blue-600">倒计时</span>
+                            <span class="text-slate-600">倒计时</span>
                             <span class="switch">
                                 <input type="checkbox" id="wrong-book-practice-mode-toggle">
                                 <span class="slider"></span>
                             </span>
-                            <span id="wrong-book-practice-mode-label">无倒计时</span>
+                            <span id="wrong-book-practice-mode-status" class="text-blue-600">已开启</span>
                         </label>
                     </div>
                 </div>
@@ -643,12 +643,12 @@
                                         </a>
                                     </div>
                                     <label class="inline-flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-500 cursor-pointer select-none">
-                                        <span id="dictation-mode-label" class="text-blue-600">倒计时</span>
+                                        <span class="text-slate-600">倒计时</span>
                                         <span class="switch">
                                             <input type="checkbox" id="practice-mode-toggle">
                                             <span class="slider"></span>
                                         </span>
-                                        <span id="practice-mode-label">无倒计时</span>
+                                        <span id="practice-mode-status" class="text-blue-600">已开启</span>
                                     </label>
                                 </div>
                                 <div id="audio-loading-bar" class="hidden mt-3">
@@ -1386,17 +1386,20 @@
             startMistakeReviewPractice();
         });
 
-        $('#wrong-book-practice-mode-toggle').on('change', function() {
+        $('#practice-mode-toggle, #wrong-book-practice-mode-toggle').on('change', function() {
             isPracticeMode = !this.checked;
             updatePracticeModeToggleLabel();
-            if (isStarted && !isPaused) {
-                if (isPracticeMode) {
-                    clearTimeout(autoNextTimer);
-                    $('#timer-bar').css({ 'transition': 'none', 'width': '0%' });
-                    $('#timer-container').hide();
-                } else {
-                    startCurrentTimer();
-                }
+            if (!isStarted) {
+                $('#timer-container').toggle(!isPracticeMode);
+                return;
+            }
+
+            if (isPracticeMode) {
+                clearTimeout(autoNextTimer);
+                $('#timer-bar').css({ 'transition': 'none', 'width': '0%' });
+                $('#timer-container').hide();
+            } else if (!isPaused) {
+                startCurrentTimer();
             }
         });
 
@@ -3685,29 +3688,13 @@
         }
 
         function updatePracticeModeToggleLabel() {
-            $('#dictation-mode-label').toggleClass('text-blue-600', !isPracticeMode);
-            $('#practice-mode-label').toggleClass('text-blue-600', isPracticeMode);
-            $('#wrong-book-dictation-mode-label').toggleClass('text-blue-600', !isPracticeMode);
-            $('#wrong-book-practice-mode-label').toggleClass('text-blue-600', isPracticeMode);
-            $('#practice-mode-toggle, #wrong-book-practice-mode-toggle').prop('checked', !isPracticeMode);
+            const countdownEnabled = !isPracticeMode;
+            $('#practice-mode-toggle, #wrong-book-practice-mode-toggle').prop('checked', countdownEnabled);
+            $('#practice-mode-status, #wrong-book-practice-mode-status')
+                .text(countdownEnabled ? '已开启' : '已关闭')
+                .toggleClass('text-blue-600', countdownEnabled)
+                .toggleClass('text-slate-400', !countdownEnabled);
         }
-
-        $('#practice-mode-toggle').on('change', function() {
-            isPracticeMode = !this.checked;
-            updatePracticeModeToggleLabel();
-            if (!isStarted) {
-                $('#timer-container').toggle(!isPracticeMode);
-                return;
-            }
-
-            if (isPracticeMode) {
-                clearTimeout(autoNextTimer);
-                $('#timer-bar').css({ 'transition': 'none', 'width': '0%' });
-                $('#timer-container').hide();
-            } else if (!isPaused) {
-                startCurrentTimer();
-            }
-        });
         updatePracticeModeToggleLabel();
         
         $('#sort-by-accuracy-btn').on('click', () => {
