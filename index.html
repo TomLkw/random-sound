@@ -2942,6 +2942,7 @@
                     .from('user_subscriptions')
                     .select('status')
                     .eq('id', currentUser.id)
+                    .eq('project_name', 'ielts-word')
                     .single();
                 
                 if (error) {
