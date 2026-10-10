@@ -253,7 +253,7 @@
             </button>
             <button onclick="openNumberRoute('hard')" id="nav-numbers-hard" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
-                数字听力(困难)
+                数字听力(进阶)
             </button>
             <button onclick="openPriceRoute('easy')" id="nav-prices-easy" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
@@ -261,7 +261,7 @@
             </button>
             <button onclick="openPriceRoute('hard')" id="nav-prices-hard" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
-                价格听写(困难)
+                价格听写(进阶)
             </button>
 
             <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">日期练习</div>
@@ -2915,7 +2915,7 @@
                 ];
                 $('#current-chapter-title').text('数字听力练习 (简单版 3-6位)');
             } else {
-                // 困难版：7-11位数字
+                // 进阶版：7-11位数字
                 numberGroups = [
                     { en: '2324681', zh: '数字 1', speech: 'two, three, two, four, six, eight, one' },
                     { en: '6377559', zh: '数字 2', speech: 'six, three, double seven, double five, nine' },
@@ -2938,7 +2938,7 @@
                     { en: '4382296', zh: '数字 19', speech: 'four, three, eight, double two, nine, six' },
                     { en: '68420971', zh: '数字 20', speech: 'six, eight, four, two, or, nine, seven, one' }
                 ];
-                $('#current-chapter-title').text('数字听力练习 (困难版 7-11位)');
+                $('#current-chapter-title').text('数字听力练习 (进阶版 7-11位)');
             }
             fullChapterData = numberGroups;
             currentPageWords = numberGroups;
@@ -3009,7 +3009,7 @@
             totalPages = 1;
             currentPage = 1;
 
-            $('#current-chapter-title').text(isHard ? '价格听写练习 (困难版 小数金额)' : '价格听写练习 (简单版 整数金额)');
+            $('#current-chapter-title').text(isHard ? '价格听写练习 (进阶版 小数金额)' : '价格听写练习 (简单版 整数金额)');
             $('#stat-total').text(numberGroups.length);
             $('#stat-correct').text('0');
             $('#stat-accuracy').text('0%');
@@ -3149,9 +3149,9 @@
                 'task2-argument': '大作文论证词',
                 'task2-topic': '大作文话题词',
                 'numbers-easy': '数字听力练习 (简单版)',
-                'numbers-hard': '数字听力练习 (困难版)',
+                'numbers-hard': '数字听力练习 (进阶版)',
                 'prices-easy': '价格听写练习 (简单版)',
-                'prices-hard': '价格听写练习 (困难版)',
+                'prices-hard': '价格听写练习 (进阶版)',
                 'wrong-book': '错词本'
             };
             return chapterTitleMap[chapter] || chapter;
