@@ -1331,6 +1331,11 @@
         }
 
         // 埋点上报函数
+        function trackPracticeStart(eventType, eventData, isShuffled) {
+            const data = { ...eventData, is_shuffled: isShuffled };
+            trackEvent(isShuffled ? 'start_shuffled_practice' : eventType, data);
+        }
+
         async function trackEvent(eventType, eventData = {}) {
             try {
                 const anonymousId = getAnonymousId();
@@ -1561,6 +1566,7 @@
         $('#shuffle-wrong-book-page-btn').on('click', () => {
             if ($('#start-wrong-book-btn').prop('disabled') || currentMistakeReviewPageItems.length <= 1) return;
             currentMistakeReviewPageItems = shuffleArray([...currentMistakeReviewPageItems]);
+            isMistakeReviewPageShuffled = true;
             renderMistakeReviewItems(currentMistakeReviewPageItems);
         });
 
@@ -2028,6 +2034,7 @@
         let totalPages = 1;
         let fullChapterData = [];
         let currentPageWords = [];
+        let isCurrentPageShuffled = false;
         let isRetryingWrong = false;
         let isNumberMode = false;
         let isDateMode = false;
@@ -2388,6 +2395,7 @@
         const MISTAKE_REVIEW_PAGE_SIZE = 20;
         let mistakeReviewCurrentPage = 1;
         let currentMistakeReviewPageItems = [];
+        let isMistakeReviewPageShuffled = false;
 
         function findKnownWordMeta(word) {
             const normalized = String(word || '').toLowerCase().trim();
@@ -2584,6 +2592,7 @@
         }
 
         async function renderMistakeReviewPage() {
+            isMistakeReviewPageShuffled = false;
             let items = getMistakeReviewItems();
             let pageItems = getMistakeReviewPageItems(items);
             updateMistakeReviewBadge();
@@ -2674,7 +2683,11 @@
             $('#status-dot').addClass('bg-blue-500 animate-pulse').removeClass('bg-slate-300');
             $('#progress-text').text('正在听写');
 
-            trackEvent('start_wrong_book_practice', { word_count: corpus.length });
+            trackPracticeStart('start_wrong_book_practice', {
+                chapter: 'wrong-book',
+                page: mistakeReviewCurrentPage,
+                word_count: corpus.length
+            }, isMistakeReviewPageShuffled);
             preloadAudiosForWords(corpus.slice(0, PRELOAD_COUNT));
             isStarted = true;
             renderWord();
@@ -3813,6 +3826,7 @@
             currentPage = page;
             const startIdx = (page - 1) * WORDS_PER_PAGE;
             const endIdx = startIdx + WORDS_PER_PAGE;
+            isCurrentPageShuffled = false;
             currentPageWords = words.slice(startIdx, endIdx);
             
             // 重置排序状态
@@ -3852,6 +3866,7 @@
         
         // 重置章节状态的函数
         function resetChapterState() {
+            isCurrentPageShuffled = false;
             currentIndex = 0;
             correctCount = 0;
             attemptCount = 0;
@@ -3918,6 +3933,7 @@
         });
         
         function displaySortedWordList(words, page) {
+            isCurrentPageShuffled = false;
             currentPage = page;
             const startIdx = (page - 1) * WORDS_PER_PAGE;
             const endIdx = startIdx + WORDS_PER_PAGE;
@@ -3965,6 +3981,8 @@
             preloadAudiosForWords(pageWords);
         }
         $('#shuffle-btn').on('click', () => {
+            if (currentPageWords.length === 0) return;
+            isCurrentPageShuffled = true;
             if (isNumberMode || isYearMode || isPriceMode) {
                 // 数字/年份/价格模式下随机打乱组题列表
                 const shuffled = shuffleArray([...numberGroups]);
@@ -4009,6 +4027,7 @@
 
         $('#start-btn').on('click', async () => {
             if (!currentChapter) return;
+            const isShuffled = isCurrentPageShuffled;
             
             // 数字/年份/价格模式
             if (isNumberMode || isYearMode || isPriceMode) {
@@ -4025,17 +4044,15 @@
                 $('#current-chapter-title').text(getChapterDisplayName(currentChapter));
                 $('#stat-total').text(corpus.length);
                 
-                // 埋点：开始练习
-                trackEvent('start_practice', {
-                    chapter: currentChapter,
-                    word_count: corpus.length,
-                    is_number_mode: isNumberMode,
-                    training_mode: isPriceMode ? 'price' : (isYearMode ? 'year' : 'number'),
-                    is_retry_wrong: false,
-                    is_practice_mode: isPracticeMode
-                });
-
                 const doStartNumber = () => {
+                    trackPracticeStart('start_practice', {
+                        chapter: currentChapter,
+                        word_count: corpus.length,
+                        is_number_mode: isNumberMode,
+                        training_mode: isPriceMode ? 'price' : (isYearMode ? 'year' : 'number'),
+                        is_retry_wrong: false,
+                        is_practice_mode: isPracticeMode
+                    }, isShuffled);
                     $('#audio-loading-bar').addClass('hidden');
                     $('#start-btn').prop('disabled', false).text('开始练习');
                     isStarted = true;
@@ -4111,14 +4128,14 @@
             const doStart = () => {
                 $('#audio-loading-bar').addClass('hidden');
                 $('#start-btn').prop('disabled', false).text('开始练习');
-                trackEvent('start_practice', {
+                trackPracticeStart('start_practice', {
                     chapter: currentChapter,
                     page: currentPage,
                     word_count: corpus.length,
                     is_number_mode: false,
                     is_retry_wrong: isRetryingWrong,
                     is_practice_mode: isPracticeMode
-                });
+                }, isShuffled);
                 isStarted = true;
                 $('#word-list-container').addClass('hidden');
                 $('#start-btn-container').addClass('hidden');
