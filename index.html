@@ -116,6 +116,40 @@
             transition: width 5s linear;
         }
 
+        #start-btn.purchase-guide {
+            background-color: #facc15;
+            color: #422006;
+        }
+        #start-btn.purchase-guide:hover {
+            background-color: #eab308;
+        }
+
+        .sentence-word-link {
+            position: relative;
+        }
+        .sentence-link-tooltip {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            z-index: 30;
+            width: max-content;
+            max-width: 200px;
+            padding: 7px 10px;
+            border-radius: 8px;
+            background: rgb(15 23 42 / 72%);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.5;
+            box-shadow: 0 4px 12px rgb(15 23 42 / 18%);
+            pointer-events: none;
+        }
+        .sentence-word-link:hover .sentence-link-tooltip,
+        .sentence-word-link:focus-visible .sentence-link-tooltip {
+            display: block;
+        }
+
         #log-container::-webkit-scrollbar, .sidebar-scroll::-webkit-scrollbar {
             width: 4px;
         }
@@ -172,6 +206,138 @@
         </div>
         
         <nav class="flex-1 overflow-y-auto p-4 space-y-2 sidebar-scroll">
+            <details class="book-nav">
+                <summary class="cursor-pointer rounded-2xl px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50">Book 14 原文单词</summary>
+                <div class="space-y-1 pl-2">
+            <button type="button" onclick="startExercise('book14-t1')" id="nav-book14-t1" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 14 Test 1">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 1
+            </button>
+            <button type="button" onclick="startExercise('book14-t2')" id="nav-book14-t2" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 14 Test 2">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 2
+            </button>
+            <button type="button" onclick="startExercise('book14-t3')" id="nav-book14-t3" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 14 Test 3">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 3
+            </button>
+            <button type="button" onclick="startExercise('book14-t4')" id="nav-book14-t4" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 14 Test 4">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 4
+            </button>
+                </div>
+            </details>
+
+            <details class="book-nav">
+                <summary class="cursor-pointer rounded-2xl px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50">Book 15 原文单词</summary>
+                <div class="space-y-1 pl-2">
+            <button type="button" onclick="startExercise('book15-t1')" id="nav-book15-t1" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 15 Test 1">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 1
+            </button>
+            <button type="button" onclick="startExercise('book15-t2')" id="nav-book15-t2" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 15 Test 2">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 2
+            </button>
+            <button type="button" onclick="startExercise('book15-t3')" id="nav-book15-t3" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 15 Test 3">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 3
+            </button>
+            <button type="button" onclick="startExercise('book15-t4')" id="nav-book15-t4" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 15 Test 4">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 4
+            </button>
+                </div>
+            </details>
+
+            <details class="book-nav">
+                <summary class="cursor-pointer rounded-2xl px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50">Book 16 原文单词</summary>
+                <div class="space-y-1 pl-2">
+            <button type="button" onclick="startExercise('book16-t1')" id="nav-book16-t1" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 16 Test 1">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 1
+            </button>
+            <button type="button" onclick="startExercise('book16-t2')" id="nav-book16-t2" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 16 Test 2">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 2
+            </button>
+            <button type="button" onclick="startExercise('book16-t3')" id="nav-book16-t3" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 16 Test 3">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 3
+            </button>
+            <button type="button" onclick="startExercise('book16-t4')" id="nav-book16-t4" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 16 Test 4">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 4
+            </button>
+                </div>
+            </details>
+
+            <details class="book-nav">
+                <summary class="cursor-pointer rounded-2xl px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50">Book 17 原文单词</summary>
+                <div class="space-y-1 pl-2">
+            <button type="button" onclick="startExercise('book17-t1')" id="nav-book17-t1" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 17 Test 1">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 1
+            </button>
+            <button type="button" onclick="startExercise('book17-t2')" id="nav-book17-t2" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 17 Test 2">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 2
+            </button>
+            <button type="button" onclick="startExercise('book17-t3')" id="nav-book17-t3" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 17 Test 3">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 3
+            </button>
+            <button type="button" onclick="startExercise('book17-t4')" id="nav-book17-t4" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 17 Test 4">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 4
+            </button>
+                </div>
+            </details>
+
+            <details class="book-nav">
+                <summary class="cursor-pointer rounded-2xl px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50">Book 18 原文单词</summary>
+                <div class="space-y-1 pl-2">
+            <button type="button" onclick="startExercise('book18-t1')" id="nav-book18-t1" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 18 Test 1">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 1
+            </button>
+            <button type="button" onclick="startExercise('book18-t2')" id="nav-book18-t2" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 18 Test 2">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 2
+            </button>
+            <button type="button" onclick="startExercise('book18-t3')" id="nav-book18-t3" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 18 Test 3">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 3
+            </button>
+            <button type="button" onclick="startExercise('book18-t4')" id="nav-book18-t4" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 18 Test 4">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 4
+            </button>
+                </div>
+            </details>
+
+            <details class="book-nav">
+                <summary class="cursor-pointer rounded-2xl px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50">Book 19 原文单词</summary>
+                <div class="space-y-1 pl-2">
+            <button type="button" onclick="startExercise('book19-t1')" id="nav-book19-t1" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 19 Test 1">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 1
+            </button>
+            <button type="button" onclick="startExercise('book19-t2')" id="nav-book19-t2" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 19 Test 2">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 2
+            </button>
+            <button type="button" onclick="startExercise('book19-t3')" id="nav-book19-t3" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 19 Test 3">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 3
+            </button>
+            <button type="button" onclick="startExercise('book19-t4')" id="nav-book19-t4" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left" aria-label="Book 19 Test 4">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                Test 4
+            </button>
+                </div>
+            </details>
+
             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">名词语料</div>
             <button onclick="openChapterRoute('3.1')" id="nav-3.1" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
@@ -1025,6 +1191,12 @@
 
     <script src="./jquery-3.6.0.min.js"></script>
     <script src="./supabase-js-v2.js"></script>
+    <script src="./book14-vocab.js"></script>
+    <script src="./book15-vocab.js"></script>
+    <script src="./book16-vocab.js"></script>
+    <script src="./book17-vocab.js"></script>
+    <script src="./book18-vocab.js"></script>
+    <script src="./book19-vocab.js"></script>
     <script>
         if (!window.supabase && typeof supabase !== 'undefined') {
             window.supabase = supabase;
@@ -1717,7 +1889,7 @@
 
             // 根据 paidChapters 动态注入锁图标
             const lockSvg = `<span class="ml-auto text-amber-700 lock-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" /></svg></span>`;
-            paidChapters.forEach(ch => {
+            [...paidChapters, ...previewPaidChapters].forEach(ch => {
                 const btn = document.getElementById('nav-' + ch);
                 if (btn) btn.insertAdjacentHTML('beforeend', lockSvg);
             });
@@ -1747,6 +1919,12 @@
 
         // 核心数据：从 CSV 提取
         const allData = {
+            ...BOOK14_VOCABULARY,
+            ...BOOK15_VOCABULARY,
+            ...BOOK16_VOCABULARY,
+            ...BOOK17_VOCABULARY,
+            ...BOOK18_VOCABULARY,
+            ...BOOK19_VOCABULARY,
             'date': [
                 { en: "January", zh: "一月" },
                 { en: "February", zh: "二月" },
@@ -2042,6 +2220,12 @@
         let isPriceMode = false;
         let isPracticeMode = false;
         const paidChapters = ['3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '4.1', '4.2', '4.3', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9', '5.10', '5.11', '5.12', '11.2', '11.3', '11.4', '11.5', '11.6', '11.7', '11.8', '11.9', '11.10', '11.11', '11.12', '11.13', '11.14'];
+        const previewPaidChapters = Object.keys({
+            ...BOOK16_VOCABULARY,
+            ...BOOK17_VOCABULARY,
+            ...BOOK18_VOCABULARY,
+            ...BOOK19_VOCABULARY
+        });
         let numberGroups = [];
         const priceGroupsEasy = [
             { en: '£5', zh: '价格 1', speech: 'five pounds' },
@@ -3123,9 +3307,17 @@
             }
         }
 
+        function updateBookPracticeButton(hasSubscription) {
+            if (!previewPaidChapters.includes(currentChapter)) return;
+            $('#start-btn')
+                .toggleClass('purchase-guide', !hasSubscription)
+                .text(hasSubscription ? '开始练习' : '购买解锁练习');
+        }
+
         async function updatePurchaseButtonVisibility() {
             if (!currentUser) {
                 $('#top-purchase-btn').removeClass('hidden');
+                updateBookPracticeButton(false);
                 return false;
             }
 
@@ -3136,6 +3328,7 @@
                 return false;
             }
             $('#top-purchase-btn').toggleClass('hidden', hasSubscription);
+            updateBookPracticeButton(hasSubscription);
             return hasSubscription;
         }
 
@@ -3165,6 +3358,8 @@
         }
 
         function getChapterDisplayName(chapter) {
+            const bookTest = /^book(14|15|16|17|18|19)-t([1-4])$/.exec(chapter);
+            if (bookTest) return `Book ${bookTest[1]} / Test ${bookTest[2]}`;
             const chapterTitleMap = {
                 'date': '日期听写',
                 'years': '年份听写',
@@ -3180,6 +3375,10 @@
                 'wrong-book': '错词本'
             };
             return chapterTitleMap[chapter] || chapter;
+        }
+
+        function usesBrowserSpeech(chapter) {
+            return /^book(?:14|15|16|17|18|19)-t[1-4]$/.test(chapter);
         }
 
         async function startExercise(chapter, options = {}) {
@@ -3258,6 +3457,10 @@
             
             // 显示单词列表（第一页）
             displayWordList(chapterData, 1);
+            if (previewPaidChapters.includes(chapter)) {
+                updateBookPracticeButton(false);
+                await updatePurchaseButtonVisibility();
+            }
         }
 
         // 加载词汇统计数据（本地）
@@ -3533,7 +3736,7 @@
 
         // 预加载一批单词的音频到内存缓存
         function preloadAudiosForWords(words) {
-            if (!supabaseClinet || !Array.isArray(words)) return;
+            if (usesBrowserSpeech(currentChapter) || !supabaseClinet || !Array.isArray(words)) return;
 
             console.log('[audio] 预加载请求 words:', words.map(w => w.en));
 
@@ -3587,6 +3790,11 @@
             const isCurrentSlowMode = isDateMode || isYearMode || currentAudioItem.isYearReview;
             const ttsRate = isCurrentNumberLike ? 0.75 : (isCurrentSlowMode ? 0.85 : 1);
             const playbackRate = isCurrentNumberLike ? 1.2 : 1;
+
+            if (usesBrowserSpeech(currentChapter)) {
+                systemSpeak(ttsText, ttsRate);
+                return;
+            }
 
             const safeName = (typeof text === 'string' ? text : '').replace(/\//g, '-');
             const path = safeName ? (safeName + '.mp3') : '';
@@ -3822,6 +4030,20 @@
             renderWord();
         });
 
+        function renderWordListLabel(item) {
+            const word = escapeHtml(item.en);
+            if (!item.sentenceUrl) return `<span class="font-bold text-slate-700">${word}</span>`;
+            const isLocal = location.protocol === 'file:' ||
+                ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+            const sentenceUrl = new URL(item.sentenceUrl);
+            if (isLocal) {
+                sentenceUrl.protocol = 'http:';
+                sentenceUrl.host = 'localhost:8000';
+                sentenceUrl.pathname = '/';
+            }
+            return `<a class="sentence-word-link font-bold text-slate-700 underline underline-offset-2 hover:text-blue-600" href="${escapeHtml(sentenceUrl.href)}" target="_blank" rel="noopener" aria-label="${word}，点击跳转到听力原句（新标签页打开）">${word}<span class="sentence-link-tooltip" aria-hidden="true">点击跳转到听力原句 </span></a>`;
+        }
+
         function displayWordList(words, page) {
             currentPage = page;
             const startIdx = (page - 1) * WORDS_PER_PAGE;
@@ -3838,7 +4060,7 @@
                 const accuracy = getWordAccuracy(item.en);
                 return `
                     <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg text-xs">
-                        <span class="font-bold text-slate-700">${item.en}</span>
+                        ${renderWordListLabel(item)}
                         <span class="text-slate-400">-</span>
                         <span class="text-slate-500">${item.zh}</span>
                         ${accuracy !== null ? `<span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded ${accuracy >= 80 ? 'bg-green-100 text-green-600' : accuracy >= 60 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'}">${accuracy}%</span>` : ''}
@@ -3866,6 +4088,7 @@
         
         // 重置章节状态的函数
         function resetChapterState() {
+            $('#start-btn').removeClass('purchase-guide').prop('disabled', false).text('开始练习');
             isCurrentPageShuffled = false;
             currentIndex = 0;
             correctCount = 0;
@@ -3959,7 +4182,7 @@
                 }
                 return `
                     <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg text-xs">
-                        <span class="font-bold text-slate-700">${item.en}</span>
+                        ${renderWordListLabel(item)}
                         <span class="text-slate-400">-</span>
                         <span class="text-slate-500">${item.zh}</span>
                         <span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded ${accuracy >= 80 ? 'bg-green-100 text-green-600' : accuracy >= 60 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'}">${accuracy}%</span>
@@ -3995,7 +4218,7 @@
                 const accuracy = getWordAccuracy(item.en);
                 return `
                     <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg text-xs">
-                        <span class="font-bold text-slate-700">${item.en}</span>
+                        ${renderWordListLabel(item)}
                         <span class="text-slate-400">-</span>
                         <span class="text-slate-500">${item.zh}</span>
                         ${accuracy !== null ? `<span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded ${accuracy >= 80 ? 'bg-green-100 text-green-600' : accuracy >= 60 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'}">${accuracy}%</span>` : ''}
@@ -4027,6 +4250,24 @@
 
         $('#start-btn').on('click', async () => {
             if (!currentChapter) return;
+            if (previewPaidChapters.includes(currentChapter)) {
+                const requestedChapter = currentChapter;
+                const requestedUserId = currentUser ? currentUser.id : null;
+                $('#start-btn').prop('disabled', true);
+                const hasSubscription = await checkSubscription();
+                if (currentChapter !== requestedChapter) return;
+                $('#start-btn').prop('disabled', false);
+                if ((currentUser ? currentUser.id : null) !== requestedUserId) return;
+                updateBookPracticeButton(hasSubscription);
+                if (!hasSubscription) {
+                    showPaymentModal();
+                    trackEvent('purchase_modal_open', {
+                        source: 'book_practice',
+                        chapter: requestedChapter
+                    });
+                    return;
+                }
+            }
             const isShuffled = isCurrentPageShuffled;
             
             // 数字/年份/价格模式
@@ -4104,7 +4345,7 @@
             // 从当前显示的列表获取单词（可能已随机）
             const displayedWords = [];
             $('#word-list .bg-slate-50').each(function() {
-                const en = $(this).find('.font-bold.text-slate-700').text();
+                const en = $(this).find('.font-bold.text-slate-700').clone().children('.sentence-link-tooltip').remove().end().text();
                 const zh = $(this).find('.text-slate-500').text();
                 if (en && zh) {
                     displayedWords.push({ en, zh });
@@ -4120,7 +4361,7 @@
 
             const WAIT_COUNT = Math.min(5, corpus.length);
             const firstWords = corpus.slice(0, WAIT_COUNT);
-            const needWait = !isNumberMode && !isDateMode && firstWords.some(w => {
+            const needWait = !usesBrowserSpeech(currentChapter) && !isNumberMode && !isDateMode && firstWords.some(w => {
                 const path = (w.en || '').replace(/\//g, '-') + '.mp3';
                 return !audioCache.has(path);
             });

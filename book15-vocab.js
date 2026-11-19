@@ -1,4 +1,5 @@
-// 从剑雅 15 原文选取的听写词表，每个 Part 10 词，保留原文词形。
+// 剑雅 15 原文听写词表，每个 Test 40 词，每个 Part 10 词。
+// 按常见听力场景、通用学术词汇和拼写练习价值选取，保留原文词形及定位链接。
 const BOOK15_VOCABULARY = {
     "book15-t1": [
         {
@@ -12,18 +13,8 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p1&sentence=90021"
         },
         {
-            "en": "clerical",
-            "zh": "文书工作的",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p1&sentence=90023"
-        },
-        {
             "en": "temporary",
             "zh": "临时的",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p1&sentence=90026"
-        },
-        {
-            "en": "finance",
-            "zh": "金融",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p1&sentence=90026"
         },
         {
@@ -42,9 +33,19 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p1&sentence=90049"
         },
         {
+            "en": "interview",
+            "zh": "面试",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p1&sentence=90051"
+        },
+        {
             "en": "certificates",
             "zh": "证书",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p1&sentence=90058"
+        },
+        {
+            "en": "passport",
+            "zh": "护照",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p1&sentence=90060"
         },
         {
             "en": "candidates",
@@ -62,9 +63,19 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p2&sentence=90020"
         },
         {
+            "en": "booking",
+            "zh": "预订",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p2&sentence=90030"
+        },
+        {
             "en": "supplement",
             "zh": "附加费",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p2&sentence=90034"
+        },
+        {
+            "en": "alternative",
+            "zh": "可替代的",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p2&sentence=90037"
         },
         {
             "en": "administrative",
@@ -77,84 +88,69 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p2&sentence=90044"
         },
         {
-            "en": "parliament",
-            "zh": "议会",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p2&sentence=90049"
-        },
-        {
             "en": "exhibition",
             "zh": "展览",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p2&sentence=90047"
         },
         {
-            "en": "heritage",
-            "zh": "遗产",
+            "en": "entrance",
+            "zh": "入口；入场",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p2&sentence=90061"
         },
         {
-            "en": "spectacular",
-            "zh": "壮观的",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p2&sentence=90058"
+            "en": "transport",
+            "zh": "交通运输",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p2&sentence=90060"
         },
         {
-            "en": "mediaeval",
-            "zh": "中世纪的",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p2&sentence=90069"
+            "en": "presentation",
+            "zh": "展示报告",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90001"
         },
         {
-            "en": "unreliable",
-            "zh": "不可靠的",
+            "en": "research",
+            "zh": "研究",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90004"
+        },
+        {
+            "en": "personality",
+            "zh": "性格",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90005"
         },
         {
-            "en": "traits",
-            "zh": "特征",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90007"
-        },
-        {
-            "en": "stereotypes",
-            "zh": "刻板印象",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90007"
-        },
-        {
-            "en": "robust",
-            "zh": "有力的",
+            "en": "evidence",
+            "zh": "证据",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90008"
         },
         {
-            "en": "consensus",
-            "zh": "共识",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90013"
+            "en": "accurate",
+            "zh": "准确的",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90023"
         },
         {
-            "en": "sibling",
-            "zh": "兄弟姐妹",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90014"
-        },
-        {
-            "en": "nurturing",
-            "zh": "养育",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90016"
-        },
-        {
-            "en": "envious",
-            "zh": "嫉妒的",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90025"
-        },
-        {
-            "en": "sociable",
-            "zh": "合群的",
+            "en": "confident",
+            "zh": "自信的",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90029"
         },
         {
-            "en": "rivalry",
-            "zh": "竞争",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90066"
+            "en": "academic",
+            "zh": "学业的",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90052"
         },
         {
-            "en": "eucalyptus",
-            "zh": "桉树",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90001"
+            "en": "achievement",
+            "zh": "成就",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90052"
+        },
+        {
+            "en": "intelligence",
+            "zh": "智力",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90053"
+        },
+        {
+            "en": "confidence",
+            "zh": "信心",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p3&sentence=90064"
         },
         {
             "en": "shelter",
@@ -162,24 +158,29 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90007"
         },
         {
-            "en": "nectar",
-            "zh": "花蜜",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90009"
+            "en": "species",
+            "zh": "物种",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90008"
         },
         {
-            "en": "biodiversity",
-            "zh": "生物多样性",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90010"
+            "en": "disease",
+            "zh": "疾病",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90018"
         },
         {
-            "en": "disinfectant",
-            "zh": "消毒剂",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90012"
+            "en": "construction",
+            "zh": "建设",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90023"
         },
         {
-            "en": "prematurely",
-            "zh": "过早地",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90016"
+            "en": "insects",
+            "zh": "昆虫",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90033"
+        },
+        {
+            "en": "frequency",
+            "zh": "频率",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90045"
         },
         {
             "en": "vegetation",
@@ -187,14 +188,14 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90045"
         },
         {
-            "en": "nutrients",
-            "zh": "养分",
+            "en": "soil",
+            "zh": "土壤",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90057"
         },
         {
-            "en": "indigenous",
-            "zh": "本土的",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90060"
+            "en": "nutrients",
+            "zh": "养分",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t1_p4&sentence=90057"
         },
         {
             "en": "ecosystem",
@@ -205,7 +206,7 @@ const BOOK15_VOCABULARY = {
     "book15-t2": [
         {
             "en": "festival",
-            "zh": "节日",
+            "zh": "节庆活动",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p1&sentence=90004"
         },
         {
@@ -229,21 +230,6 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p1&sentence=90023"
         },
         {
-            "en": "amateur",
-            "zh": "业余的",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p1&sentence=90025"
-        },
-        {
-            "en": "review",
-            "zh": "评论",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p1&sentence=90030"
-        },
-        {
-            "en": "composers",
-            "zh": "作曲家",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p1&sentence=90038"
-        },
-        {
             "en": "workshops",
             "zh": "工作坊",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p1&sentence=90044"
@@ -254,24 +240,24 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p1&sentence=90048"
         },
         {
-            "en": "transformation",
-            "zh": "改造",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90002"
+            "en": "posters",
+            "zh": "海报",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p1&sentence=90056"
+        },
+        {
+            "en": "participants",
+            "zh": "参与者",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p1&sentence=90063"
+        },
+        {
+            "en": "venue",
+            "zh": "活动场地",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p1&sentence=90075"
         },
         {
             "en": "council",
             "zh": "市政委员会",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90007"
-        },
-        {
-            "en": "ownership",
-            "zh": "所有权",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90009"
-        },
-        {
-            "en": "possession",
-            "zh": "占有",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90015"
         },
         {
             "en": "statue",
@@ -284,24 +270,39 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90023"
         },
         {
-            "en": "petitions",
-            "zh": "请愿书",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90025"
+            "en": "environment",
+            "zh": "环境",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90022"
         },
         {
-            "en": "demonstrations",
-            "zh": "示威活动",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90025"
+            "en": "boundary",
+            "zh": "边界",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90047"
         },
         {
-            "en": "retained",
-            "zh": "保留",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90034"
+            "en": "entrances",
+            "zh": "入口",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90016"
         },
         {
-            "en": "revised",
-            "zh": "修改",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90039"
+            "en": "ownership",
+            "zh": "所有权",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90009"
+        },
+        {
+            "en": "housing",
+            "zh": "住房",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90020"
+        },
+        {
+            "en": "vegetables",
+            "zh": "蔬菜",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90028"
+        },
+        {
+            "en": "schedule",
+            "zh": "日程",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p2&sentence=90042"
         },
         {
             "en": "literature",
@@ -314,14 +315,19 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p3&sentence=90004"
         },
         {
-            "en": "profile",
-            "zh": "知名度",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p3&sentence=90015"
+            "en": "materials",
+            "zh": "材料",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p3&sentence=90006"
         },
         {
-            "en": "publicised",
-            "zh": "宣传",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p3&sentence=90016"
+            "en": "departments",
+            "zh": "院系",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p3&sentence=90010"
+        },
+        {
+            "en": "students",
+            "zh": "学生",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p3&sentence=90010"
         },
         {
             "en": "lecturers",
@@ -339,13 +345,8 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p3&sentence=90026"
         },
         {
-            "en": "campaigning",
-            "zh": "开展社会活动",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p3&sentence=90032"
-        },
-        {
-            "en": "reforms",
-            "zh": "改革",
+            "en": "education",
+            "zh": "教育",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p3&sentence=90033"
         },
         {
@@ -364,14 +365,14 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p4&sentence=90003"
         },
         {
-            "en": "arid",
-            "zh": "干旱的",
+            "en": "rainfall",
+            "zh": "降雨量",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p4&sentence=90006"
         },
         {
-            "en": "charcoal",
-            "zh": "木炭",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p4&sentence=90009"
+            "en": "income",
+            "zh": "收入",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p4&sentence=90008"
         },
         {
             "en": "sustainable",
@@ -384,32 +385,27 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p4&sentence=90014"
         },
         {
+            "en": "crops",
+            "zh": "农作物",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p4&sentence=90015"
+        },
+        {
             "en": "livestock",
             "zh": "牲畜",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p4&sentence=90020"
         },
         {
-            "en": "cultivated",
-            "zh": "耕种",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p4&sentence=90026"
+            "en": "protein",
+            "zh": "蛋白质",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p4&sentence=90047"
         },
         {
             "en": "preservation",
             "zh": "保存",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p4&sentence=90042"
-        },
-        {
-            "en": "protein",
-            "zh": "蛋白质",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t2_p4&sentence=90047"
         }
     ],
     "book15-t3": [
-        {
-            "en": "representatives",
-            "zh": "代表",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p1&sentence=90003"
-        },
         {
             "en": "administrative",
             "zh": "行政的",
@@ -431,9 +427,14 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p1&sentence=90020"
         },
         {
-            "en": "appoint",
-            "zh": "任命",
+            "en": "meetings",
+            "zh": "会议",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p1&sentence=90024"
+        },
+        {
+            "en": "records",
+            "zh": "记录",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p1&sentence=90028"
         },
         {
             "en": "diary",
@@ -446,14 +447,14 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p1&sentence=90037"
         },
         {
-            "en": "interpersonal",
-            "zh": "人际交往的",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p1&sentence=90039"
+            "en": "references",
+            "zh": "推荐证明",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p1&sentence=90040"
         },
         {
-            "en": "teleconferencing",
-            "zh": "电话会议",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p1&sentence=90046"
+            "en": "experience",
+            "zh": "经验",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p1&sentence=90019"
         },
         {
             "en": "scheme",
@@ -466,29 +467,19 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90004"
         },
         {
-            "en": "toddler",
-            "zh": "学步幼儿",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90010"
-        },
-        {
-            "en": "campaigning",
-            "zh": "开展倡议活动",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90012"
-        },
-        {
             "en": "volunteer",
             "zh": "志愿者",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90020"
         },
         {
-            "en": "wardens",
-            "zh": "管理员",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90020"
+            "en": "council",
+            "zh": "市政委员会",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90023"
         },
         {
-            "en": "motorists",
-            "zh": "驾驶者",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90024"
+            "en": "traffic",
+            "zh": "交通",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90034"
         },
         {
             "en": "demand",
@@ -496,14 +487,24 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90039"
         },
         {
+            "en": "parks",
+            "zh": "公园",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90041"
+        },
+        {
             "en": "suburbs",
             "zh": "郊区",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90042"
         },
         {
-            "en": "supportive",
-            "zh": "支持的",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90047"
+            "en": "confidence",
+            "zh": "信心",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90055"
+        },
+        {
+            "en": "parking",
+            "zh": "停车",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p2&sentence=90065"
         },
         {
             "en": "assignment",
@@ -541,19 +542,19 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p3&sentence=90028"
         },
         {
-            "en": "misleading",
-            "zh": "误导性的",
+            "en": "information",
+            "zh": "信息",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p3&sentence=90032"
         },
         {
-            "en": "controversy",
-            "zh": "争议",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p3&sentence=90042"
+            "en": "purpose",
+            "zh": "目的",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p3&sentence=90039"
         },
         {
-            "en": "assumptions",
-            "zh": "假设",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p3&sentence=90045"
+            "en": "education",
+            "zh": "教育",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p3&sentence=90046"
         },
         {
             "en": "cleanliness",
@@ -566,29 +567,19 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90001"
         },
         {
-            "en": "prehistoric",
-            "zh": "史前的",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90003"
+            "en": "household",
+            "zh": "家庭的",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90001"
         },
         {
-            "en": "excavation",
-            "zh": "挖掘",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90007"
-        },
-        {
-            "en": "cylinders",
-            "zh": "圆筒",
+            "en": "clay",
+            "zh": "黏土",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90009"
         },
         {
-            "en": "inscriptions",
-            "zh": "铭文",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90010"
-        },
-        {
-            "en": "aesthetic",
-            "zh": "审美的",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90013"
+            "en": "material",
+            "zh": "材料",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90012"
         },
         {
             "en": "substance",
@@ -596,14 +587,24 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90019"
         },
         {
-            "en": "unsanitary",
-            "zh": "不卫生的",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90036"
+            "en": "mixture",
+            "zh": "混合物",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90021"
         },
         {
-            "en": "alkali",
-            "zh": "碱",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90048"
+            "en": "disease",
+            "zh": "疾病",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90037"
+        },
+        {
+            "en": "manufacture",
+            "zh": "制造",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90056"
+        },
+        {
+            "en": "consumers",
+            "zh": "消费者",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t3_p4&sentence=90064"
         }
     ],
     "book15-t4": [
@@ -634,7 +635,7 @@ const BOOK15_VOCABULARY = {
         },
         {
             "en": "queue",
-            "zh": "队列",
+            "zh": "队伍",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p1&sentence=90053"
         },
         {
@@ -658,24 +659,24 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p1&sentence=90083"
         },
         {
-            "en": "subcommittee",
-            "zh": "小组委员会",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p2&sentence=90001"
+            "en": "location",
+            "zh": "位置",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p2&sentence=90010"
         },
         {
-            "en": "overview",
-            "zh": "概述",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p2&sentence=90004"
-        },
-        {
-            "en": "assortment",
-            "zh": "各种各样",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p2&sentence=90007"
+            "en": "playground",
+            "zh": "游乐场",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p2&sentence=90012"
         },
         {
             "en": "boundary",
             "zh": "边界",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p2&sentence=90016"
+        },
+        {
+            "en": "outdoor",
+            "zh": "户外的",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p2&sentence=90017"
         },
         {
             "en": "ramp",
@@ -693,14 +694,9 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p2&sentence=90031"
         },
         {
-            "en": "irrespective",
-            "zh": "不考虑",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p2&sentence=90035"
-        },
-        {
-            "en": "disastrous",
-            "zh": "灾难性的",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p2&sentence=90040"
+            "en": "entrance",
+            "zh": "入场",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p2&sentence=90034"
         },
         {
             "en": "tropical",
@@ -708,29 +704,24 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p2&sentence=90043"
         },
         {
-            "en": "refrigeration",
-            "zh": "制冷",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p3&sentence=90001"
+            "en": "collection",
+            "zh": "收藏品",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p2&sentence=90043"
         },
         {
-            "en": "insulating",
-            "zh": "隔热",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p3&sentence=90011"
-        },
-        {
-            "en": "straw",
-            "zh": "稻草",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p3&sentence=90011"
-        },
-        {
-            "en": "sawdust",
-            "zh": "锯末",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p3&sentence=90011"
+            "en": "underground",
+            "zh": "在地下",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p3&sentence=90008"
         },
         {
             "en": "domestic",
             "zh": "家用的",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p3&sentence=90023"
+        },
+        {
+            "en": "recycle",
+            "zh": "回收利用",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p3&sentence=90029"
         },
         {
             "en": "components",
@@ -753,19 +744,19 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p3&sentence=90055"
         },
         {
+            "en": "export",
+            "zh": "出口",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p3&sentence=90066"
+        },
+        {
+            "en": "transport",
+            "zh": "交通运输",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p3&sentence=90079"
+        },
+        {
             "en": "competitors",
             "zh": "竞争对手",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p3&sentence=90091"
-        },
-        {
-            "en": "consumerism",
-            "zh": "消费主义",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p4&sentence=90004"
-        },
-        {
-            "en": "possessions",
-            "zh": "财产",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p4&sentence=90006"
         },
         {
             "en": "manufacturing",
@@ -788,6 +779,11 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p4&sentence=90023"
         },
         {
+            "en": "factories",
+            "zh": "工厂",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p4&sentence=90028"
+        },
+        {
             "en": "canals",
             "zh": "运河",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p4&sentence=90036"
@@ -798,9 +794,14 @@ const BOOK15_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p4&sentence=90045"
         },
         {
-            "en": "entrepreneurs",
-            "zh": "企业家",
-            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p4&sentence=90051"
+            "en": "advertising",
+            "zh": "广告宣传",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p4&sentence=90058"
+        },
+        {
+            "en": "customers",
+            "zh": "顾客",
+            "sentenceUrl": "https://hear-write.com/hearing?part=ielts15_t4_p4&sentence=90049"
         },
         {
             "en": "cutlery",
