@@ -4389,8 +4389,9 @@
             $('#word-list .bg-slate-50').each(function() {
                 const en = $(this).find('.font-bold.text-slate-700').clone().children('.sentence-link-tooltip').remove().end().text();
                 const zh = $(this).find('.text-slate-500').text();
-                if (en && zh) {
-                    displayedWords.push({ en, zh });
+                if (en && (zh || currentChapter === 'date-combo')) {
+                    const sourceItem = currentPageWords.find(item => item.en === en);
+                    displayedWords.push(sourceItem ? { ...sourceItem } : { en, zh });
                 }
             });
             
