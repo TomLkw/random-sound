@@ -439,6 +439,10 @@
                 <span class="w-2 h-2 rounded-full bg-slate-200"></span>
                 年份听写
             </button>
+            <button onclick="openChapterRoute('date-combo')" id="nav-date-combo" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
+                <span class="w-2 h-2 rounded-full bg-slate-200"></span>
+                日期组合听写
+            </button>
             
             <div class="pt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 py-2">词组连读语料</div>
             <button onclick="startExercise('5.1')" id="nav-5.1" class="chapter-nav w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all hover:bg-slate-50 text-slate-600 font-bold text-sm text-left">
@@ -1917,6 +1921,49 @@
             }
         }
 
+        // 月日与年月日组合；朗读交替使用两种常见顺序。
+        const dateComboMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const dateComboOrdinals = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth', 'twentieth', 'twenty-first', 'twenty-second', 'twenty-third', 'twenty-fourth', 'twenty-fifth', 'twenty-sixth', 'twenty-seventh', 'twenty-eighth', 'twenty-ninth', 'thirtieth', 'thirty-first'];
+        function buildDateComboData() {
+            const dates = [
+                // 基础：6 道，1–12 日的月日组合。
+                [1, 0], [3, 2], [5, 4], [8, 6], [10, 8], [12, 11],
+                // 进阶：7 道，13–31 日及复合序数词。
+                [13, 1], [15, 3], [21, 5], [22, 7], [23, 9], [30, 10], [31, 11],
+                // 挑战：7 道，完整日期及不同年份读法。
+                [23, 2, 1998, 'nineteen ninety-eight'],
+                [31, 11, 2025, 'twenty twenty-five'],
+                [21, 0, 2001, 'two thousand and one'],
+                [29, 1, 2024, 'two thousand and twenty-four'],
+                [13, 8, 2013, 'twenty thirteen'],
+                [30, 3, 1986, 'nineteen eighty-six'],
+                [22, 10, 2030, 'twenty thirty']
+            ];
+            return dates.map(([day, monthIndex, year, yearSpeech], i) => {
+                const month = dateComboMonths[monthIndex];
+                const ordinal = dateComboOrdinals[day - 1];
+                return {
+                    en: `${day} ${month}${year ? ' ' + year : ''}`,
+                    zh: '',
+                    speech: (i % 2 ? `${month} the ${ordinal}` : `the ${ordinal} of ${month}`) + (year ? `, ${yearSpeech}` : '')
+                };
+            });
+        }
+
+        function normalizeDateComboAnswer(value) {
+            const cleaned = String(value).toLowerCase().replace(/(\d)(st|nd|rd|th)\b/g, '$1')
+                .replace(/[,.-]/g, ' ').replace(/\b(the|of)\b/g, ' ').trim().split(/\s+/);
+            const monthIndex = cleaned.findIndex(token => dateComboMonths.some(month => month.toLowerCase() === token));
+            if (monthIndex < 0 || ![2, 3].includes(cleaned.length)) return null;
+            const month = cleaned[monthIndex];
+            const numbers = cleaned.filter((_, i) => i !== monthIndex);
+            if (!numbers.every(token => /^\d+$/.test(token))) return null;
+            const day = Number(numbers[0]);
+            const year = numbers[1] || '';
+            if (day < 1 || day > 31 || (year && !/^\d{4}$/.test(year))) return null;
+            return `${day}|${month}|${year}`;
+        }
+
         // 核心数据：从 CSV 提取
         const allData = {
             ...BOOK14_VOCABULARY,
@@ -1925,6 +1972,7 @@
             ...BOOK17_VOCABULARY,
             ...BOOK18_VOCABULARY,
             ...BOOK19_VOCABULARY,
+            'date-combo': buildDateComboData(),
             'date': [
                 { en: "January", zh: "一月" },
                 { en: "February", zh: "二月" },
@@ -2444,6 +2492,7 @@
                 'task2-basic': '/task2-basic-vocabulary',
                 'task2-argument': '/task2-argument-vocabulary',
                 'task2-topic': '/task2-topic-vocabulary',
+                'date-combo': '/date-combo-listening',
                 date: '/date-listening',
                 years: '/year-listening'
             };
@@ -2468,7 +2517,7 @@
 
         function clearPageRoute() {
             const url = new URL(window.location.href);
-            const appPaths = ['/wrong-book', '/number-easy', '/number-hard', '/price-easy', '/price-hard', '/price-listening', '/date-listening', '/year-listening', '/list-3-1', '/list-3-2', '/list-3-3', '/task1-basic-vocabulary', '/task1-advanced-vocabulary', '/task2-basic-vocabulary', '/task2-argument-vocabulary', '/task2-topic-vocabulary'];
+            const appPaths = ['/date-combo-listening', '/wrong-book', '/number-easy', '/number-hard', '/price-easy', '/price-hard', '/price-listening', '/date-listening', '/year-listening', '/list-3-1', '/list-3-2', '/list-3-3', '/task1-basic-vocabulary', '/task1-advanced-vocabulary', '/task2-basic-vocabulary', '/task2-argument-vocabulary', '/task2-topic-vocabulary'];
             if (!appPaths.includes(url.pathname)) return;
             url.pathname = '/';
             url.search = '';
@@ -2510,6 +2559,11 @@
 
             if (path === '/price-hard') {
                 startPriceExercise('hard', { keepRoute: true });
+                return;
+            }
+
+            if (path === '/date-combo-listening') {
+                await startExercise('date-combo', { keepRoute: true });
                 return;
             }
 
@@ -3361,6 +3415,7 @@
             const bookTest = /^book(14|15|16|17|18|19)-t([1-4])$/.exec(chapter);
             if (bookTest) return `Book ${bookTest[1]} / Test ${bookTest[2]}`;
             const chapterTitleMap = {
+                'date-combo': '日期组合听写',
                 'date': '日期听写',
                 'years': '年份听写',
                 'task1-basic': '小作文基础词',
@@ -3378,7 +3433,7 @@
         }
 
         function usesBrowserSpeech(chapter) {
-            return /^book(?:14|15|16|17|18|19)-t[1-4]$/.test(chapter);
+            return chapter === 'date-combo' || /^book(?:14|15|16|17|18|19)-t[1-4]$/.test(chapter);
         }
 
         async function startExercise(chapter, options = {}) {
@@ -3415,7 +3470,7 @@
             
             // 设置章节特定变量
             isNumberMode = false;
-            isDateMode = chapter === 'date';
+            isDateMode = chapter === 'date' || chapter === 'date-combo';
             isYearMode = false;
             isPriceMode = false;
             currentChapter = chapter;
@@ -3945,7 +4000,10 @@
             const input = $('#user-input').val().trim().toLowerCase();
             const target = corpus[currentIndex].en.toLowerCase();
 
-            const isCorrect = isPriceMode ? isPriceAnswerCorrect(input, target) : input === target;
+            const isCombo = Boolean(normalizeDateComboAnswer(target));
+            const isCorrect = isPriceMode ? isPriceAnswerCorrect(input, target)
+                : isCombo ? normalizeDateComboAnswer(input) === normalizeDateComboAnswer(target)
+                : input === target;
 
             if (isCorrect) {
                 goToNext(true, input);
