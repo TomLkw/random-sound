@@ -2468,6 +2468,20 @@
             startPriceExercise(level, { keepRoute: true });
         }
 
+        // 只滚动侧栏容器，避免章节定位带动练习区域滚动。
+        function revealActiveChapter() {
+            requestAnimationFrame(() => {
+                const active = document.querySelector('.sidebar-scroll .chapter-nav.bg-slate-900');
+                const sidebar = active && active.closest('.sidebar-scroll');
+                if (!sidebar || !sidebar.clientHeight) return;
+                const viewport = sidebar.getBoundingClientRect();
+                const item = active.getBoundingClientRect();
+                if (item.top < viewport.top || item.bottom > viewport.bottom) {
+                    sidebar.scrollTop += item.top - viewport.top - (sidebar.clientHeight - item.height) / 2;
+                }
+            });
+        }
+
         function openChapterRoute(chapter) {
             const pathMap = {
                 '3.1': '/list-3-1',
@@ -3125,6 +3139,7 @@
                 $('#nav-numbers-hard').addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50').css({'background':'#0f172a', 'color':'#fff'});
             }
             
+            revealActiveChapter();
             $('#exercise-card').removeClass('opacity-50 pointer-events-none');
             $('#progress-text').text('准备中...');
             
@@ -3243,6 +3258,7 @@
             $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50').css({'background':'', 'color':''});
             $(isHard ? '#nav-prices-hard' : '#nav-prices-easy').addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50').css({'background':'#0f172a', 'color':'#fff'});
 
+            revealActiveChapter();
             $('#exercise-card').removeClass('opacity-50 pointer-events-none');
             $('#progress-text').text('准备中...');
 
@@ -3287,6 +3303,7 @@
             $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50').css({'background':'', 'color':''});
             $('#nav-years').addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50').css({'background':'#0f172a', 'color':'#fff'});
 
+            revealActiveChapter();
             $('#exercise-card').removeClass('opacity-50 pointer-events-none');
             $('#progress-text').text('准备中...');
 
@@ -3432,6 +3449,7 @@
             $('.chapter-nav').removeClass('bg-slate-900 text-white shadow-lg').addClass('text-slate-600 hover:bg-slate-50').css({'background':'', 'color':''});
             const activeBtn = document.getElementById('nav-' + chapter);
             if (activeBtn) $(activeBtn).addClass('bg-slate-900 text-white shadow-lg').removeClass('text-slate-600 hover:bg-slate-50').css({'background':'#0f172a', 'color':'#fff'});
+            revealActiveChapter();
 
             // 检查是否为付费章节
             if (paidChapters.includes(chapter)) {
@@ -4564,6 +4582,7 @@
                 $aside.removeClass('hidden');
                 requestAnimationFrame(() => {
                     $aside.removeClass('-translate-x-full');
+                    revealActiveChapter();
                 });
             }
 
