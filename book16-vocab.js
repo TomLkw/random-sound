@@ -502,7 +502,7 @@ const BOOK16_VOCABULARY = {
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts16_t3_p2&sentence=90031"
         },
         {
-            "en": "licence",
+            "en": "license",
             "zh": "执照",
             "sentenceUrl": "https://hear-write.com/hearing?part=ielts16_t3_p2&sentence=90055"
         },

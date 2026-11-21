@@ -1950,20 +1950,6 @@
             });
         }
 
-        function normalizeDateComboAnswer(value) {
-            const cleaned = String(value).toLowerCase().replace(/(\d)(st|nd|rd|th)\b/g, '$1')
-                .replace(/[,.-]/g, ' ').replace(/\b(the|of)\b/g, ' ').trim().split(/\s+/);
-            const monthIndex = cleaned.findIndex(token => dateComboMonths.some(month => month.toLowerCase() === token));
-            if (monthIndex < 0 || ![2, 3].includes(cleaned.length)) return null;
-            const month = cleaned[monthIndex];
-            const numbers = cleaned.filter((_, i) => i !== monthIndex);
-            if (!numbers.every(token => /^\d+$/.test(token))) return null;
-            const day = Number(numbers[0]);
-            const year = numbers[1] || '';
-            if (day < 1 || day > 31 || (year && !/^\d{4}$/.test(year))) return null;
-            return `${day}|${month}|${year}`;
-        }
-
         // 核心数据：从 CSV 提取
         const allData = {
             ...BOOK14_VOCABULARY,
@@ -4000,9 +3986,7 @@
             const input = $('#user-input').val().trim().toLowerCase();
             const target = corpus[currentIndex].en.toLowerCase();
 
-            const isCombo = Boolean(normalizeDateComboAnswer(target));
             const isCorrect = isPriceMode ? isPriceAnswerCorrect(input, target)
-                : isCombo ? normalizeDateComboAnswer(input) === normalizeDateComboAnswer(target)
                 : input === target;
 
             if (isCorrect) {
